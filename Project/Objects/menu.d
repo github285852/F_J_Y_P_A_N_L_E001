@@ -34,3 +34,4 @@
 .\objects\menu.o: ..\Source\STM32F10x_FWLib\inc\misc.h
 .\objects\menu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\menu.o: ..\Source\APP\menutask.h
+.\objects\menu.o: ..\Source\APP\scene.h

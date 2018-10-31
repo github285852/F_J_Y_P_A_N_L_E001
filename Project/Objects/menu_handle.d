@@ -64,11 +64,9 @@
 .\objects\menu_handle.o: ..\Source\HAL\adc.h
 .\objects\menu_handle.o: ..\Source\HAL\uart3.h
 .\objects\menu_handle.o: ..\Source\HAL\stmflash.h
+.\objects\menu_handle.o: ..\Source\HAL\timer.h
 .\objects\menu_handle.o: ..\Source\Driver\malloc.h
 .\objects\menu_handle.o: ..\Source\HAL\ec11.h
-.\objects\menu_handle.o: ..\Source\HAL\tm1829.h
-.\objects\menu_handle.o: ..\Source\HAL\mcp4728.h
-.\objects\menu_handle.o: ..\Source\HAL\ucs8903.h
 .\objects\menu_handle.o: ..\Source\Driver\menu.h
 .\objects\menu_handle.o: ..\Source\Driver\key.h
 .\objects\menu_handle.o: ..\Source\APP\color_light.h
@@ -80,3 +78,4 @@
 .\objects\menu_handle.o: ..\Source\Driver\picture_data.h
 .\objects\menu_handle.o: ..\Source\APP\gui.h
 .\objects\menu_handle.o: ..\Source\Driver\dmxprotocol.h
+.\objects\menu_handle.o: ..\Source\APP\scene.h

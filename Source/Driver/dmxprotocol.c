@@ -4,6 +4,9 @@ DMXData DmxData;
 
 void DMX512_handle(void);
 
+#define FINE		0.1 //10%
+
+
 //将数据放入缓存
 void receiving_dmx_data(void)
 {
@@ -239,7 +242,7 @@ int HSI_OUT(HSI_16BIT *hsi)
 	ColorLightHSIOut(panle_hsi,0);
 	return 0;
 }
-
+DMXData temp;
 RGBWWCW_16BIT rgbwwcw;
 void DMX512_handle(void)
 {
@@ -247,7 +250,7 @@ void DMX512_handle(void)
 	CCT_16BIT  cct;
 	CCT_HSI_16BIT cct_hsi;
 	HSI_16BIT hsi;
-	DMXData temp;
+	unsigned int d32;
 		switch(Sys.Config.dmx.mode)
 		{
 			case DMX_M1:
@@ -317,7 +320,48 @@ void DMX512_handle(void)
 				hsi.s = DmxData.hsi_16bit.s>>8 | DmxData.hsi_16bit.s<<8;
 				HSI_OUT(&hsi);
 				break;
-
+			case DMX_M11://CCT_RGBWWCW_CF
+				temp.cct_rgbwwcw_8bit.dim = DmxData.cct_rgbwwcw_cf.dim.coarse + (DmxData.cct_rgbwwcw_cf.dim.fine)*FINE;if(temp.cct_rgbwwcw_8bit.dim<DmxData.cct_rgbwwcw_cf.dim.coarse)temp.cct_rgbwwcw_8bit.dim = 255;
+				temp.cct_rgbwwcw_8bit.kvn = DmxData.cct_rgbwwcw_cf.kvn.coarse + (DmxData.cct_rgbwwcw_cf.kvn.fine)*FINE;if(temp.cct_rgbwwcw_8bit.kvn<DmxData.cct_rgbwwcw_cf.kvn.coarse)temp.cct_rgbwwcw_8bit.kvn= 255;
+				temp.cct_rgbwwcw_8bit.grn = DmxData.cct_rgbwwcw_cf.grn;
+				temp.cct_rgbwwcw_8bit.w_c = DmxData.cct_rgbwwcw_cf.w_c;
+				temp.cct_rgbwwcw_8bit.r = DmxData.cct_rgbwwcw_cf.r.coarse + (DmxData.cct_rgbwwcw_cf.r.fine)*FINE;if(temp.cct_rgbwwcw_8bit.r<DmxData.cct_rgbwwcw_cf.r.coarse)temp.cct_rgbwwcw_8bit.r = 255;
+				temp.cct_rgbwwcw_8bit.g = DmxData.cct_rgbwwcw_cf.g.coarse + (DmxData.cct_rgbwwcw_cf.g.fine)*FINE;if(temp.cct_rgbwwcw_8bit.g<DmxData.cct_rgbwwcw_cf.g.coarse)temp.cct_rgbwwcw_8bit.g = 255;
+				temp.cct_rgbwwcw_8bit.b = DmxData.cct_rgbwwcw_cf.b.coarse + (DmxData.cct_rgbwwcw_cf.b.fine)*FINE;if(temp.cct_rgbwwcw_8bit.b<DmxData.cct_rgbwwcw_cf.b.coarse)temp.cct_rgbwwcw_8bit.b = 255;
+				temp.cct_rgbwwcw_8bit.ww = DmxData.cct_rgbwwcw_cf.ww.coarse + (DmxData.cct_rgbwwcw_cf.ww.fine)*FINE;if(temp.cct_rgbwwcw_8bit.ww<DmxData.cct_rgbwwcw_cf.ww.coarse)temp.cct_rgbwwcw_8bit.ww = 255;
+				temp.cct_rgbwwcw_8bit.cw = DmxData.cct_rgbwwcw_cf.cw.coarse + (DmxData.cct_rgbwwcw_cf.cw.fine)*FINE;if(temp.cct_rgbwwcw_8bit.cw<DmxData.cct_rgbwwcw_cf.cw.coarse)temp.cct_rgbwwcw_8bit.cw = 255;	
+				CCT_RGBWWCW_OUT_8BIT(&temp.cct_rgbwwcw_8bit);
+				break;
+			case DMX_M12://CCT__CF
+				temp.cct_8bit.dim = DmxData.cct_rgbwwcw_cf.dim.coarse + (DmxData.cct_rgbwwcw_cf.dim.fine)*FINE;if(temp.cct_rgbwwcw_8bit.dim<DmxData.cct_rgbwwcw_cf.dim.coarse)temp.cct_rgbwwcw_8bit.dim = 255;
+				temp.cct_8bit.kvn = DmxData.cct_rgbwwcw_cf.kvn.coarse + (DmxData.cct_rgbwwcw_cf.kvn.fine)*FINE;if(temp.cct_rgbwwcw_8bit.kvn<DmxData.cct_rgbwwcw_cf.kvn.coarse)temp.cct_rgbwwcw_8bit.kvn= 255;
+				temp.cct_8bit.grn = DmxData.cct_rgbwwcw_cf.grn;
+				CCT_OUT_8BIT(&temp.cct_8bit);
+				break;
+			case DMX_M13://CCT_HSI_CF
+				temp.cct_hsi_8bit.dim = DmxData.cct_hsi_cf.dim.coarse + (DmxData.cct_hsi_cf.dim.fine)*FINE;if(temp.cct_hsi_8bit.dim<DmxData.cct_hsi_cf.dim.coarse)temp.cct_hsi_8bit.dim = 255;
+				temp.cct_hsi_8bit.kvn = DmxData.cct_hsi_cf.kvn.coarse + (DmxData.cct_hsi_cf.kvn.fine)*FINE;if(temp.cct_hsi_8bit.kvn<DmxData.cct_hsi_cf.kvn.coarse)temp.cct_hsi_8bit.kvn= 255;
+				temp.cct_hsi_8bit.grn = DmxData.cct_hsi_cf.grn;
+				temp.cct_hsi_8bit.w_c = DmxData.cct_hsi_cf.w_c;
+				temp.cct_hsi_8bit.h = DmxData.cct_hsi_cf.h.coarse + (DmxData.cct_hsi_cf.h.fine)*FINE;if(temp.cct_hsi_8bit.h<DmxData.cct_hsi_cf.h.coarse)temp.cct_hsi_8bit.h = 255;
+				temp.cct_hsi_8bit.s = DmxData.cct_hsi_cf.s.coarse + (DmxData.cct_hsi_cf.s.fine)*FINE;if(temp.cct_hsi_8bit.s<DmxData.cct_hsi_cf.s.coarse)temp.cct_hsi_8bit.s = 255;
+				CCT_HSI_OUT_8BIT(&temp.cct_hsi_8bit);
+				break;
+			case DMX_M14://RGBWWCW_CF
+				d32 = DmxData.rgbwwcw_cf.dim.coarse*257 + (DmxData.rgbwwcw_cf.dim.fine)*257*FINE;if(d32>65535) temp.rgbwwcw_16bit.dim = 65535;else temp.rgbwwcw_16bit.dim = d32;
+				d32 = DmxData.rgbwwcw_cf.r.coarse*257 + (DmxData.rgbwwcw_cf.r.fine)*257*FINE;if(d32>65535) temp.rgbwwcw_16bit.r = 65535;else temp.rgbwwcw_16bit.r = d32;
+				d32 = DmxData.rgbwwcw_cf.g.coarse*257 + (DmxData.rgbwwcw_cf.g.fine)*257*FINE;if(d32>65535)temp.rgbwwcw_16bit.g = 65535;else temp.rgbwwcw_16bit.g = d32;
+				d32 = DmxData.rgbwwcw_cf.b.coarse*257 + (DmxData.rgbwwcw_cf.b.fine)*257*FINE;if(d32>65535)temp.rgbwwcw_16bit.b = 65535;else temp.rgbwwcw_16bit.b = d32;
+				d32 = DmxData.rgbwwcw_cf.ww.coarse*257 + (DmxData.rgbwwcw_cf.ww.fine)*257*FINE;if(d32>65535)temp.rgbwwcw_16bit.ww = 65535;else temp.rgbwwcw_16bit.ww = d32;
+				d32 = DmxData.rgbwwcw_cf.cw.coarse*257 + (DmxData.rgbwwcw_cf.cw.fine)*257*FINE;if(d32>65535)temp.rgbwwcw_16bit.cw = 65535;else temp.rgbwwcw_16bit.cw = d32;
+				RGBWWCW_OUT(&temp.rgbwwcw_16bit);
+				break;
+			case DMX_M15://CCT_HSI_CF
+				d32  = DmxData.hsi_cf.dim.coarse*257 + (DmxData.hsi_cf.dim.fine)*257*FINE;if(d32>65535)temp.hsi_16bit.dim = 65535;else temp.hsi_16bit.dim = d32;
+				d32  = DmxData.hsi_cf.h.coarse*257 + (DmxData.hsi_cf.h.fine)*257*FINE;if(d32>65535)temp.hsi_16bit.h = 65535;else temp.hsi_16bit.h = d32;
+				d32  = DmxData.hsi_cf.s.coarse*257 + (DmxData.hsi_cf.s.fine)*257*FINE;if(d32>65535)temp.hsi_16bit.s = 65535;else temp.hsi_16bit.s = d32;
+				HSI_OUT(&temp.hsi_16bit);
+				break;
 			default :break;
 		}
 }

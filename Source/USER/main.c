@@ -18,6 +18,7 @@ void param_init(void)
 {
 	Sys.save_cnt = 20*Sys.Config.lcd.tim;
 	Sys.lcd_back_on = 1;
+	Sys.menu_mask = 0;
 	if(Sys.Config.lightmode>3)
 	{
 		Sys.Config.lightmode = 0;
@@ -111,7 +112,7 @@ int main(void)
 	Lcd_Init();
   color_light_init();
 	LCD_Clear(BLACK);
-	
+	SceneTimerInit();
 	screen.data = (u16*)(&gImage_filmgear_data[0]);
 	screen.h = 128;
 	screen.w = 160;
@@ -144,11 +145,6 @@ int main(void)
 		Duty_Loop();
   }
   return 0;
-}
-
-void FAN_OUT(unsigned int PWM)
-{
-
 }
 
 

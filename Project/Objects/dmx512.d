@@ -64,11 +64,9 @@
 .\objects\dmx512.o: ..\Source\HAL\adc.h
 .\objects\dmx512.o: ..\Source\HAL\uart3.h
 .\objects\dmx512.o: ..\Source\HAL\stmflash.h
+.\objects\dmx512.o: ..\Source\HAL\timer.h
 .\objects\dmx512.o: ..\Source\Driver\malloc.h
 .\objects\dmx512.o: ..\Source\HAL\ec11.h
-.\objects\dmx512.o: ..\Source\HAL\tm1829.h
-.\objects\dmx512.o: ..\Source\HAL\mcp4728.h
-.\objects\dmx512.o: ..\Source\HAL\ucs8903.h
 .\objects\dmx512.o: ..\Source\Driver\menu.h
 .\objects\dmx512.o: ..\Source\Driver\key.h
 .\objects\dmx512.o: ..\Source\APP\color_light.h
@@ -80,3 +78,4 @@
 .\objects\dmx512.o: ..\Source\Driver\picture_data.h
 .\objects\dmx512.o: ..\Source\APP\gui.h
 .\objects\dmx512.o: ..\Source\Driver\dmxprotocol.h
+.\objects\dmx512.o: ..\Source\APP\scene.h

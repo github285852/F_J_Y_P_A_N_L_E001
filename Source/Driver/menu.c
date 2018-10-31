@@ -3,6 +3,7 @@
 #include "menu_handle.h"
 #include "string.h"
 #include "menutask.h"
+#include "scene.h"
 
 unsigned char MAX_MENUS;
 struct MenuTyp *InitMenup;
@@ -24,7 +25,7 @@ struct MenuTyp MenuTab[] = {
 //二级
 	{1,1,0,0,0,0,(unsigned char *)"CCT DUTY",			0,       CCTInitTask,0,0,CCTTask},
 	{2,1,0,0,0,0,(unsigned char *)"HSI DUTY",     0,       HSIInitTask,0,0,HSITask},
-	{3,1,0,0,0,0,(unsigned char *)"GEL DUTY",			0,      			                 	},
+	{3,1,0,0,0,0,(unsigned char *)"GEL DUTY",			0,       GELInitTask,0,0,GELTask},
 	{4,1,0,0,0,0,(unsigned char *)"RGB DUTY",			0,       RGBInitTask,0,0,RGBTask}, //必须以一条结束
 	{5,1,0,0,0,0,(unsigned char *)"SCENE 1",		 "场景一"								       }, 
 	{5,2,0,0,0,0,(unsigned char *)"SCENE 2",		 "场景二"								      }, 
@@ -39,10 +40,10 @@ struct MenuTyp MenuTab[] = {
 	{6,6,0,0,0,0,(unsigned char *)"LANGUAGE",      "语言"},
 	{6,7,0,0,0,0,(unsigned char *)"SYSTEM",        "系统"     },
 //三级                             英文名              中文名           指针函数
-	{5,1,1,0,0,0,(unsigned char *)"SCENE 1 DUTY",   		 0,	  			Scene1TaskInit	,	0,0,Scene1Task									}, 
+	{5,1,1,0,0,0,(unsigned char *)"SCENE 1 DUTY",   		 0,	  			SceneFlashInit	,	SceneBack,SceneBack,SceneFlashTask}, 
 	{5,2,1,0,0,0,(unsigned char *)"SCENE 2 DUTY",	   		 0,					Scene2TaskInit	,									}, 
 	{5,3,1,0,0,0,(unsigned char *)"SCENE 3 DUTY",	   		 0,					Scene3TaskInit	,									}, 
-	{5,4,1,0,0,0,(unsigned char *)"IMPORT SCENE DUTY",   0,			ImportSceneTaskInit,					}, 
+	{5,4,1,0,0,0,(unsigned char *)"IMPORT SCENE DUTY",   0,			ImportInit,		0,0,ImportTask		}, 
 	
 	{6,1,1,0,0,0,(unsigned char *)"AUTO DETECT",   "自动检测"     },
 	{6,1,2,0,0,0,(unsigned char *)"DMX IN",        "DMX输入"            },

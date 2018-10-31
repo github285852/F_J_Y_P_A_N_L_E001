@@ -67,11 +67,9 @@
 .\objects\st7735s.o: ..\Source\HAL\adc.h
 .\objects\st7735s.o: ..\Source\HAL\uart3.h
 .\objects\st7735s.o: ..\Source\HAL\stmflash.h
+.\objects\st7735s.o: ..\Source\HAL\timer.h
 .\objects\st7735s.o: ..\Source\Driver\malloc.h
 .\objects\st7735s.o: ..\Source\HAL\ec11.h
-.\objects\st7735s.o: ..\Source\HAL\tm1829.h
-.\objects\st7735s.o: ..\Source\HAL\mcp4728.h
-.\objects\st7735s.o: ..\Source\HAL\ucs8903.h
 .\objects\st7735s.o: ..\Source\Driver\menu.h
 .\objects\st7735s.o: ..\Source\Driver\key.h
 .\objects\st7735s.o: ..\Source\APP\color_light.h
@@ -83,3 +81,4 @@
 .\objects\st7735s.o: ..\Source\Driver\picture_data.h
 .\objects\st7735s.o: ..\Source\APP\gui.h
 .\objects\st7735s.o: ..\Source\Driver\dmxprotocol.h
+.\objects\st7735s.o: ..\Source\APP\scene.h

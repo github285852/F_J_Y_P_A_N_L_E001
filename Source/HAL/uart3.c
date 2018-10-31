@@ -85,12 +85,12 @@ void DMX1_Send(u8 *buf,u16 len)
 	int i;
 	float temp;
 	u8 *p = buf+1;
-	for(i=0;i<5;i++)
-	{
-		temp = p[2*i+1] |(p[2*i]<<8);
-		temp = 900 * temp /65535.0;
-		Debug_printf("I%d = %.2f\r\n",i,temp);
-	}
+//	for(i=0;i<5;i++)
+//	{
+//		temp = p[2*i+1] |(p[2*i]<<8);
+//		temp = 900 * temp /65535.0;
+//		Debug_printf("I%d = %.2f\r\n",i,temp);
+//	}
 	while(DMA1_Channel2->CNDTR)//等待上一次传输完成
 	{
 		retry++;
@@ -98,9 +98,9 @@ void DMX1_Send(u8 *buf,u16 len)
 	}
 	GPIOC->CRH &= ~(0x03<<10); // 通用推挽输出
 	PCout(10) = 0;
-	//delay_us(190);
-	TIM5->CNT=0;
-	while(TIM5->CNT<100);
+	delay_us(190);
+//	TIM5->CNT=0;
+//	while(TIM5->CNT<100);
 	PCout(10) = 1;
 	delay_us(12);
 	GPIOC->CRH |= (0x02<<10); // 复用推挽输出

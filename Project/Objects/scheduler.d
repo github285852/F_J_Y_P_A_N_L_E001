@@ -64,11 +64,9 @@
 .\objects\scheduler.o: ..\Source\HAL\adc.h
 .\objects\scheduler.o: ..\Source\HAL\uart3.h
 .\objects\scheduler.o: ..\Source\HAL\stmflash.h
+.\objects\scheduler.o: ..\Source\HAL\timer.h
 .\objects\scheduler.o: ..\Source\Driver\malloc.h
 .\objects\scheduler.o: ..\Source\HAL\ec11.h
-.\objects\scheduler.o: ..\Source\HAL\tm1829.h
-.\objects\scheduler.o: ..\Source\HAL\mcp4728.h
-.\objects\scheduler.o: ..\Source\HAL\ucs8903.h
 .\objects\scheduler.o: ..\Source\Driver\menu.h
 .\objects\scheduler.o: ..\Source\Driver\key.h
 .\objects\scheduler.o: ..\Source\APP\color_light.h
@@ -80,3 +78,4 @@
 .\objects\scheduler.o: ..\Source\Driver\picture_data.h
 .\objects\scheduler.o: ..\Source\APP\gui.h
 .\objects\scheduler.o: ..\Source\Driver\dmxprotocol.h
+.\objects\scheduler.o: ..\Source\APP\scene.h

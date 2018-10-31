@@ -87,7 +87,7 @@ void Duty_50ms(void)
 	int i;
 	static u8 t=0;
 	//u8 buf[50];
-	change_baude();
+	LedDmxTask();
 	duty_time[5][0] = GetSysTime_us()/1000000.0f;
 	MenuBuf_malloc();
 	if(MENU_BUF!=NULL)

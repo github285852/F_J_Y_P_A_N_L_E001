@@ -66,11 +66,9 @@
 .\objects\ledpower.o: ..\Source\HAL\adc.h
 .\objects\ledpower.o: ..\Source\HAL\uart3.h
 .\objects\ledpower.o: ..\Source\HAL\stmflash.h
+.\objects\ledpower.o: ..\Source\HAL\timer.h
 .\objects\ledpower.o: ..\Source\Driver\malloc.h
 .\objects\ledpower.o: ..\Source\HAL\ec11.h
-.\objects\ledpower.o: ..\Source\HAL\tm1829.h
-.\objects\ledpower.o: ..\Source\HAL\mcp4728.h
-.\objects\ledpower.o: ..\Source\HAL\ucs8903.h
 .\objects\ledpower.o: ..\Source\Driver\menu.h
 .\objects\ledpower.o: ..\Source\Driver\key.h
 .\objects\ledpower.o: ..\Source\Driver\graphical.h
@@ -80,4 +78,5 @@
 .\objects\ledpower.o: ..\Source\Driver\picture_data.h
 .\objects\ledpower.o: ..\Source\APP\gui.h
 .\objects\ledpower.o: ..\Source\Driver\dmxprotocol.h
+.\objects\ledpower.o: ..\Source\APP\scene.h
 .\objects\ledpower.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

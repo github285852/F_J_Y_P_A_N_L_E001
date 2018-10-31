@@ -32,3 +32,45 @@ void TIM7_IRQHandler(void)   //TIM4中断
 		LcdBackTask();
 	}
 }
+
+void SceneTimerInit()
+{
+ 	NVIC_InitTypeDef NVIC_InitStructure;
+	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE); 
+		//定时器初始化
+	TIM_TimeBaseStructure.TIM_Period = 100; //	自动重转载
+	TIM_TimeBaseStructure.TIM_Prescaler = 36000; //   2分频，1K
+	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV2; //
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //
+	TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure); //
+	TIM_ITConfig(TIM4,TIM_IT_Update,ENABLE ); //使能时钟
+	
+	NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;  //TIM3??
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;  //?????0?
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;  //????3?
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQ?????
+	NVIC_Init(&NVIC_InitStructure);  //???NVIC???
+//	  //??TIMx	
+}
+
+
+void SceneSetframeTim(u16 ms)
+{
+	if(ms<=100)
+		ms = 100;
+	TIM4->ARR = ms;
+}
+
+void SceneTimEnable(void)
+{
+	TIM4->CNT = 0;
+	TIM_Cmd(TIM4, ENABLE);
+}
+
+void SceneTimDisable(void)
+{
+	TIM4->CNT = 0;
+	TIM_Cmd(TIM4, DISABLE);
+}
+

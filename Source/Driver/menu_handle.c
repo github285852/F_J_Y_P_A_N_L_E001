@@ -68,6 +68,7 @@ void MenuKeyTask()
 					menu_pos = current_menu->pos;
 				}
 			}
+			Sys.menu_mask = 0;
 		}
 		break;
 		case Enter_Key://enter

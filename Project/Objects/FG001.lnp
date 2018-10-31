@@ -32,6 +32,7 @@
 ".\objects\filmgear_data.o"
 ".\objects\menutask.o"
 ".\objects\gui.o"
+".\objects\scene.o"
 ".\objects\usb_bsp.o"
 ".\objects\adc.o"
 ".\objects\dmx512.o"

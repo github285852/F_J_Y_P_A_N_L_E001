@@ -48,6 +48,13 @@ typedef struct
 	u16 h;     //¸ß¶È
 }BMP;
 
+typedef struct
+{
+	u8 move_t;
+	u8 cnt;
+	u8 pos;
+}TRANDISPLAY;
+
 void LCD_Fill_Picture(u16 x,u16 y,Picture pic);
 void Picture_Fill(Picture pic,u16 color);
 void Picture_ShowString(Picture pic,u16 x,u16 y,u16 width,u16 height,u8 size,char *p,u8 mode);
@@ -62,8 +69,7 @@ void Picture_DrawInvertedTrigon(Picture pic,u16 x,u16 y,u8 h,u8 d,u16 color);
 void Picture_DrawBMP(Picture pic,u16 x,u16 y,BMP *bmp,u16 point_color,u16 back_color);
 void Picture_ShowChar(Picture pic,u16 x,u16 y,u8 num,u8 size,u8 mode);
 void Pictrue_printf(Picture *pic,u16 x,u16 y,u8 size,char* fmt,...);
-void Picture_TranDispalyOnline(Picture *pic,RECT *rect,u8 *pos,u8 size,u8 mode,char *p);
-
+void Picture_TranDispalyOnline(Picture *pic,RECT *rect,TRANDISPLAY *tran,u8 size,u8 mode,char *p);
 #endif
 
 

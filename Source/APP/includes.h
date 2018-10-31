@@ -26,12 +26,11 @@
 #include "adc.h"
 #include "uart3.h"
 #include "stmflash.h"
+#include "timer.h"
+
 
 #include "malloc.h"
 #include "ec11.h"
-#include "tm1829.h"
-#include "mcp4728.h"
-#include "ucs8903.h"
 #include "menu.h"
 #include "key.h"
 #include "color_light.h"
@@ -45,12 +44,26 @@
 #include "picture_data.h"
 #include "gui.h"
 #include "dmxprotocol.h"
+#include "scene.h"
 
 
-#define DEBUG			0
+#define DEBUG			1
 #define LED_NUMS	5
+#define LED_PIXELS	2
+
+#define SCENE_MAX_CMDS	20 
 
 
+//ERRO CODE
+
+#define ERRO_NO_COLOR			0x01
+#define ERRO_PARAM				0x02
+#define ERRO_MALLOC				0x02
+
+typedef enum
+{
+  NO_COLOR,
+}erro_code_t;
 
 /*
 FLASH 
@@ -91,6 +104,23 @@ typedef struct
 	unsigned char rotate;
 }Lcd;//显示设置
 
+typedef struct 
+{
+	unsigned short ch[LED_PIXELS][LED_NUMS];
+	unsigned short tim;
+}SCENE_FRAME;
+
+typedef struct
+{
+	unsigned char *name;
+//	unsigned char version;
+//	unsigned char pixels;
+	unsigned char mode;
+	SCENE_FRAME frame[SCENE_MAX_CMDS];
+	int max_frames;
+	int frame_pos;
+	char loop;
+}SceneData;
 
 typedef struct 
 {
@@ -103,8 +133,13 @@ typedef struct
 		unsigned int g;
 		unsigned int b;
 	}rgb;
-	unsigned char gel;
-	unsigned char scene;//场景
+	GEL gel;
+	struct
+	{
+		int num;
+	//	SceneData importdata;	
+	}scene;//场景
+  SceneData ImportSceneData;//导入场景使用
 	LightMode lightmode;
 	FAN fan;
   Lcd lcd;
@@ -133,16 +168,25 @@ typedef struct{
 	uint8_t update_state;
 }USB_STATE;
 
+
+typedef struct{
+	uint8_t state;
+}SCENE;
+
+
 typedef struct
 {
 	RGB rgbw;
-	unsigned int fan_pwm;
+	u16 fan_pwm;
+	unsigned char menu_mask;
+	unsigned char max_gel_number;
 	unsigned char dmx_handle;
 	unsigned char dmx_connect;
 	unsigned char dmx_insert;
 	unsigned char last_light_mode;
 	float panle_t;
 	USB_STATE usb;
+	SCENE scene;
 	unsigned char lcd_back_on;
 	int save_cnt; //自动灭屏和保存数据计数
 	CONFIG Config;
@@ -155,7 +199,7 @@ extern __ALIGN_BEGIN USBH_HOST                USB_Host __ALIGN_END;
 extern CONFIG default_data;
 extern Picture pic;
 extern unsigned char gImage_filmgear_data[40960];
-void FAN_OUT(unsigned int PWM);
+void FAN_OUT(unsigned short PWM);
 void Debug_printf(char* fmt,...);
 
 #endif

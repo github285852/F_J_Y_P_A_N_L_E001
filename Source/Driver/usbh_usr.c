@@ -81,7 +81,6 @@ uint8_t filenameString[15]  = {0};
 
 FATFS fatfs;
 FIL file;
-uint8_t Image_Buf[IMAGE_BUFFER_SIZE];
 uint8_t line_idx = 0;   
 
 
@@ -423,7 +422,7 @@ int USBH_USR_MSC_Application(void)
     Debug_printf("> File System initialized.\r\n");
     Debug_printf("> Disk capacity : %d Bytes\r\n", USBH_MSC_Param.MSCapacity * \
     USBH_MSC_Param.MSPageLength); 
-    
+
     if(USBH_MSC_Param.MSWriteProtect == DISK_WRITE_PROTECTED)
     {
 			Debug_printf((void *)MSG_WR_PROTECT);
@@ -431,7 +430,7 @@ int USBH_USR_MSC_Application(void)
 		Sys.usb.mass_connect = 1;
 		Sys.usb.USBH_USR_ApplicationState = USH_USR_FS_IDLE;
     break;
-//  case USH_USR_FS_IMPORT_SENCE:
+//  case USH_USR_FS_IMPORT_SCENE:
 //    
 //    Debug_printf((void *)MSG_ROOT_CONT);
 //    Explore_Disk("0:/", 1);
@@ -453,6 +452,19 @@ int USBH_USR_MSC_Application(void)
     }
 		Sys.usb.USBH_USR_ApplicationState = USH_USR_FS_IDLE;
     break;
+	case USH_USR_FS_IMPORT_SCENE:
+		if(HCD_IsDeviceConnected(&USB_OTG_Core))
+    {
+      if ( f_mount( 0, &fatfs ) != FR_OK ) 
+      {
+        /* fat_fs initialisation fails*/
+        return(-1);
+      }
+     brower_scene_file();
+		Sys.usb.USBH_USR_ApplicationState = USH_USR_FS_IDLE;
+    }
+
+		break;
   default: break;
   }
   return(0);
@@ -477,11 +489,17 @@ static uint8_t Bin_Browser (char* path)
     
     for (;;) {
       res = f_readdir(&dir, &fno);
-      if (res != FR_OK || fno.fname[0] == 0) break;
-      if (fno.fname[0] == '.') continue;
 		#if _USE_LFN 
-      fn = fno.lfname;
+			fn = fno.lfname;
+			if (fno.fname[0] == '.') continue;
+		  if (res != FR_OK || fno.lfname[0] == 0) 
+				if(fno.fname[0] == 0)
+					break;
+				else
+					fn = fno.fname;
 		#else
+			if (res != FR_OK || fno.fname[0] == 0) break;
+      if (fno.fname[0] == '.') continue;
 			fn = fno.fname;
 		#endif
       if (fno.fattrib & AM_DIR) 

@@ -64,11 +64,9 @@
 .\objects\dmxprotocol.o: ..\Source\HAL\adc.h
 .\objects\dmxprotocol.o: ..\Source\HAL\uart3.h
 .\objects\dmxprotocol.o: ..\Source\HAL\stmflash.h
+.\objects\dmxprotocol.o: ..\Source\HAL\timer.h
 .\objects\dmxprotocol.o: ..\Source\Driver\malloc.h
 .\objects\dmxprotocol.o: ..\Source\HAL\ec11.h
-.\objects\dmxprotocol.o: ..\Source\HAL\tm1829.h
-.\objects\dmxprotocol.o: ..\Source\HAL\mcp4728.h
-.\objects\dmxprotocol.o: ..\Source\HAL\ucs8903.h
 .\objects\dmxprotocol.o: ..\Source\Driver\menu.h
 .\objects\dmxprotocol.o: ..\Source\Driver\key.h
 .\objects\dmxprotocol.o: ..\Source\APP\color_light.h
@@ -80,3 +78,4 @@
 .\objects\dmxprotocol.o: ..\Source\Driver\picture_data.h
 .\objects\dmxprotocol.o: ..\Source\APP\gui.h
 .\objects\dmxprotocol.o: ..\Source\Driver\dmxprotocol.h
+.\objects\dmxprotocol.o: ..\Source\APP\scene.h

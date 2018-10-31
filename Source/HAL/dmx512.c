@@ -104,10 +104,10 @@ void EXTI9_5_IRQHandler(void)
 			{
 				receiving_dmx_data();
 				
-				if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) //接收到数据
-				{	 
-					USART_ReceiveData(USART2); 	//读取接收到的数据
-				}
+//				if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) //接收到数据
+//				{	 
+//					USART_ReceiveData(USART2); 	//读取接收到的数据
+//				}
 				if(last_sum != TEST_SUM)
 					SUM_CNT++;
 				last_sum = TEST_SUM;
@@ -404,7 +404,22 @@ void uart_duty(void)
 void USART2_IRQHandler(void)
 {
 	u8 res;	    
- 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) //接收到数据
+	if(USART_GetFlagStatus(USART2,USART_FLAG_NE)==SET)
+	{
+		//USART_ClearFlag(USART2,USART_FLAG_NE); 
+		USART_ReceiveData(USART2);    
+	}
+	else if(USART_GetFlagStatus(USART2,USART_FLAG_FE)==SET)
+	{
+		//USART_ClearFlag(USART2,USART_FLAG_FE); 
+		USART_ReceiveData(USART2);    
+	}
+	else if(USART_GetFlagStatus(USART2,USART_FLAG_ORE)==SET)
+	{
+		//USART_ClearFlag(USART2,USART_FLAG_ORE); 
+		USART_ReceiveData(USART2);    
+	}	
+	else if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) //接收到数据
 	{	 
 		res =USART_ReceiveData(USART2); 	//读取接收到的数据
 		//uart_resiver(res);
@@ -417,16 +432,13 @@ void USART2_IRQHandler(void)
 			{
 				DMX512_RX_CNT = 0;
 				//wait_receive_dmx_data();
+				
 				//打开外部中断10
 				//	EXTI->IMR |= 0x00000040;
 			}
 		}
 	}
-	if(USART_GetFlagStatus(USART2,USART_FLAG_ORE)==SET)
-	{
-		USART_ClearFlag(USART2,USART_FLAG_ORE); 
-		USART_ReceiveData(USART2);    
-	}	
+
 } 
 
 u32 baude=250000,baude_last=250000;

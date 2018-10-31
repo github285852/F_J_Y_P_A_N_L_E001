@@ -65,11 +65,9 @@
 .\objects\adc.o: ..\Source\HAL\adc.h
 .\objects\adc.o: ..\Source\HAL\uart3.h
 .\objects\adc.o: ..\Source\HAL\stmflash.h
+.\objects\adc.o: ..\Source\HAL\timer.h
 .\objects\adc.o: ..\Source\Driver\malloc.h
 .\objects\adc.o: ..\Source\HAL\ec11.h
-.\objects\adc.o: ..\Source\HAL\tm1829.h
-.\objects\adc.o: ..\Source\HAL\mcp4728.h
-.\objects\adc.o: ..\Source\HAL\ucs8903.h
 .\objects\adc.o: ..\Source\Driver\menu.h
 .\objects\adc.o: ..\Source\Driver\key.h
 .\objects\adc.o: ..\Source\APP\color_light.h
@@ -81,4 +79,5 @@
 .\objects\adc.o: ..\Source\Driver\picture_data.h
 .\objects\adc.o: ..\Source\APP\gui.h
 .\objects\adc.o: ..\Source\Driver\dmxprotocol.h
+.\objects\adc.o: ..\Source\APP\scene.h
 .\objects\adc.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

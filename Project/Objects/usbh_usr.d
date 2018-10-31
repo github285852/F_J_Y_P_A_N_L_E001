@@ -64,11 +64,9 @@
 .\objects\usbh_usr.o: ..\Source\HAL\adc.h
 .\objects\usbh_usr.o: ..\Source\HAL\uart3.h
 .\objects\usbh_usr.o: ..\Source\HAL\stmflash.h
+.\objects\usbh_usr.o: ..\Source\HAL\timer.h
 .\objects\usbh_usr.o: ..\Source\Driver\malloc.h
 .\objects\usbh_usr.o: ..\Source\HAL\ec11.h
-.\objects\usbh_usr.o: ..\Source\HAL\tm1829.h
-.\objects\usbh_usr.o: ..\Source\HAL\mcp4728.h
-.\objects\usbh_usr.o: ..\Source\HAL\ucs8903.h
 .\objects\usbh_usr.o: ..\Source\Driver\menu.h
 .\objects\usbh_usr.o: ..\Source\Driver\key.h
 .\objects\usbh_usr.o: ..\Source\APP\color_light.h
@@ -80,3 +78,4 @@
 .\objects\usbh_usr.o: ..\Source\Driver\picture_data.h
 .\objects\usbh_usr.o: ..\Source\APP\gui.h
 .\objects\usbh_usr.o: ..\Source\Driver\dmxprotocol.h
+.\objects\usbh_usr.o: ..\Source\APP\scene.h

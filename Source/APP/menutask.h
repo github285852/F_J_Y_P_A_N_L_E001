@@ -9,6 +9,9 @@ void HSIInitTask(void);
 void CCTTask(void);
 void CCTInitTask(void);
 
+void GELInitTask(void);
+void GELTask(void);
+
 void RGBInitTask(void);
 void RGBTask(void);
 

@@ -156,7 +156,7 @@ void Picture_ShowString(Picture pic,u16 x,u16 y,u16 width,u16 height,u8 size,cha
 		}
 		else if(*p<0x80)
 		{
-			if(x+size/2>=width){if((last_char<0x80)&&(last_char!=' '))Picture_ShowChar(pic,x,y,'-',size,mode); x=x0;y+=size;continue;}
+			if(x+size/2>=width){if( ( (*p>= 0x61)&&(*p<=0x7A)||(*p>= 0x41)&&(*p<=0x5A) )&&(last_char!=' '))Picture_ShowChar(pic,x,y,'-',size,mode); x=x0;y+=size;continue;}
 			if(y>=height)break;//退出
 			Picture_ShowChar(pic,x,y,*p,size,mode);
 			x+=size/2;
@@ -176,19 +176,29 @@ void Picture_ShowString(Picture pic,u16 x,u16 y,u16 width,u16 height,u8 size,cha
 
 
 
+
 //在一个矩形中流动显示，当显示的长度大于矩形，则用这种方法
 // pic 菜单指针
 // rect 显示的区域指针
-// pos 轮询坐标指针
-// speed 轮询速度
+// *tran 代表轮询的变量，tian->move_t移动一个字符的时间（单位：该函数循环的周期）。
 // size 字体大小
 // p 字符串指针
-void Picture_TranDispalyOnline(Picture *pic,RECT *rect,u8 *pos,u8 size,u8 mode,char *p)
+void Picture_TranDispalyOnline(Picture *pic,RECT *rect,TRANDISPLAY *tran,u8 size,u8 mode,char *p)
 {
 	int xlen;
 	u16 y = ((rect->y1 - rect->y0)-size)/2;
 	char *buf=NULL;
 	int  temp;
+	
+	tran->cnt++;
+	if(tran->cnt>tran->move_t)
+	{
+		tran->pos++;
+		if(tran->pos>=strlen(p))
+			tran->pos = 0;
+		tran->cnt = 0;
+	}
+	
 	xlen = rect->x1-rect->x0;
 	xlen  = xlen/size*2;
 	temp = strlen(p) - xlen;
@@ -201,9 +211,9 @@ void Picture_TranDispalyOnline(Picture *pic,RECT *rect,u8 *pos,u8 size,u8 mode,c
 	if(buf != NULL)
 	{
 		memset(buf,0,xlen+1);
-		memcpy(buf,p + *pos,xlen);
-		if(*pos>temp)
-			*pos = 0;
+		memcpy(buf,p + tran->pos,xlen);
+		if(tran->pos>temp+1)
+			tran->pos = 0;
 		//
 		Picture_ShowStringInRectCenter(*pic,*rect,mode,size,buf);
 		//Picture_ShowString(*pic,rect->x0,rect->y0,rect->x1-rect->x0,rect->y1 -rect->y0,size,buf,0);
@@ -232,8 +242,13 @@ void Picture_ShowStringInRectCenter(Picture pic,RECT rect,u8 mode,u8 size,char *
 	x += rect.x0;
 	x0 = x;
 	y += rect.y0;
-	
-	Picture_ShowString(pic,x,y,rect.x1-x,rect.y1-y,size,p,mode);
+	if(rect.x1-x>size/2)
+		Picture_ShowString(pic,x,y,rect.x1-x,size,size,p,mode);
+	else
+	{
+		x++;
+		return;
+	}
 //  while(*p != 0)//判断是不是非法字符!
 //  {       
 //		if(x>=rect.x1){x=x0;y+=size;}

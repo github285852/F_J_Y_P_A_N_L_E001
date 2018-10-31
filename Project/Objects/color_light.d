@@ -66,11 +66,9 @@
 .\objects\color_light.o: ..\Source\HAL\adc.h
 .\objects\color_light.o: ..\Source\HAL\uart3.h
 .\objects\color_light.o: ..\Source\HAL\stmflash.h
+.\objects\color_light.o: ..\Source\HAL\timer.h
 .\objects\color_light.o: ..\Source\Driver\malloc.h
 .\objects\color_light.o: ..\Source\HAL\ec11.h
-.\objects\color_light.o: ..\Source\HAL\tm1829.h
-.\objects\color_light.o: ..\Source\HAL\mcp4728.h
-.\objects\color_light.o: ..\Source\HAL\ucs8903.h
 .\objects\color_light.o: ..\Source\Driver\menu.h
 .\objects\color_light.o: ..\Source\Driver\key.h
 .\objects\color_light.o: ..\Source\HAL\ledpower.h
@@ -81,3 +79,4 @@
 .\objects\color_light.o: ..\Source\Driver\picture_data.h
 .\objects\color_light.o: ..\Source\APP\gui.h
 .\objects\color_light.o: ..\Source\Driver\dmxprotocol.h
+.\objects\color_light.o: ..\Source\APP\scene.h

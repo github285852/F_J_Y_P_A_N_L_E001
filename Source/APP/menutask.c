@@ -260,85 +260,135 @@ void CCTTask(void)
 		LightCCTOut(Sys.Config.cct.pos,Sys.Config.cct.grn,Sys.Config.cct.dim,0);
 		CCTDisplay();
 	}
-///////////////tm1829
-//	static  char chanle;
-//	unsigned char value;
-//	if(ec11_pos[0]|ec11_pos[1]|ec11_pos[2])
-//	{
-//		if(ec11_pos[0])
-//		{
-//			chanle += (ec11_pos[0]*1);
-//			if(chanle>11)
-//			{
-//				chanle = 0;
-//			}
-//			if(chanle<0)
-//			{
-//				chanle = 11;
-//			}
-//			ec11_pos[0] = 0;
-//		}
-//		value = tm1829_data[chanle];
-//		if(ec11_pos[2])
-//		{
-//			value += ec11_pos[2]*1;
-//			if(value>254)
-//				value = 0;
-//			if(value<0)
-//				value = 254;
-//			ec11_pos[2] = 0;
-//		}	
-//		tm1829_data[chanle] = value;
-//		tm1289_update_chanle(tm1829_data);
-//		Picture_ShowNum(MenuPic,80,10,chanle,5,24);
-//	//	Picture_ShowNum(MenuPic,80,40,cct.grn,3,24);
-//		Picture_ShowNum(MenuPic,80,70,value,3,16);
-//		LCD_Fill_Picture(0,30,MenuPic);
-//	}
-//ucc8903
-//	static  char chanle;
-//	unsigned int value;
-//	if(ec11_pos[0]|ec11_pos[1]|ec11_pos[2]|Ec11Speed[2])
-//	{
-//		if(ec11_pos[0])
-//		{
-//			chanle += (ec11_pos[0]*1);
-//			if(chanle>11)
-//			{
-//				chanle = 0;
-//			}
-//			if(chanle<0)
-//			{
-//				chanle = 11;
-//			}
-//			ec11_pos[0] = 0;
-//		}
-//		value = ucs8903_data[chanle];
-//		if(ec11_pos[2])
-//		{
-//			value += ec11_pos[2]*200;
-//			if(value>65535)
-//				value = 0;
-//			if(value<0)
-//				value = 65535;
-//			ec11_pos[2] = 0;
-//		}	
-//		if(Ec11Speed[2])
-//		{
-//			value += ec11_pos[2]*200;
-//			if(value>65535)
-//				value = 0;
-//			Ec11Speed[2] = 0;
-//		}	
-//		ucs8903_data[chanle] = value;
-//		ucs8903_update_chanle(ucs8903_data);
-//		Picture_ShowNum(MenuPic,80,10,chanle,5,24);
-//	//	Picture_ShowNum(MenuPic,80,40,cct.grn,3,24);
-//		Picture_ShowNum(MenuPic,80,70,value,5,16);
-//		LCD_Fill_Picture(0,30,MenuPic);
-//	}
 }
 
+//////////////////////////////////////////////////////GEL
+
+void GELDisplay(void)
+{
+	int i;
+	char buf[50];
+	Picture_Fill(MenuPic,MENU_BACK_COLOR);
+	BACK_COLOR = OPTION_COLOR;
+	POINT_COLOR = BLACK;
+	RECT rect[3]={
+	{0,0,MENU_W,20},
+	{0,24,MENU_W,76},
+	{0,80,MENU_W,100},
+	};
+	
+	for(i=0;i<3;i++)
+		Picture_FillRect(MenuPic,rect[i],OPTION_COLOR);
+	if(Sys.Config.english)
+	{
+		if(Sys.Config.gel.source)
+		{
+			Picture_ShowStringInRectCenter(MenuPic,rect[0],0,16,"SOURCE:DAY LIGHT");
+		}
+		else
+		{
+			Picture_ShowStringInRectCenter(MenuPic,rect[0],0,16,"SOURCE:TUNGSTEN");
+		}
+		sprintf(buf,"GEL:%s",GEL_TAB[Sys.Config.gel.number].NAME[0]);
+		Picture_ShowString(MenuPic,rect[1].x0+16,rect[1].y0+1,MENU_W,16,16,buf,0);
+		Pictrue_printf(&MenuPic,rect[1].x0+1,rect[1].y0+17,16,GEL_TAB[Sys.Config.gel.number].NAME[1]);
+		sprintf(buf,"DIM:%0.1f%%",Sys.Config.gel.dim*100);
+		Picture_ShowStringInRectCenter(MenuPic,rect[2],0,16,buf);
+	}
+	else
+	{
+		if(Sys.Config.gel.source)
+		{
+			Picture_ShowStringInRectCenter(MenuPic,rect[0],0,16,"光源:日光灯");
+		}
+		else
+		{
+			Picture_ShowStringInRectCenter(MenuPic,rect[0],0,16,"光源:钨丝灯");
+		}
+		sprintf(buf,"GEL:%s",GEL_TAB[Sys.Config.gel.number].NAME[0]);
+		Picture_ShowString(MenuPic,rect[1].x0+16,rect[1].y0+1,MENU_W,16,16,buf,0);
+		Pictrue_printf(&MenuPic,rect[1].x0+1,rect[1].y0+17,16,GEL_TAB[Sys.Config.gel.number].NAME[1]);
+		sprintf(buf,"亮度:%0.1f%%",Sys.Config.gel.dim*100);
+		Picture_ShowStringInRectCenter(MenuPic,rect[2],0,16,buf);
+	}
+	LCD_Fill_Picture(MENU_POS_X,MENU_POS_Y,MenuPic);
+}
+
+void GELInitTask(void)
+{
+	if(Sys.Config.english)
+		HeadDisplay("GEL MODE");
+	else
+		HeadDisplay("GEL模式");
+	LightGELOut(&Sys.Config.gel,0);
+	GELDisplay();
+	Sys.Config.lightmode = GEL_M;
+}
+
+void GELTask(void)
+{
+	int temp;
+	if(ec11_pos[0]|ec11_pos[1]|ec11_pos[2])
+	{
+		if(ec11_pos[0])//dim
+		{
+			if(EC11_speed>25)
+			{
+				EC11_speed_cnt++;
+			//	if(EC11_speed_cnt>2)
+				{
+					EC11_speed_cnt = 0;
+					Sys.Config.gel.dim -= ec11_pos[0]*0.0005*EC11_speed;
+				}
+			}
+			else
+			{
+				EC11_speed_cnt = 0;
+				Sys.Config.gel.dim -= ec11_pos[0]*0.001;
+			}
+			if(Sys.Config.gel.dim>1)
+			{
+				Sys.Config.gel.dim = 1;
+			}
+			else if(Sys.Config.gel.dim<0)
+			{
+				Sys.Config.gel.dim = 0;
+			}
+			ec11_pos[0] = 0;	
+		}			
+		if(ec11_pos[1])
+		{
+			if(Sys.Config.gel.source)
+			{
+				Sys.Config.gel.source = 0;
+			}
+			else
+			{
+				Sys.Config.gel.source = 1;
+			}
+			ec11_pos[1] = 0;
+		}	
+		if(ec11_pos[2])
+		{			
+			temp = Sys.Config.gel.number+0;
+			temp -= (int)ec11_pos[2]*1;
+			if(temp > (Sys.max_gel_number-1))
+			{
+				temp = Sys.max_gel_number-1;
+			}
+			else if(temp<0)
+			{
+				temp = 0;
+			}
+			Sys.Config.gel.number  = (unsigned char)temp;
+			ec11_pos[2] = 0;
+		}	
+		LightGELOut(&Sys.Config.gel,0);
+		GELDisplay();
+	}
+}
+
+////////////////////////////////////////////////////////RGB
 void RGBDisplay(void)
 {
 	int i,offset;
@@ -376,7 +426,7 @@ void RGBInitTask(void)
 	else
 		HeadDisplay("RGB模式");
 	while(DMAING);
-	LightRGBOut(Sys.Config.rgb.r,Sys.Config.rgb.g,Sys.Config.rgb.b,0xff);
+	LightRGBOut(Sys.Config.rgb.r,Sys.Config.rgb.g,Sys.Config.rgb.b,0);
 	RGBDisplay();
 	Sys.Config.lightmode = RGB_M;
 }
@@ -469,7 +519,7 @@ void Scene1TaskInit(void)
 	else
 		HeadDisplay("场景一");
 	ClearMenu(OPTION_COLOR);
-	Sys.Config.scene = 0x01;
+	Sys.Config.scene.num = 0x01;
 	BACK_COLOR = OPTION_COLOR;
 	POINT_COLOR = BLACK;
 	Pictrue_printf(&MenuPic,16,0,16,(char *)"Scene 1 select!");
@@ -502,7 +552,7 @@ void Scene2TaskInit(void)
 	else
 		HeadDisplay("场景二");
 	ClearMenu(OPTION_COLOR);
-	Sys.Config.scene = 0x02;
+	Sys.Config.scene.num = 0x02;
 	BACK_COLOR = OPTION_COLOR;
 	POINT_COLOR = BLACK;
 	Pictrue_printf(&MenuPic,16,0,16,(char *)"Scene 2 select!");
@@ -516,7 +566,7 @@ void Scene3TaskInit(void)
 	else
 		HeadDisplay("场景三");
 	ClearMenu(OPTION_COLOR);
-	Sys.Config.scene = 0x03;
+	Sys.Config.scene.num = 0x03;
 	BACK_COLOR = OPTION_COLOR;
 	POINT_COLOR = BLACK;
 	Pictrue_printf(&MenuPic,16,0,16,(char *)"Scene 3 select!");
@@ -559,7 +609,7 @@ void ImportSceneTaskInit(void)
 		HeadDisplay("INPORT SCENE");
 	else
 		HeadDisplay("导入场景");
-	Sys.Config.scene = 0xff;
+	Sys.Config.scene.num = 0xff;
 	ClearMenu(OPTION_COLOR);
 	BACK_COLOR = OPTION_COLOR;
 	POINT_COLOR = BLACK;
@@ -741,9 +791,10 @@ void DMX_ModeTaskInit(void)
 
 void DMX_ModeDisplay(char *str1,char *str2,u8 ch)
 {
+	
 	int i,offset;
 	char buf[50];
-	static u8 x_pos = 0,speed=0;
+	static TRANDISPLAY tran;
 	offset = (RECT_H-16)/2;;
 	Picture_Fill(MenuPic,MENU_BACK_COLOR);
 	for(i=0;i<3;i++)
@@ -752,15 +803,8 @@ void DMX_ModeDisplay(char *str1,char *str2,u8 ch)
 	POINT_COLOR = BLACK;
 	sprintf(buf,"%s",str1);
 //	Picture_ShowStringInRectCenter(MenuPic,Rect[0],1,16,buf);
-	speed++;
-	if(speed>30)
-	{
-		x_pos++;
-		if(x_pos>=strlen(buf))
-			x_pos= 0;
-		speed = 0;
-	}
-	Picture_TranDispalyOnline(&MenuPic,&Rect[0],&x_pos,16,1,buf);
+	tran.move_t = 30;
+	Picture_TranDispalyOnline(&MenuPic,&Rect[0],&tran,16,1,buf);
 	//Picture_ShowString(MenuPic,Rect[0].x0,Rect[0].y0+offset,100,16,16,buf,0);
 	sprintf(buf,"%s",str2);
 	Picture_ShowStringInRectCenter(MenuPic,Rect[1],1,16,buf);

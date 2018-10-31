@@ -72,7 +72,7 @@ extern  USBH_Usr_cb_TypeDef USR_cb;
 #define USH_USR_FS_IDLE       	0
 #define USH_USR_FS_INIT       	1
 #define USH_USR_FS_UPDATE  			2
-#define USH_USR_FS_INPORT_SENCE 3
+#define USH_USR_FS_IMPORT_SCENE 3
 
 #define UPDATE_DETECT_FILE	1
 #define UPDATE_NO_DETECT_FILE 2
@@ -121,6 +121,10 @@ void USBH_USR_DeviceNotSupported(void);
 void USBH_USR_UnrecoveredError(void);
 int USBH_USR_MSC_Application(void);
 
+
+
+extern FIL file;
+extern FATFS fatfs;
 /**
   * @}
   */ 

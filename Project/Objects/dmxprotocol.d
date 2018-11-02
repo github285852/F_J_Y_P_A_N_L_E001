@@ -65,6 +65,7 @@
 .\objects\dmxprotocol.o: ..\Source\HAL\uart3.h
 .\objects\dmxprotocol.o: ..\Source\HAL\stmflash.h
 .\objects\dmxprotocol.o: ..\Source\HAL\timer.h
+.\objects\dmxprotocol.o: ..\Source\HAL\wdg.h
 .\objects\dmxprotocol.o: ..\Source\Driver\malloc.h
 .\objects\dmxprotocol.o: ..\Source\HAL\ec11.h
 .\objects\dmxprotocol.o: ..\Source\Driver\menu.h

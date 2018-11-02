@@ -27,7 +27,7 @@
 #include "uart3.h"
 #include "stmflash.h"
 #include "timer.h"
-
+#include "wdg.h"
 
 #include "malloc.h"
 #include "ec11.h"
@@ -47,9 +47,13 @@
 #include "scene.h"
 
 
-#define DEBUG			1
+#define DEBUG			0
 #define LED_NUMS	5
 #define LED_PIXELS	2
+#define VERSION	"V0.1.12"
+#define DXM_PRO	"V1.0"
+#define PrimaryColours "R,G,B,WW,CW"
+
 
 #define SCENE_MAX_CMDS	20 
 

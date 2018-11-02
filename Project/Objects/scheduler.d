@@ -65,6 +65,7 @@
 .\objects\scheduler.o: ..\Source\HAL\uart3.h
 .\objects\scheduler.o: ..\Source\HAL\stmflash.h
 .\objects\scheduler.o: ..\Source\HAL\timer.h
+.\objects\scheduler.o: ..\Source\HAL\wdg.h
 .\objects\scheduler.o: ..\Source\Driver\malloc.h
 .\objects\scheduler.o: ..\Source\HAL\ec11.h
 .\objects\scheduler.o: ..\Source\Driver\menu.h

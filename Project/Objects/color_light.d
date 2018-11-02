@@ -67,6 +67,7 @@
 .\objects\color_light.o: ..\Source\HAL\uart3.h
 .\objects\color_light.o: ..\Source\HAL\stmflash.h
 .\objects\color_light.o: ..\Source\HAL\timer.h
+.\objects\color_light.o: ..\Source\HAL\wdg.h
 .\objects\color_light.o: ..\Source\Driver\malloc.h
 .\objects\color_light.o: ..\Source\HAL\ec11.h
 .\objects\color_light.o: ..\Source\Driver\menu.h

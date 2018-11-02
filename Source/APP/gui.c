@@ -27,8 +27,8 @@ void GUI_DisplayInit(void)
 			switch(Sys.Config.scene.num)
 			{
 				case 1:SceneFlashInit();break;
-				case 2:Scene2TaskInit();break;
-				case 3:Scene3TaskInit();break;
+				case 2:SceneFlashInit();break;
+				case 3:SceneFlashInit();break;
 				case 4:ImportInit();break;
 				default:break;
 				
@@ -60,7 +60,7 @@ void GUI_DisplayTask(void)
 			{
 				switch(Sys.Config.scene.num)
 				{
-					case 1:Scene1Task();break;
+					case 1:SceneFlashInit();break;
 					//case 2:Scene2Task();break;
 					//case 3:Scene3Task();break;
 					case 4:ImportTask();break;

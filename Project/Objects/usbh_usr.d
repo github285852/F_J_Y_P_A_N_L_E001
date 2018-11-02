@@ -65,6 +65,7 @@
 .\objects\usbh_usr.o: ..\Source\HAL\uart3.h
 .\objects\usbh_usr.o: ..\Source\HAL\stmflash.h
 .\objects\usbh_usr.o: ..\Source\HAL\timer.h
+.\objects\usbh_usr.o: ..\Source\HAL\wdg.h
 .\objects\usbh_usr.o: ..\Source\Driver\malloc.h
 .\objects\usbh_usr.o: ..\Source\HAL\ec11.h
 .\objects\usbh_usr.o: ..\Source\Driver\menu.h

@@ -11,24 +11,38 @@
 #define BX	0.1
 #define BY	0.1
 
+////LED发出光的色坐标
+//#define LEDWWX_DEFAULT	0.4475       //0.4438
+//#define LEDWWY_DEFAULT	0.4988       //3958
+//#define LEDCWX_DEFAULT	0.3100      //0.3069
+//#define LEDCWY_DEFAULT	0.3100      //0.3044
+//#define LEDWX_DEFAULT	  0.3278
+//#define LEDWY_DEFAULT		0.3332
+//#define LEDRX_DEFAULT		0.6881
+//#define LEDRY_DEFAULT		0.3115
+//#define LEDGX_DEFAULT		0.1915
+//#define LEDGY_DEFAULT		0.7328
+
+//#define LEDBX_DEFAULT		0.1450 //
+//#define LEDBY_DEFAULT		0.0359
+//#define LEDYX_DEFAULT		0.5722//Y //0.00783	//。
+//#define LEDYY_DEFAULT		0.4248//Y0.4733	// .
+
 //LED发出光的色坐标
-#define LEDWWX_DEFAULT	0.4475       //0.4438
-#define LEDWWY_DEFAULT	0.4988       //3958
-#define LEDCWX_DEFAULT	0.3100      //0.3069
-#define LEDCWY_DEFAULT	0.3100      //0.3044
-#define LEDWX_DEFAULT	  0.3278
+#define LEDWWX_DEFAULT	0.4546       //0.4438
+#define LEDWWY_DEFAULT	0.4078       //3958
+#define LEDCWX_DEFAULT	0.3263      //0.3069
+#define LEDCWY_DEFAULT	0.3297      //0.3044
+#define LEDWX_DEFAULT		0.3278
 #define LEDWY_DEFAULT		0.3332
 #define LEDRX_DEFAULT		0.6881
 #define LEDRY_DEFAULT		0.3115
-#define LEDGX_DEFAULT		0.1915
-#define LEDGY_DEFAULT		0.7328
-
-#define LEDBX_DEFAULT		0.1450 //
-#define LEDBY_DEFAULT		0.0359
+#define LEDGX_DEFAULT		0.1815
+#define LEDGY_DEFAULT		0.7112
+#define LEDBX_DEFAULT		0.1412 //
+#define LEDBY_DEFAULT		0.0250
 #define LEDYX_DEFAULT		0.5722//Y //0.00783	//。
 #define LEDYY_DEFAULT		0.4248//Y0.4733	// .
-
-
 
 
 #define MAX(a,b)	(a>b)?a:b

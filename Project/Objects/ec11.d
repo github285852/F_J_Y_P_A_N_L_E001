@@ -65,6 +65,7 @@
 .\objects\ec11.o: ..\Source\HAL\uart3.h
 .\objects\ec11.o: ..\Source\HAL\stmflash.h
 .\objects\ec11.o: ..\Source\HAL\timer.h
+.\objects\ec11.o: ..\Source\HAL\wdg.h
 .\objects\ec11.o: ..\Source\Driver\malloc.h
 .\objects\ec11.o: ..\Source\HAL\ec11.h
 .\objects\ec11.o: ..\Source\Driver\menu.h

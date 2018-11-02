@@ -660,6 +660,11 @@
               <FileType>1</FileType>
               <FilePath>..\Source\HAL\timer.c</FilePath>
             </File>
+            <File>
+              <FileName>wdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\HAL\wdg.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

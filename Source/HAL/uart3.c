@@ -82,15 +82,8 @@ void uart3_dma_send(u8 *buf,u16 len)
 void DMX1_Send(u8 *buf,u16 len)
 {
 	int retry;
-	int i;
 	float temp;
 	u8 *p = buf+1;
-//	for(i=0;i<5;i++)
-//	{
-//		temp = p[2*i+1] |(p[2*i]<<8);
-//		temp = 900 * temp /65535.0;
-//		Debug_printf("I%d = %.2f\r\n",i,temp);
-//	}
 	while(DMA1_Channel2->CNDTR)//等待上一次传输完成
 	{
 		retry++;

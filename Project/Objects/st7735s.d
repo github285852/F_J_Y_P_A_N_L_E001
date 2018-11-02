@@ -68,6 +68,7 @@
 .\objects\st7735s.o: ..\Source\HAL\uart3.h
 .\objects\st7735s.o: ..\Source\HAL\stmflash.h
 .\objects\st7735s.o: ..\Source\HAL\timer.h
+.\objects\st7735s.o: ..\Source\HAL\wdg.h
 .\objects\st7735s.o: ..\Source\Driver\malloc.h
 .\objects\st7735s.o: ..\Source\HAL\ec11.h
 .\objects\st7735s.o: ..\Source\Driver\menu.h

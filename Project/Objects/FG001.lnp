@@ -45,6 +45,7 @@
 ".\objects\delay.o"
 ".\objects\uart3.o"
 ".\objects\timer.o"
+".\objects\wdg.o"
 ".\objects\ff.o"
 ".\objects\fattime.o"
 ".\objects\ccsbcs.o"

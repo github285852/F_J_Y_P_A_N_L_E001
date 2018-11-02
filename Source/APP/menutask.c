@@ -35,7 +35,7 @@ void HSIDisplay(void)
 		sprintf(buf,"Sat:%d%%",i);
 	else
 		sprintf(buf,"饱和度:%d%%",i);
-	Picture_ShowString(MenuPic,Rect[1].x0+STRING_OFFSET,Rect[1].y0+offset,100,16,16,buf,0);
+	Picture_ShowString(MenuPic,Rect[1].x0+STRING_OFFSET-8,Rect[1].y0+offset,100,16,16,buf,0);
 	dim = Sys.Config.hsi.i*100;
 	if(Sys.Config.english)
 		sprintf(buf,"Dim:%0.1f%%",dim);
@@ -137,6 +137,10 @@ void HSITask(void)
 		}
 		HSIDisplay();//刷新界面
 		ColorLightHSIOut(Sys.Config.hsi,0);
+	}
+	if(key_value==S10)
+	{
+		Menu_back();
 	}
 }
 
@@ -260,6 +264,10 @@ void CCTTask(void)
 		LightCCTOut(Sys.Config.cct.pos,Sys.Config.cct.grn,Sys.Config.cct.dim,0);
 		CCTDisplay();
 	}
+	if(key_value==S10)
+	{
+		Menu_back();
+	}
 }
 
 //////////////////////////////////////////////////////GEL
@@ -330,7 +338,7 @@ void GELTask(void)
 	int temp;
 	if(ec11_pos[0]|ec11_pos[1]|ec11_pos[2])
 	{
-		if(ec11_pos[0])//dim
+		if(ec11_pos[2])//dim
 		{
 			if(EC11_speed>25)
 			{
@@ -338,13 +346,13 @@ void GELTask(void)
 			//	if(EC11_speed_cnt>2)
 				{
 					EC11_speed_cnt = 0;
-					Sys.Config.gel.dim -= ec11_pos[0]*0.0005*EC11_speed;
+					Sys.Config.gel.dim -= ec11_pos[2]*0.0005*EC11_speed;
 				}
 			}
 			else
 			{
 				EC11_speed_cnt = 0;
-				Sys.Config.gel.dim -= ec11_pos[0]*0.001;
+				Sys.Config.gel.dim -= ec11_pos[2]*0.001;
 			}
 			if(Sys.Config.gel.dim>1)
 			{
@@ -354,9 +362,9 @@ void GELTask(void)
 			{
 				Sys.Config.gel.dim = 0;
 			}
-			ec11_pos[0] = 0;	
+			ec11_pos[2] = 0;	
 		}			
-		if(ec11_pos[1])
+		if(ec11_pos[0])
 		{
 			if(Sys.Config.gel.source)
 			{
@@ -366,12 +374,12 @@ void GELTask(void)
 			{
 				Sys.Config.gel.source = 1;
 			}
-			ec11_pos[1] = 0;
+			ec11_pos[0] = 0;
 		}	
-		if(ec11_pos[2])
+		if(ec11_pos[1])
 		{			
 			temp = Sys.Config.gel.number+0;
-			temp -= (int)ec11_pos[2]*1;
+			temp -= (int)ec11_pos[1]*1;
 			if(temp > (Sys.max_gel_number-1))
 			{
 				temp = Sys.max_gel_number-1;
@@ -381,10 +389,14 @@ void GELTask(void)
 				temp = 0;
 			}
 			Sys.Config.gel.number  = (unsigned char)temp;
-			ec11_pos[2] = 0;
+			ec11_pos[1] = 0;
 		}	
 		LightGELOut(&Sys.Config.gel,0);
 		GELDisplay();
+	}
+	if(key_value==S10)
+	{
+		Menu_back();
 	}
 }
 
@@ -499,8 +511,11 @@ void RGBTask(void)
 		LightRGBOut(Sys.Config.rgb.r,Sys.Config.rgb.g,Sys.Config.rgb.b,0xff);
 		RGBDisplay();
 	}
+	if(key_value==S10)
+	{
+		Menu_back();
+	}
 }
-
 
 void ClearMenu(u16 color)
 {
@@ -512,66 +527,7 @@ void FreshMenu(void)
 	LCD_Fill_Picture(MENU_POS_X,MENU_POS_Y,MenuPic);
 }
 
-void Scene1TaskInit(void)
-{
-	if(Sys.Config.english)
-		HeadDisplay("SCENE 1");
-	else
-		HeadDisplay("场景一");
-	ClearMenu(OPTION_COLOR);
-	Sys.Config.scene.num = 0x01;
-	BACK_COLOR = OPTION_COLOR;
-	POINT_COLOR = BLACK;
-	Pictrue_printf(&MenuPic,16,0,16,(char *)"Scene 1 select!");
-	FreshMenu();
-	Sys.Config.lightmode = SCENE_M;
-}
 
-void Scene1Task(void)
-{
-	
-	static int t,i;
-	t++;
-	if(t<10)
-		return;
-	else
-	{
-		t = 0;
-	}
-	AllLedPowerOff();
-	ColorLightHSIOut(Sys.Config.hsi,i);
-	i++;
-	if(i>=4)
-		i=0;
-}
-
-void Scene2TaskInit(void)
-{
-	if(Sys.Config.english)
-		HeadDisplay("SCENE 2");
-	else
-		HeadDisplay("场景二");
-	ClearMenu(OPTION_COLOR);
-	Sys.Config.scene.num = 0x02;
-	BACK_COLOR = OPTION_COLOR;
-	POINT_COLOR = BLACK;
-	Pictrue_printf(&MenuPic,16,0,16,(char *)"Scene 2 select!");
-	FreshMenu();
-}
-
-void Scene3TaskInit(void)
-{
-	if(Sys.Config.english)
-		HeadDisplay("SCENE 3");
-	else
-		HeadDisplay("场景三");
-	ClearMenu(OPTION_COLOR);
-	Sys.Config.scene.num = 0x03;
-	BACK_COLOR = OPTION_COLOR;
-	POINT_COLOR = BLACK;
-	Pictrue_printf(&MenuPic,16,0,16,(char *)"Scene 3 select!");
-	FreshMenu();
-}
 
 void InfoTaskInit(void)
 {
@@ -579,6 +535,26 @@ void InfoTaskInit(void)
 		HeadDisplay("INFO");
 	else
 		HeadDisplay("设备信息");
+}	
+
+
+void InfoTask(void)
+{
+	ClearMenu(OPTION_COLOR);
+	BACK_COLOR = OPTION_COLOR;
+	POINT_COLOR = BLACK;
+	Pictrue_printf(&MenuPic,0,0,16,(char *)"Version:%s",VERSION);
+	Pictrue_printf(&MenuPic,0,16,16,(char *)"DMX protocol:%s",DXM_PRO);
+	Pictrue_printf(&MenuPic,0,32,16,(char *)"Primary colours:%s",PrimaryColours);
+	FreshMenu();
+}	
+
+void MonitorInit(void)
+{
+	if(Sys.Config.english)
+		HeadDisplay("MONITOR");
+	else
+		HeadDisplay("监控");
 	ClearMenu(OPTION_COLOR);
 	BACK_COLOR = OPTION_COLOR;
 	POINT_COLOR = BLACK;
@@ -586,7 +562,9 @@ void InfoTaskInit(void)
 	FreshMenu();
 }	
 
-void InfoTask(void)
+
+
+void MonitorTask(void)
 {
 	static int i;
 	i++;
@@ -602,55 +580,30 @@ void InfoTask(void)
 	FreshMenu();
 }		
 
-
-void ImportSceneTaskInit(void)
+void DefaultInit(void)
 {
 	if(Sys.Config.english)
-		HeadDisplay("INPORT SCENE");
+		HeadDisplay("DEFAULT");
 	else
-		HeadDisplay("导入场景");
-	Sys.Config.scene.num = 0xff;
+		HeadDisplay("出厂设置");
+	ClearMenu(OPTION_COLOR);
+	FreshMenu();
+}	
+
+void DefaultTask(void)
+{
 	ClearMenu(OPTION_COLOR);
 	BACK_COLOR = OPTION_COLOR;
 	POINT_COLOR = BLACK;
-	/*
-	//检测 USB
-	*/
-	if(1)
+	Pictrue_printf(&MenuPic,16,0,16,(char *)"Are you sure to restore default parameters?");
+	if(key_value == S10)
 	{
-		/*
-		检测场景文件
-		*/
-		if(1)
-		{
-			Pictrue_printf(&MenuPic,16,0,16,"Importing Scene.....");
-			FreshMenu();
-			/*
-			读入配置
-			*/
-			delay_ms(500);
-			ClearMenu(OPTION_COLOR);
-			Pictrue_printf(&MenuPic,16,0,16,"Import Scene OK!");
-			FreshMenu();
-		}
-		else
-		{
-			Pictrue_printf(&MenuPic,16,0,16,"Don't detect scene file!");
-			FreshMenu();
-		}
-
+		Sys.Config = default_data;
 	}
-	else
-	{
-		Pictrue_printf(&MenuPic,16,0,16,"Don't detect disk!");
-		FreshMenu();
-	}
+	point_out();
+	FreshMenu();
 }
-void ImportSceneTask(void)
-{
 
-
-}
 u8 Art_net_en=0;
 void DMXINTaskInit(void)
 {
@@ -689,7 +642,7 @@ void AutoDetectINInit(void)
 	*/
 	BACK_COLOR = OPTION_COLOR;
 	POINT_COLOR = BLACK;
-	if(1)
+	if(0)
 	{
 		Art_net_en = 1;
 		if(Sys.Config.english)
@@ -749,6 +702,10 @@ void Art_NetINTask(void)
 			Pictrue_printf(&MenuPic,offset,0,16,"  没有检测到RJ45连接，默认使用DMX。");
 	}
 	FreshMenu();
+  if(key_value==S10)
+	{
+		Menu_back();
+	}
 }
 
 void Save_Interface(void)
@@ -757,27 +714,6 @@ void Save_Interface(void)
 	SaveConfig();
 }
 
-void DMX_8_BitsTaskInit(void)
-{
-  HeadDisplay("DMX 8Bits");
-	ClearMenu(OPTION_COLOR);
-	BACK_COLOR = OPTION_COLOR;
-	POINT_COLOR = BLACK;
-	Sys.Config.dmx._16bits = 0;
-	Pictrue_printf(&MenuPic,16,0,16,"Set DMX Bits to 8 bits!");
-	FreshMenu();
-}
-
-void DMX_16_BitsTaskInit(void)
-{
-	HeadDisplay("DMX 16Bits");
-	ClearMenu(OPTION_COLOR);
-	BACK_COLOR = OPTION_COLOR;
-	POINT_COLOR = BLACK;
-	Sys.Config.dmx._16bits = 1;
-	Pictrue_printf(&MenuPic,16,0,16,"Set DMX Bits to 16 bits!");
-	FreshMenu();
-}
 u8 temp_dmx_mode;
 void DMX_ModeTaskInit(void)
 {
@@ -832,12 +768,7 @@ void DMX_ModeTask(void)
 		}
 		ec11_pos[2] = 0;
 	}
-	if(key_value==S10)
-	{
-		SaveConfig();
-		Sys.Config.dmx.mode = temp_dmx_mode;
-	}
-	
+
 	Picture_Fill(MenuPic,MENU_BACK_COLOR);
 	if(Sys.Config.english)
 		switch(temp_dmx_mode)
@@ -879,8 +810,15 @@ void DMX_ModeTask(void)
 			case DMX_M15:DMX_ModeDisplay("M15:HSI","粗调/细调",sizeof(HSI_CF));break;
 			default:break;
 		}
+	if(key_value==S10)
+	{
+		Sys.Config.dmx.mode = temp_dmx_mode;
+	//	SaveConfig();
+		Menu_back();
+	}	
 }
 
+u8 dmx_addr; 
 void DMX_AdressDisplay(u8 ch)
 {
 	int i,offset;
@@ -893,16 +831,16 @@ void DMX_AdressDisplay(u8 ch)
 	POINT_COLOR = BLACK;
 	if(Sys.Config.english)
 	{
-		sprintf(buf,"ADDR:%d",Sys.Config.dmx.addr);
+		sprintf(buf,"ADDR:%d",dmx_addr);
 		Picture_ShowString(MenuPic,Rect[0].x0+STRING_OFFSET,Rect[0].y0+offset,100,16,16,buf,0);
-		sprintf(buf,"CH:%d-%d",Sys.Config.dmx.addr,Sys.Config.dmx.addr+ch-1);
+		sprintf(buf,"CH:%d-%d",dmx_addr,dmx_addr+ch-1);
 		Picture_ShowString(MenuPic,Rect[1].x0+STRING_OFFSET,Rect[1].y0+offset,100,16,16,buf,0);
 	}
 	else
 	{
-		sprintf(buf,"地址:%d",Sys.Config.dmx.addr);
+		sprintf(buf,"地址:%d",dmx_addr);
 		Picture_ShowString(MenuPic,Rect[0].x0+STRING_OFFSET,Rect[0].y0+offset,100,16,16,buf,0);
-		sprintf(buf,"通道:%d-%d",Sys.Config.dmx.addr,Sys.Config.dmx.addr+ch-1);
+		sprintf(buf,"通道:%d-%d",dmx_addr,dmx_addr+ch-1);
 		Picture_ShowStringInRectCenter(MenuPic,Rect[1],1,16,(char *)buf);
 		//Picture_ShowString(MenuPic,Rect[1].x0+STRING_OFFSET,Rect[1].y0+offset,100,16,16,buf,0);
 	}
@@ -912,44 +850,83 @@ void DMX_AdressDisplay(u8 ch)
 void DMX_AdressTaskInit(void)
 {
 	unsigned char ch;
-	if(Sys.Config.dmx._16bits == 0)
-		ch = 5;
-	else 
-		ch = 9;
+		switch(Sys.Config.dmx.mode)
+		{
+			case DMX_M1:ch = sizeof(CCT_RGBWWCW_8BIT);break;
+			case DMX_M2:ch = sizeof(CCT_8BIT);break;		
+			case DMX_M3:ch = sizeof(CCT_HSI_8BIT);break;
+			case DMX_M4:ch = sizeof(RGBWWCW_8BIT);break;
+			case DMX_M5:ch = sizeof(HSI_8BIT);break;
+			case DMX_M6:ch = sizeof(CCT_RGBWWCW_16BIT);break;
+			case DMX_M7:ch = sizeof(CCT_16BIT);break;
+			case DMX_M8:ch = sizeof(CCT_HSI_16BIT);break;
+			case DMX_M9:ch = sizeof(RGBWWCW_16BIT);break;
+			case DMX_M10:ch = sizeof(HSI_16BIT);break;		
+			case DMX_M11:ch = sizeof(CCT_RGBWWCW_CF);break;
+			case DMX_M12:ch = sizeof(CCT_CF);break;
+			case DMX_M13:ch = sizeof(CCT_HSI_CF);break;
+			case DMX_M14:ch = sizeof(RGBWWCW_CF);break;
+			case DMX_M15:ch = sizeof(HSI_CF);break;
+			default:break;
+		}
 	if(Sys.Config.english)
 		HeadDisplay("SET DMX ADDR");
 	else
 		HeadDisplay("设置DMX地址");
 	while(DMAING);
+	dmx_addr = Sys.Config.dmx.addr;
 	DMX_AdressDisplay(ch);
+	
 }
 
 void DMX_AdressTask(void)
 {
 	unsigned char ch;
-	if(Sys.Config.dmx._16bits == 0)
-		ch = 5;
-	else 
-		ch = 9;
+		switch(Sys.Config.dmx.mode)
+		{
+			case DMX_M1:ch = sizeof(CCT_RGBWWCW_8BIT);break;
+			case DMX_M2:ch = sizeof(CCT_8BIT);break;		
+			case DMX_M3:ch = sizeof(CCT_HSI_8BIT);break;
+			case DMX_M4:ch = sizeof(RGBWWCW_8BIT);break;
+			case DMX_M5:ch = sizeof(HSI_8BIT);break;
+			case DMX_M6:ch = sizeof(CCT_RGBWWCW_16BIT);break;
+			case DMX_M7:ch = sizeof(CCT_16BIT);break;
+			case DMX_M8:ch = sizeof(CCT_HSI_16BIT);break;
+			case DMX_M9:ch = sizeof(RGBWWCW_16BIT);break;
+			case DMX_M10:ch = sizeof(HSI_16BIT);break;		
+			case DMX_M11:ch = sizeof(CCT_RGBWWCW_CF);break;
+			case DMX_M12:ch = sizeof(CCT_CF);break;
+			case DMX_M13:ch = sizeof(CCT_HSI_CF);break;
+			case DMX_M14:ch = sizeof(RGBWWCW_CF);break;
+			case DMX_M15:ch = sizeof(HSI_CF);break;
+			default:break;
+		}
 	if(ec11_pos[2])
 	{
 		if(EC11_speed>40)
 		{
-			Sys.Config.dmx.addr -= (ec11_pos[2]*0.05*EC11_speed);
+			dmx_addr -= (ec11_pos[2]*0.05*EC11_speed);
 		}
 		else
 		{
-				Sys.Config.dmx.addr -= (ec11_pos[2]*1);
+			dmx_addr -= (ec11_pos[2]*1);
 		}
 
-		if( Sys.Config.dmx.addr == 0xFF)
-			Sys.Config.dmx.addr = 256-ch;
-		else if(Sys.Config.dmx.addr>256-ch)
-			Sys.Config.dmx.addr = 0;
+		if(dmx_addr == 0xFF)
+			dmx_addr = 256-ch;
+		else if(dmx_addr>256-ch)
+			dmx_addr = 0;
 		DMX_AdressDisplay(ch);	
 		ec11_pos[2] = 0;
 	}	
+	if(key_value==S10)
+	{
+		Sys.Config.dmx.addr = dmx_addr;
+		//SaveConfig();
+		Menu_back();
+	}	
 }
+
 FAN fan;
 void FAN_AUTO_TaskInit(void)
 {
@@ -965,7 +942,7 @@ void FAN_AUTO_TaskInit(void)
 		Pictrue_printf(&MenuPic,16,0,16,"Set FAN AUTO");
 	else
 		Pictrue_printf(&MenuPic,16,0,16,"风扇自动调节");
-	point_out();
+	//point_out();
 	FreshMenu();
 }
 
@@ -983,7 +960,7 @@ void FAN_OFF_TaskInit(void)
 		Pictrue_printf(&MenuPic,16,0,16,"FAN OFF");
 	else
 		Pictrue_printf(&MenuPic,16,0,16,"关闭风扇");
-	point_out();
+	//point_out();
 	FreshMenu();
 }
 
@@ -1001,8 +978,13 @@ void FAN_DMX_TaskInit(void)
 		Pictrue_printf(&MenuPic,16,0,16,"FAN is control by DMX.");
 	else
 		Pictrue_printf(&MenuPic,16,0,16,"风扇通过DMX控制。");
-	point_out();
+//	point_out();
 	FreshMenu();
+	
+	if(key_value==S10)
+	{
+		Menu_back();
+	}	
 }
 
 void SaveFanConfig(void)
@@ -1054,6 +1036,10 @@ void LCD_DIM_Task(void)
 		}
 		LCD_DIM_display();
 		ec11_pos[2] = 0;
+	}	
+	if(key_value==S10)
+	{
+		Menu_back();
 	}	
 }
 
@@ -1117,6 +1103,10 @@ void LCD_TIM_Task(void)
 		LCD_TIM_display();
 		ec11_pos[2] = 0;
 	}	
+	if(key_value==S10)
+	{
+		Menu_back();
+	}	
 }
 
 void LCD_RotateTaskInit(void)
@@ -1174,7 +1164,7 @@ void firmware_update(void)
 		}
 		else
 		{
-			Pictrue_printf(&MenuPic,offset,0,16,"  1.按确认键之后更新。\n  2.更新完毕后自动重启。");
+			Pictrue_printf(&MenuPic,offset,0,16,"  1.按确认键之后更新。\n  2.更新完成后自动重启。");
 		}
 	}
 	else if(!HCD_IsDeviceConnected(&USB_OTG_Core))
@@ -1212,6 +1202,10 @@ void firmware_update(void)
 	}
 	Sys.usb.USBH_USR_ApplicationState = USH_USR_FS_UPDATE;
 	FreshMenu();
+	if(key_value==S10)
+	{
+		Menu_back();
+	}	
 }
 
 void firmware_update_init(void)

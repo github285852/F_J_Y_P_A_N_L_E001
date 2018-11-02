@@ -35,6 +35,7 @@ extern MenuState menu_state;
 extern u16 MENU_BUF[MENU_W*MENU_H];
 //extern u16 *MENU_BUF;
 
+void Menu_back(void);
 #endif
 
 

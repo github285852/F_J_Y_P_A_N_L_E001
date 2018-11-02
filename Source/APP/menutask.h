@@ -49,6 +49,13 @@ void LCD_RotateTask(void);
 void InfoTask(void);
 void InfoTaskInit(void);
 
+void MonitorInit(void);
+void MonitorTask(void);
+
+void DefaultInit(void);
+void DefaultTask(void);
+
+
 void EnglishTaskInit(void);
 void ChineseTaskInit(void);
 void ChineseTask(void);

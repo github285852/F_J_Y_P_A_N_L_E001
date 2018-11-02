@@ -65,6 +65,7 @@
 .\objects\dmx512.o: ..\Source\HAL\uart3.h
 .\objects\dmx512.o: ..\Source\HAL\stmflash.h
 .\objects\dmx512.o: ..\Source\HAL\timer.h
+.\objects\dmx512.o: ..\Source\HAL\wdg.h
 .\objects\dmx512.o: ..\Source\Driver\malloc.h
 .\objects\dmx512.o: ..\Source\HAL\ec11.h
 .\objects\dmx512.o: ..\Source\Driver\menu.h

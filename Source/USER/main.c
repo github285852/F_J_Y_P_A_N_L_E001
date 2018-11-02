@@ -108,7 +108,6 @@ int main(void)
 	ADC1Init();
 	dmx512_init();
 	uart3_init(250000);
-	ec11_init();
 	Lcd_Init();
   color_light_init();
 	LCD_Clear(BLACK);
@@ -122,6 +121,7 @@ int main(void)
 	Menu_init();
 	param_init();
 	AllLedPowerOff();
+	FAN_OUT(800);
 	delay_ms(1000);
   /* Init Host Library */
   USBH_Init(&USB_OTG_Core, 
@@ -140,6 +140,8 @@ int main(void)
 	while(DMAING);
 	MenuBuf_free();
 	timer4_init(100,71);//LCD背光PWM
+	ec11_init();//放在后面，不然会死机
+	//IWDG_Init(4,625);    //与分频数为64,重载值为625,溢出时间为1s	
   while(1)
   {		
 		Duty_Loop();

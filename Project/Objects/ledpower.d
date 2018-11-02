@@ -67,6 +67,7 @@
 .\objects\ledpower.o: ..\Source\HAL\uart3.h
 .\objects\ledpower.o: ..\Source\HAL\stmflash.h
 .\objects\ledpower.o: ..\Source\HAL\timer.h
+.\objects\ledpower.o: ..\Source\HAL\wdg.h
 .\objects\ledpower.o: ..\Source\Driver\malloc.h
 .\objects\ledpower.o: ..\Source\HAL\ec11.h
 .\objects\ledpower.o: ..\Source\Driver\menu.h

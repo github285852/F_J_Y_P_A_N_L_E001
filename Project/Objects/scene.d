@@ -65,6 +65,7 @@
 .\objects\scene.o: ..\Source\HAL\uart3.h
 .\objects\scene.o: ..\Source\HAL\stmflash.h
 .\objects\scene.o: ..\Source\HAL\timer.h
+.\objects\scene.o: ..\Source\HAL\wdg.h
 .\objects\scene.o: ..\Source\Driver\malloc.h
 .\objects\scene.o: ..\Source\HAL\ec11.h
 .\objects\scene.o: ..\Source\Driver\menu.h

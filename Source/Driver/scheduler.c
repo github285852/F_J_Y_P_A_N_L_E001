@@ -39,6 +39,7 @@ void Duty_1ms(void)
   duty_time[0][1] = GetSysTime_us()/1000000.0f - duty_time[0][0];
   /* Host Task handler */                             
 	USBH_Process(&USB_OTG_Core, &USB_Host);
+	IWDG_Feed();
 	duty_time[0][0] = GetSysTime_us()/1000000.0f;
 }
 

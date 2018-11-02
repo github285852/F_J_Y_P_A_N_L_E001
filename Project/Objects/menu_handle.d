@@ -65,6 +65,7 @@
 .\objects\menu_handle.o: ..\Source\HAL\uart3.h
 .\objects\menu_handle.o: ..\Source\HAL\stmflash.h
 .\objects\menu_handle.o: ..\Source\HAL\timer.h
+.\objects\menu_handle.o: ..\Source\HAL\wdg.h
 .\objects\menu_handle.o: ..\Source\Driver\malloc.h
 .\objects\menu_handle.o: ..\Source\HAL\ec11.h
 .\objects\menu_handle.o: ..\Source\Driver\menu.h

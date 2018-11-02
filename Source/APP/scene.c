@@ -719,7 +719,7 @@ void SceneFlashTask(void)//50 ms
 	
 	Pictrue_printf(&MenuPic,0,0,16,"   Flash");
 	Pictrue_printf(&MenuPic,0,16,16,"  T:%dms",FlashTim);
-	Pictrue_printf(&MenuPic,0,32,16,"  Dim:%0.1f%%",FlashDim);
+	Pictrue_printf(&MenuPic,0,32,16,"  Dim:%0.1f%%",FlashDim*100);
 	FreshMenu();
 }
 

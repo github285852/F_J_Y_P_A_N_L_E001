@@ -92,7 +92,7 @@ void MenuKeyTask()
 					{
 						current_menu->pTaskKeyEnter();
 					}
-					current_menu = current_menu->pParent;//表示确认
+					current_menu = current_menu->pParent;//返回上级菜单
 				}
 			}
 			else
@@ -128,6 +128,10 @@ void MenuKeyTask()
 	}
 }
 
+void Menu_back(void)
+{
+	//current_menu = current_menu->pParent;
+}
 void Menu_init(void)
 {
 	int i;

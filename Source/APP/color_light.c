@@ -768,7 +768,7 @@ unsigned char coordinate_to_RGBWWCW(COORD coord,RGB *rgb)
 }
 
 
-COORD LED_CHECK[5][10] ;
+COORD LED_CHECK[5][10];
 
 	
 //带有电流校准的色坐标转LED比例
@@ -871,6 +871,7 @@ pixel:0,ALL,
 */
 void ColorLightHSIOut(HSI Hsi,unsigned char pixel)
 {
+	COORD coo;
 	if(HSIToCoordinate(&Hsi,&coord))
 	{
 		Debug_printf("饱和度转换后任然没有\r\n");
@@ -880,10 +881,14 @@ void ColorLightHSIOut(HSI Hsi,unsigned char pixel)
 	{
 		return ;
 	}
+	
+	RGBWWCW_to_coordinate(rgbk,&coo);
 	Debug_printf("\r\n");
 	Debug_printf("HSI(%d,%.2f,%.2f)\r\n",Hsi.h,Hsi.s,Hsi.i);
-	Debug_printf("色坐标(%.4f,%.4f)\r\n",coord.x,coord.y);
-	Debug_printf("RGB(%.4f,%.4f,%.4f)\r\n",rgb.r,rgb.g,rgb.b);
+	Debug_printf("计算色坐标(%.4f,%.4f)\r\n",coord.x,coord.y);
+	Debug_printf("反馈色坐标(%.4f,%.4f)\r\n",coo.x,coo.y);
+	Debug_printf("RGBWWCW(%.4f,%.4f,%.4f,%.4f,%.4f)\r\n",rgbk.r,rgbk.g,rgbk.b,rgbk.ww,rgbk.cw);
+	
 }
 
 
@@ -955,6 +960,7 @@ int CoordinateOut(COORD *coord,float dim,unsigned char pixel)
 	{
 		 return res;
 	}
+	
 	if(pixel==0)
 		AllLedPowerOut(&rgbk,dim);
 	else

@@ -5,7 +5,7 @@
 .\objects\menu.o: ..\Source\HAL\sys.h
 .\objects\menu.o: ..\Source\USER\stm32f10x.h
 .\objects\menu.o: ..\Source\CORE\core_cm3.h
-.\objects\menu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\menu.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\menu.o: ..\Source\USER\system_stm32f10x.h
 .\objects\menu.o: ..\Source\USER\stm32f10x_conf.h
 .\objects\menu.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_adc.h
@@ -32,6 +32,6 @@
 .\objects\menu.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_usart.h
 .\objects\menu.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 .\objects\menu.o: ..\Source\STM32F10x_FWLib\inc\misc.h
-.\objects\menu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\menu.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\menu.o: ..\Source\APP\menutask.h
 .\objects\menu.o: ..\Source\APP\scene.h

@@ -1,7 +1,7 @@
 .\objects\spi.o: ..\Source\HAL\spi.c
 .\objects\spi.o: ..\Source\USER\stm32f10x.h
 .\objects\spi.o: ..\Source\CORE\core_cm3.h
-.\objects\spi.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\spi.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\spi.o: ..\Source\USER\system_stm32f10x.h
 .\objects\spi.o: ..\Source\USER\stm32f10x_conf.h
 .\objects\spi.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_adc.h
@@ -32,4 +32,4 @@
 .\objects\spi.o: ..\Source\Driver\st7735s.h
 .\objects\spi.o: ..\Source\HAL\sys.h
 .\objects\spi.o: ..\Source\Driver\graphical.h
-.\objects\spi.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\spi.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdlib.h

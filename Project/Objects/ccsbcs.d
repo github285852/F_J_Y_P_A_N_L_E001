@@ -4,7 +4,7 @@
 .\objects\ccsbcs.o: ..\Source\USER\usb_conf.h
 .\objects\ccsbcs.o: ..\Source\USER\stm32f10x.h
 .\objects\ccsbcs.o: ..\Source\CORE\core_cm3.h
-.\objects\ccsbcs.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\ccsbcs.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\ccsbcs.o: ..\Source\USER\system_stm32f10x.h
 .\objects\ccsbcs.o: ..\Source\USER\stm32f10x_conf.h
 .\objects\ccsbcs.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_adc.h
@@ -31,5 +31,5 @@
 .\objects\ccsbcs.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_usart.h
 .\objects\ccsbcs.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 .\objects\ccsbcs.o: ..\Source\STM32F10x_FWLib\inc\misc.h
-.\objects\ccsbcs.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\ccsbcs.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\ccsbcs.o: ..\Source\fat_fs\inc\ffconf.h

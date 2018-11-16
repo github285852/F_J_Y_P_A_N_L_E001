@@ -46,8 +46,11 @@ void ChanleDataChange(RGB  *ledk,float dim,unsigned char pixel)
 	unsigned char sum=0;
 	unsigned int dac_data[LED_NUMS],pwm_data[LED_NUMS];
 	T1= GetSysTime_us()/1000000.0f;
-	//dim = dim*0.9;
 	dim = pow(dim,1.5);//Ù¤ÂíÐ£Õý
+	if(dim<=0.1)
+		fan_pwm = 0;
+	else
+		fan_pwm = 65535;
 	TEST_DIM = dim;
   T = GetSysTime_us()/1000000.0f - T1;
 	if(Sys.Config.lightmode==CCT_M)

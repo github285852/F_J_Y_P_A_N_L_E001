@@ -81,8 +81,14 @@ void GUI_DisplayTask(void)
 void InputTask(void)
 {
 	static CONFIG last_config;
-	if((ec11_check || key_status || Sys.dmx_insert))//外部输入处理
+	static u16 lcd_back_cnt=200;
+	if((ec11_check || key_value || Sys.dmx_insert))//外部输入处理
 	{
+		if(Sys.lcd_back_on ==0 )
+		{
+			Sys.lcd_back_on = 1; //只打开屏幕
+			return;
+		}
 		if(Sys.dmx_connect)
 			goto do_only_dmx;
 		if((SelectMenu == menu_state)||(S9==key_value)) // 按键映射为菜单输入
@@ -93,6 +99,7 @@ void InputTask(void)
 			}
 			else if(ec11_pos[2]<0)
 			{
+				
 				menu_key = Up_Key;
 			}
 			switch(key_value)
@@ -118,8 +125,8 @@ void InputTask(void)
 		}
 		do_only_dmx:
 		Sys.lcd_back_on = 1;
-		Sys.save_cnt = 20*Sys.Config.lcd.tim;//10s
-
+		Sys.save_cnt = 20*10;//10s
+		lcd_back_cnt = 20*Sys.Config.lcd.tim;//10s - 31
 		MenuKeyTask();//菜单执行,循环函数	
 		GUI_DisplayTask();
 		
@@ -134,23 +141,30 @@ void InputTask(void)
 		GUI_DisplayTask();
 	}
 	//保存数据
-//	if(Sys.save_cnt>0)
-//	{
-//		if(Sys.save_cnt == 1)
-//		{
-//			Sys.menu_mask = 0;
-//			Sys.lcd_back_on = 0;
-//			if( memcmp(&last_config,&Sys.Config,sizeof(CONFIG)) )
-//			{
-//				SaveConfig();
-//				last_config = Sys.Config;
-//				current_menu = NULL;
-//				menu_state = HandleGui;
-//				GUI_DisplayInit();
-//			}	
-//		}
-//		Sys.save_cnt--;
-//	}
+	if(Sys.save_cnt>0)
+	{
+		if(Sys.save_cnt == 1)
+		{
+			Sys.menu_mask = 0;
+			if( memcmp(&last_config,&Sys.Config,sizeof(CONFIG)) )
+			{
+				SaveConfig();
+				last_config = Sys.Config;
+				current_menu = NULL;
+				menu_state = HandleGui;
+				GUI_DisplayInit();
+			}	
+		}
+		Sys.save_cnt--;
+	}
+	if(lcd_back_cnt>0)
+	{
+		if(lcd_back_cnt == 1)
+		{
+			Sys.lcd_back_on = 0;
+		}
+		lcd_back_cnt--;
+	}
 }
 
 

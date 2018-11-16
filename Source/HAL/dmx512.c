@@ -20,35 +20,36 @@ void dmx512_init(void)
   EXTI_InitTypeDef EXTI_InitStructure;
 	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 	
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2,ENABLE);//使能USART2时钟
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE); 
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_DMX_USART,ENABLE);//使能DMX_USART时钟
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_DMX_TIM, ENABLE); 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);	//使用复用功能时钟
-	GPIO_PinRemapConfig(GPIO_Remap_USART2,ENABLE);
-	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;				 //PA12端口配置
+	#if GPIO_REMAP
+	GPIO_PinRemapConfig(GPIO_Remap_DMX_USART,ENABLE);
+	#endif
+	GPIO_InitStructure.GPIO_Pin = DMX_RXEN_PIN;				 //PA12端口配置
  	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
  	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
- 	GPIO_Init(GPIOD, &GPIO_InitStructure);
+ 	GPIO_Init(DMX_RXEN_GPIO, &GPIO_InitStructure);
 	
 	//USART1_TX   GPIOA.9
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5; //PA.9
+  GPIO_InitStructure.GPIO_Pin =	DMX_TX_PIN; //PA.9
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	//复用推挽输出
-  GPIO_Init(GPIOD, &GPIO_InitStructure);//初始化GPIOA.9
+  GPIO_Init(DMX_TX_GPIO, &GPIO_InitStructure);//初始化GPIOA.9
    
   //USART1_RX	  GPIOA.10初始化
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;//PA10
+  GPIO_InitStructure.GPIO_Pin = DMX_RX_PIN;//PA10
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;//浮空输入
-  GPIO_Init(GPIOD, &GPIO_InitStructure);//初始化GPIOA.10  
+  GPIO_Init(DMX_RX_GPIO, &GPIO_InitStructure);//初始化GPIOA.10  
 	
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOD,GPIO_PinSource6);
-	EXTI_InitStructure.EXTI_Line=EXTI_Line6;	
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOD,DMX_EXTI_PinSource);
+	EXTI_InitStructure.EXTI_Line= DMX_EXTI_Line;	
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;	
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);	 	
 	
-	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;			
+	NVIC_InitStructure.NVIC_IRQChannel = DMX_EXTI_IRQn;			
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;	 
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;					
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;								
@@ -59,17 +60,17 @@ void dmx512_init(void)
 	TIM_TimeBaseStructure.TIM_Prescaler = 71; //
 	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; //
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //
-	TIM_TimeBaseInit(TIM6, &TIM_TimeBaseStructure); //
-	TIM_ITConfig(TIM6,TIM_IT_Update,ENABLE ); //使能时钟
-	NVIC_InitStructure.NVIC_IRQChannel = TIM6_IRQn;  //TIM3??
+	TIM_TimeBaseInit(DMX_TIM, &TIM_TimeBaseStructure); //
+	TIM_ITConfig(DMX_TIM,TIM_IT_Update,ENABLE ); //使能时钟
+	NVIC_InitStructure.NVIC_IRQChannel = DMX_TIM_IRQn;  //TIM3??
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;  //?????0?
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;  //????3?
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQ?????
 	NVIC_Init(&NVIC_InitStructure);  //???NVIC???
-	TIM_Cmd(TIM6, ENABLE);  //??TIMx	
+	TIM_Cmd(DMX_TIM, ENABLE);  //??TIMx	
 	
-	RCC_APB1PeriphResetCmd(RCC_APB1Periph_USART2,ENABLE);//复位串口
-	RCC_APB1PeriphResetCmd(RCC_APB1Periph_USART2,DISABLE);//停止复位
+	RCC_APB1PeriphResetCmd(RCC_APB1Periph_DMX_USART,ENABLE);//复位串口
+	RCC_APB1PeriphResetCmd(RCC_APB1Periph_DMX_USART,DISABLE);//停止复位
  
 	USART_InitStructure.USART_BaudRate = 250000;	//波特率设置
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;//8位数据长度
@@ -78,35 +79,35 @@ void dmx512_init(void)
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//无硬件数据流控制
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;//收发模式
 
-  USART_Init(USART2, &USART_InitStructure);  //初始化串口
+  USART_Init(DMX_USART, &USART_InitStructure);  //初始化串口
   
-	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn; //使能串口2中断
+	NVIC_InitStructure.NVIC_IRQChannel = DMX_USART_IRQn; //使能串口2中断
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; //先占优先级2级
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3; //从优先级2级
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //使能外部中断通道
 	NVIC_Init(&NVIC_InitStructure); //根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器
  
-  USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);//开中断
-	USART_Cmd(USART2, ENABLE);                    //使能串口 
+  USART_ITConfig(DMX_USART, USART_IT_RXNE, ENABLE);//开中断
+	USART_Cmd(DMX_USART, ENABLE);                    //使能串口 
 
-	PDout(4) = 0;	//默认为接收模式
+	DMX_RXEN;	//默认为接收模式
 }
 
 u16 tim;
-void EXTI9_5_IRQHandler(void)
+void DMX_EXTI_IRQHandler(void)
 {
 	static u8 last_sum;
 	 //if(PAin(2)==0)//
-	if(GPIOD->IDR&0x40)//上升沿
+	if(DMX_RX_GPIO->IDR&DMX_RX_PIN)//上升沿
 	{
-			break_tim = tim_over*65535 + TIM6->CNT;
+			break_tim = tim_over*65535 + DMX_TIM->CNT;
 		  if((break_tim>=88)&&(break_tim<=1000000))
 			{
 				receiving_dmx_data();
 				
-//				if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) //接收到数据
+//				if(USART_GetITStatus(DMX_USART, USART_IT_RXNE) != RESET) //接收到数据
 //				{	 
-//					USART_ReceiveData(USART2); 	//读取接收到的数据
+//					USART_ReceiveData(DMX_USART); 	//读取接收到的数据
 //				}
 				if(last_sum != TEST_SUM)
 					SUM_CNT++;
@@ -125,16 +126,16 @@ void EXTI9_5_IRQHandler(void)
 	else //下降沿
 	{
 		tim_over = 0;
-		TIM6->CNT=0;
+		DMX_TIM->CNT=0;
 	}
-	EXTI->PR = EXTI_Line6;	
+	EXTI->PR = DMX_EXTI_Line;	
 }
 
-void TIM6_IRQHandler(void)   //TIM6中断
+void DMX_TIM_IRQHandler(void)   //TIM6中断
 {
-	if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET)  //检查TIM3更新中断发生与否
+	if (TIM_GetITStatus(DMX_TIM, TIM_IT_Update) != RESET)  //检查TIM3更新中断发生与否
 	{
-		TIM_ClearITPendingBit(TIM6, TIM_IT_Update);  //清除TIMx更新中断标志 
+		TIM_ClearITPendingBit(DMX_TIM, TIM_IT_Update);  //清除TIMx更新中断标志 
 		tim_over++;
 	}
 }
@@ -312,15 +313,15 @@ void uart_resiver(u8 Res)
 }
 void rs485_send_str(unsigned char *str)
 {
-	PDout(4) = 1;
+	DMX_TXEN;
 	while(*str != 0)
 	{
-		while((USART2->SR&0X40)==0);//????,??????   
-    USART2->DR = *str;     
+		while((DMX_USART->SR&0X40)==0);//????,??????   
+    DMX_USART->DR = *str;     
 		str++;
 	}		
-	while((USART2->SR&0X40)==0);//????,??????   
-	PDout(4) = 0;
+	while((DMX_USART->SR&0X40)==0);//????,??????   
+	DMX_RXEN;
 }
 
 unsigned int pwm[32]={0,0};
@@ -401,27 +402,27 @@ void uart_duty(void)
 	}
 }
 
-void USART2_IRQHandler(void)
+void DMX_USART_IRQHandler(void)
 {
 	u8 res;	    
-	if(USART_GetFlagStatus(USART2,USART_FLAG_NE)==SET)
+	if(USART_GetFlagStatus(DMX_USART,USART_FLAG_NE)==SET)
 	{
-		//USART_ClearFlag(USART2,USART_FLAG_NE); 
-		USART_ReceiveData(USART2);    
+		//USART_ClearFlag(DMX_USART,USART_FLAG_NE); 
+		USART_ReceiveData(DMX_USART);    
 	}
-	else if(USART_GetFlagStatus(USART2,USART_FLAG_FE)==SET)
+	else if(USART_GetFlagStatus(DMX_USART,USART_FLAG_FE)==SET)
 	{
-		//USART_ClearFlag(USART2,USART_FLAG_FE); 
-		USART_ReceiveData(USART2);    
+		//USART_ClearFlag(DMX_USART,USART_FLAG_FE); 
+		USART_ReceiveData(DMX_USART);    
 	}
-	else if(USART_GetFlagStatus(USART2,USART_FLAG_ORE)==SET)
+	else if(USART_GetFlagStatus(DMX_USART,USART_FLAG_ORE)==SET)
 	{
-		//USART_ClearFlag(USART2,USART_FLAG_ORE); 
-		USART_ReceiveData(USART2);    
+		//USART_ClearFlag(DMX_USART,USART_FLAG_ORE); 
+		USART_ReceiveData(DMX_USART);    
 	}	
-	else if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) //接收到数据
+	else if(USART_GetITStatus(DMX_USART, USART_IT_RXNE) != RESET) //接收到数据
 	{	 
-		res =USART_ReceiveData(USART2); 	//读取接收到的数据
+		res =USART_ReceiveData(DMX_USART); 	//读取接收到的数据
 		//uart_resiver(res);
 		TEST_SUM += res;
 		if(DMX512_RX_CNT<513)
@@ -440,25 +441,4 @@ void USART2_IRQHandler(void)
 	}
 
 } 
-
-u32 baude=250000,baude_last=250000;
-void change_baude(void)
-{
-	if(baude_last!=baude)
-	{
-		USART_InitTypeDef USART_InitStructure;
-		USART_InitStructure.USART_BaudRate = baude;	//波特率设置
-		USART_InitStructure.USART_WordLength = USART_WordLength_8b;//8位数据长度
-		USART_InitStructure.USART_StopBits = USART_StopBits_2;//一个停止位
-		USART_InitStructure.USART_Parity = USART_Parity_No;///奇偶校验位
-		USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//无硬件数据流控制
-		USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;//收发模式
-
-		USART_Init(USART1, &USART_InitStructure);  //初始化串口
-		baude_last = baude;
-	}
-}
-
-
-
 

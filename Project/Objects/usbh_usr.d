@@ -1,12 +1,12 @@
 .\objects\usbh_usr.o: ..\Source\Driver\usbh_usr.c
-.\objects\usbh_usr.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\usbh_usr.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\usbh_usr.o: ..\Source\Driver\usbh_usr.h
 .\objects\usbh_usr.o: ..\Source\fat_fs\inc\ff.h
 .\objects\usbh_usr.o: ..\Source\fat_fs\inc\integer.h
 .\objects\usbh_usr.o: ..\Source\USER\usb_conf.h
 .\objects\usbh_usr.o: ..\Source\USER\stm32f10x.h
 .\objects\usbh_usr.o: ..\Source\CORE\core_cm3.h
-.\objects\usbh_usr.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\usbh_usr.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\usbh_usr.o: ..\Source\USER\system_stm32f10x.h
 .\objects\usbh_usr.o: ..\Source\USER\stm32f10x_conf.h
 .\objects\usbh_usr.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_adc.h
@@ -33,7 +33,7 @@
 .\objects\usbh_usr.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_usart.h
 .\objects\usbh_usr.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 .\objects\usbh_usr.o: ..\Source\STM32F10x_FWLib\inc\misc.h
-.\objects\usbh_usr.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\usbh_usr.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\usbh_usr.o: ..\Source\fat_fs\inc\ffconf.h
 .\objects\usbh_usr.o: ..\Source\STM32_USB_HOST_Library\Core\inc\usbh_core.h
 .\objects\usbh_usr.o: ..\Source\STM32_USB_OTG_Driver\inc\usb_hcd.h
@@ -42,7 +42,7 @@
 .\objects\usbh_usr.o: ..\Source\STM32_USB_OTG_Driver\inc\usb_defines.h
 .\objects\usbh_usr.o: ..\Source\STM32_USB_HOST_Library\Core\inc\usbh_def.h
 .\objects\usbh_usr.o: ..\Source\USER\usbh_conf.h
-.\objects\usbh_usr.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\usbh_usr.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\usbh_usr.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_core.h
 .\objects\usbh_usr.o: ..\Source\STM32_USB_HOST_Library\Core\inc\usbh_stdreq.h
 .\objects\usbh_usr.o: ..\Source\STM32_USB_OTG_Driver\inc\usb_bsp.h
@@ -53,8 +53,8 @@
 .\objects\usbh_usr.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_bot.h
 .\objects\usbh_usr.o: ..\Source\HAL\sys.h
 .\objects\usbh_usr.o: ..\Source\APP\includes.h
-.\objects\usbh_usr.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\usbh_usr.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\usbh_usr.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\usbh_usr.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\usbh_usr.o: ..\Source\HAL\delay.h
 .\objects\usbh_usr.o: ..\Source\Driver\scheduler.h
 .\objects\usbh_usr.o: ..\Source\HAL\pwm16.h

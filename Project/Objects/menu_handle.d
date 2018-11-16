@@ -1,11 +1,11 @@
 .\objects\menu_handle.o: ..\Source\Driver\menu_handle.c
 .\objects\menu_handle.o: ..\Source\APP\includes.h
-.\objects\menu_handle.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\menu_handle.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\menu_handle.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\menu_handle.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\menu_handle.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\menu_handle.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\menu_handle.o: ..\Source\USER\stm32f10x.h
 .\objects\menu_handle.o: ..\Source\CORE\core_cm3.h
-.\objects\menu_handle.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\menu_handle.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\menu_handle.o: ..\Source\USER\system_stm32f10x.h
 .\objects\menu_handle.o: ..\Source\USER\stm32f10x_conf.h
 .\objects\menu_handle.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_adc.h
@@ -32,7 +32,7 @@
 .\objects\menu_handle.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_usart.h
 .\objects\menu_handle.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 .\objects\menu_handle.o: ..\Source\STM32F10x_FWLib\inc\misc.h
-.\objects\menu_handle.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\menu_handle.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\menu_handle.o: ..\Source\STM32_USB_HOST_Library\Core\inc\usbh_core.h
 .\objects\menu_handle.o: ..\Source\STM32_USB_OTG_Driver\inc\usb_hcd.h
 .\objects\menu_handle.o: ..\Source\STM32_USB_OTG_Driver\inc\usb_regs.h
@@ -44,7 +44,7 @@
 .\objects\menu_handle.o: ..\Source\Driver\usbh_usr.h
 .\objects\menu_handle.o: ..\Source\fat_fs\inc\ff.h
 .\objects\menu_handle.o: ..\Source\fat_fs\inc\integer.h
-.\objects\menu_handle.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\menu_handle.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\menu_handle.o: ..\Source\fat_fs\inc\ffconf.h
 .\objects\menu_handle.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_core.h
 .\objects\menu_handle.o: ..\Source\STM32_USB_HOST_Library\Core\inc\usbh_stdreq.h

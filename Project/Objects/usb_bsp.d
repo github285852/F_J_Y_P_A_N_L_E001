@@ -4,7 +4,7 @@
 .\objects\usb_bsp.o: ..\Source\USER\usb_conf.h
 .\objects\usb_bsp.o: ..\Source\USER\stm32f10x.h
 .\objects\usb_bsp.o: ..\Source\CORE\core_cm3.h
-.\objects\usb_bsp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\usb_bsp.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\usb_bsp.o: ..\Source\USER\system_stm32f10x.h
 .\objects\usb_bsp.o: ..\Source\USER\stm32f10x_conf.h
 .\objects\usb_bsp.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_adc.h

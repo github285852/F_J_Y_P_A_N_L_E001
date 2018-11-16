@@ -1,13 +1,13 @@
 .\objects\color_light.o: ..\Source\APP\color_light.c
 .\objects\color_light.o: ..\Source\APP\color_light.h
-.\objects\color_light.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
-.\objects\color_light.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\color_light.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\color_light.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\color_light.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\math.h
+.\objects\color_light.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\color_light.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\color_light.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\color_light.o: ..\Source\APP\includes.h
 .\objects\color_light.o: ..\Source\USER\stm32f10x.h
 .\objects\color_light.o: ..\Source\CORE\core_cm3.h
-.\objects\color_light.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\color_light.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\color_light.o: ..\Source\USER\system_stm32f10x.h
 .\objects\color_light.o: ..\Source\USER\stm32f10x_conf.h
 .\objects\color_light.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_adc.h
@@ -34,7 +34,7 @@
 .\objects\color_light.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_usart.h
 .\objects\color_light.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 .\objects\color_light.o: ..\Source\STM32F10x_FWLib\inc\misc.h
-.\objects\color_light.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\color_light.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\color_light.o: ..\Source\STM32_USB_HOST_Library\Core\inc\usbh_core.h
 .\objects\color_light.o: ..\Source\STM32_USB_OTG_Driver\inc\usb_hcd.h
 .\objects\color_light.o: ..\Source\STM32_USB_OTG_Driver\inc\usb_regs.h
@@ -46,7 +46,7 @@
 .\objects\color_light.o: ..\Source\Driver\usbh_usr.h
 .\objects\color_light.o: ..\Source\fat_fs\inc\ff.h
 .\objects\color_light.o: ..\Source\fat_fs\inc\integer.h
-.\objects\color_light.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\color_light.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\color_light.o: ..\Source\fat_fs\inc\ffconf.h
 .\objects\color_light.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_core.h
 .\objects\color_light.o: ..\Source\STM32_USB_HOST_Library\Core\inc\usbh_stdreq.h

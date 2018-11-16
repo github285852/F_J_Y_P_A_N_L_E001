@@ -63,7 +63,7 @@ u8 KEY;
 void Duty_10ms(void)
 {
   duty_time[3][1] = GetSysTime_us()/1000000.0f - duty_time[3][0];
-	key_service();//按键检测函数
+	key_service();//按键检测函数,放在10ms定时器中断，采用支持长按，多按
 	duty_time[3][0] = GetSysTime_us()/1000000.0f;
 }
 extern long test_pos;

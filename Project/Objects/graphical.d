@@ -3,7 +3,7 @@
 .\objects\graphical.o: ..\Source\HAL\sys.h
 .\objects\graphical.o: ..\Source\USER\stm32f10x.h
 .\objects\graphical.o: ..\Source\CORE\core_cm3.h
-.\objects\graphical.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\graphical.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\graphical.o: ..\Source\USER\system_stm32f10x.h
 .\objects\graphical.o: ..\Source\USER\stm32f10x_conf.h
 .\objects\graphical.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_adc.h
@@ -33,7 +33,7 @@
 .\objects\graphical.o: ..\Source\Driver\st7735s.h
 .\objects\graphical.o: ..\Source\Driver\picture_data.h
 .\objects\graphical.o: ..\Source\HAL\spi.h
-.\objects\graphical.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
-.\objects\graphical.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\graphical.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\graphical.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\graphical.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\graphical.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\graphical.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\graphical.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdlib.h

@@ -3,7 +3,7 @@
 .\objects\fattime.o: ..\Source\USER\usb_conf.h
 .\objects\fattime.o: ..\Source\USER\stm32f10x.h
 .\objects\fattime.o: ..\Source\CORE\core_cm3.h
-.\objects\fattime.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\fattime.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\fattime.o: ..\Source\USER\system_stm32f10x.h
 .\objects\fattime.o: ..\Source\USER\stm32f10x_conf.h
 .\objects\fattime.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_adc.h
@@ -30,5 +30,5 @@
 .\objects\fattime.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_usart.h
 .\objects\fattime.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 .\objects\fattime.o: ..\Source\STM32F10x_FWLib\inc\misc.h
-.\objects\fattime.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\fattime.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\fattime.o: ..\Source\fat_fs\inc\fattime.h

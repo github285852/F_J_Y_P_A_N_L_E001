@@ -7,7 +7,7 @@
 
 #define click_time_min		3
 
-#define click_time_max		15
+#define click_time_max		30
 
 #define KEY1			0x01
 #define KEY2			0x08

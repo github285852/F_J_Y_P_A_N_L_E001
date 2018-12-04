@@ -28,7 +28,7 @@
 #include "stmflash.h"
 #include "timer.h"
 #include "wdg.h"
-
+#include "debug.h"
 #include "malloc.h"
 #include "ec11.h"
 #include "menu.h"
@@ -47,7 +47,7 @@
 #include "scene.h"
 
 
-#define DEBUG			0
+#define DEBUG			1
 #define LED_NUMS	5
 #define LED_PIXELS	2
 #define VERSION	"V0.1.12"
@@ -83,7 +83,7 @@ FLASH
 #define CONFIG_ADDRESS				 (STM32_FLASH_APP_BASE - CNFIG_DATA_SIZE)        // 
 
 #define FIRMWARE_NAME								"filmgear001.bin"
-
+#define DIM_MIN		0.05
 typedef enum 
 {
 	CCT_M = 0,
@@ -131,6 +131,7 @@ typedef struct
 	u16 update;//放在第一个
 	HSI hsi;
 	COORD coord;
+	
 	struct
 	{
 		unsigned int r;

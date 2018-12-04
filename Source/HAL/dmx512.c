@@ -23,7 +23,7 @@ void dmx512_init(void)
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_DMX_USART,ENABLE);//使能DMX_USART时钟
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_DMX_TIM, ENABLE); 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);	//使用复用功能时钟
-	#if GPIO_REMAP
+	#if DMX_USART_GPIO_REMAP
 	GPIO_PinRemapConfig(GPIO_Remap_DMX_USART,ENABLE);
 	#endif
 	GPIO_InitStructure.GPIO_Pin = DMX_RXEN_PIN;				 //PA12端口配置
@@ -42,7 +42,7 @@ void dmx512_init(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;//浮空输入
   GPIO_Init(DMX_RX_GPIO, &GPIO_InitStructure);//初始化GPIOA.10  
 	
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOD,DMX_EXTI_PinSource);
+	GPIO_EXTILineConfig(DMX_GPIO_PortSource,DMX_EXTI_PinSource);
 	EXTI_InitStructure.EXTI_Line= DMX_EXTI_Line;	
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;	
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
@@ -282,124 +282,6 @@ void DMX512_ISR(void)
 //			break;
 //		}
 //	}
-}
-
-#define USART_REC_LEN  			200  
-u8  USART_RX_BUF[USART_REC_LEN]; 
-u16 USART_RX_STA;  
-
-void uart_resiver(u8 Res)
-{
-	if((USART_RX_STA&0x8000)==0)
-	{
-		if(USART_RX_STA&0x4000)
-		{
-			if(Res!=0x0a)USART_RX_STA=0;
-			else USART_RX_STA|=0x8000;	
-		}
-		else 
-		{	
-			if(Res==0x0d)
-				USART_RX_STA|=0x4000;
-			else
-			{
-				USART_RX_BUF[USART_RX_STA&0X3FFF]=Res;
-				USART_RX_STA++;
-				if(USART_RX_STA>(USART_REC_LEN-1))
-					USART_RX_STA=0;  
-			}		 
-		}
-	} 
-}
-void rs485_send_str(unsigned char *str)
-{
-	DMX_TXEN;
-	while(*str != 0)
-	{
-		while((DMX_USART->SR&0X40)==0);//????,??????   
-    DMX_USART->DR = *str;     
-		str++;
-	}		
-	while((DMX_USART->SR&0X40)==0);//????,??????   
-	DMX_RXEN;
-}
-
-unsigned int pwm[32]={0,0};
-void uart_duty(void)
-{
-	unsigned char *p,*base_p;
-	unsigned char cmd;
-	unsigned char buf[50];
-	unsigned int h;
-	unsigned char s,i;
-	unsigned temp;
-	float temp_f;
-	u16 temp_u16;
-	if(USART_RX_STA&0x8000)
-	{
-		USART_RX_BUF[USART_RX_STA&0X3FFF]=0;
-		p = strstr((const char*)USART_RX_BUF,(const char*)"PWM");
-		if(p != NULL)
-		{
-			p += 3;
-			cmd = atoi((const char*)p);
-			if(cmd<32)
-			{
-				p = strstr((const char*)USART_RX_BUF,(const char*)":");
-				if(p != NULL)
-				{
-					pwm[cmd] = atoi((const char*)(p+1));
-				//	mbi5041_set_pwm(pwm);
-
-				}
-				Debug_printf("PWM%d=%d Done\r\n",cmd,pwm[cmd]);
-			}
-			else
-				Debug_printf("ERROR\r\n");
-		}
-		p = strstr((const char*)USART_RX_BUF,(const char*)"HSI:");
-		if(p!=NULL)
-		{
-			h = atoi((const char*)(p+4));
-			if(h>=0&&(h<=360))
-			{
-				p = strstr((const char*)p,(const char*)",");
-				if(p!=NULL)
-				{
-					s = atoi((const char*)(p+1));
-					if((s>=0)&&(s<=100))
-					{
-						p = strstr((const char*)(p+1),(const char*)",");
-						if(p!=NULL)
-						{
-							i = atoi((const char*)(p+1));
-							if((i>=0)&&(i<=100))
-							{
-								Sys.Config.hsi.h = h;
-								Sys.Config.hsi.s =(float)(s/100.0);
-								Sys.Config.hsi.i =(float)(i/100.0);
-								ColorLightHSIOut(Sys.Config.hsi,0);
-							}
-							else
-							{
-								Debug_printf("I ERROR\r\n");
-							}
-						}
-					}
-					else
-					{
-						Debug_printf("S ERROR\r\n");
-					}
-				}
-			}
-			else
-			{
-				Debug_printf("H ERROR\r\n");
-			}
-		}
-		
-		USART_RX_STA=0;  
-	}
 }
 
 void DMX_USART_IRQHandler(void)

@@ -1,6 +1,7 @@
 .\objects\ledpower.o: ..\Source\HAL\ledpower.c
 .\objects\ledpower.o: ..\Source\HAL\ledpower.h
 .\objects\ledpower.o: ..\Source\APP\color_light.h
+.\objects\ledpower.o: ..\Source\Driver\mymath.h
 .\objects\ledpower.o: ..\Source\APP\includes.h
 .\objects\ledpower.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\ledpower.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\string.h
@@ -68,6 +69,7 @@
 .\objects\ledpower.o: ..\Source\HAL\stmflash.h
 .\objects\ledpower.o: ..\Source\HAL\timer.h
 .\objects\ledpower.o: ..\Source\HAL\wdg.h
+.\objects\ledpower.o: ..\Source\HAL\debug.h
 .\objects\ledpower.o: ..\Source\Driver\malloc.h
 .\objects\ledpower.o: ..\Source\HAL\ec11.h
 .\objects\ledpower.o: ..\Source\Driver\menu.h

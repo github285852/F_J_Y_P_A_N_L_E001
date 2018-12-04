@@ -204,8 +204,8 @@ void CCTTask(void)
 		if(ec11_pos[0])
 		{
 			Sys.Config.cct.pos -= (ec11_pos[0]*1);
-			if(Sys.Config.cct.pos>Sys.Config.cct.max_pos-1)
-				Sys.Config.cct.pos = Sys.Config.cct.max_pos-1;
+			if(Sys.Config.cct.pos>Sys.Config.cct.max_pos)
+				Sys.Config.cct.pos = Sys.Config.cct.max_pos;
 			if(Sys.Config.cct.pos<0)
 				Sys.Config.cct.pos = 0;
 			ec11_pos[0] = 0;

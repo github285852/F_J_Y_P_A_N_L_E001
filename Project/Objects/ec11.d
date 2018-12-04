@@ -66,11 +66,13 @@
 .\objects\ec11.o: ..\Source\HAL\stmflash.h
 .\objects\ec11.o: ..\Source\HAL\timer.h
 .\objects\ec11.o: ..\Source\HAL\wdg.h
+.\objects\ec11.o: ..\Source\HAL\debug.h
 .\objects\ec11.o: ..\Source\Driver\malloc.h
 .\objects\ec11.o: ..\Source\HAL\ec11.h
 .\objects\ec11.o: ..\Source\Driver\menu.h
 .\objects\ec11.o: ..\Source\Driver\key.h
 .\objects\ec11.o: ..\Source\APP\color_light.h
+.\objects\ec11.o: ..\Source\Driver\mymath.h
 .\objects\ec11.o: ..\Source\HAL\ledpower.h
 .\objects\ec11.o: ..\Source\Driver\graphical.h
 .\objects\ec11.o: ..\Source\Driver\st7735s.h

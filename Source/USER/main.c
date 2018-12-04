@@ -1,7 +1,7 @@
 #include "includes.h"
 
 void timer4_init(u16 period,u16 Prescaler);
-
+void AlgorithmTest(void);
 
 CONFIG default_data = 
 {
@@ -103,7 +103,7 @@ int main(void)
 	SysTick_Configuration();
 	GPIO_init();
 	LoadConfig();
-
+	Debug_init();
 	my_mem_init(SRAMIN);//初始化内部内存
 	ADC1Init();
 	dmx512_init();
@@ -141,33 +141,15 @@ int main(void)
 	MenuBuf_free();
 	timer4_init(100,71);//LCD背光PWM
 	ec11_init();//放在后面，不然会死机
+	
+	AlgorithmTest();
+	
 	//IWDG_Init(4,625);    //与分频数为64,重载值为625,溢出时间为1s	
   while(1)
   {		
 		Duty_Loop();
   }
   return 0;
-}
-
-
-void Debug_printf(char* fmt,...)  
-{
-	#if DEBUG
-	u8 *pbuf,*p;
-	va_list ap;
-	pbuf = malloc(50);
-	if(!pbuf)									
-	{
-		return ;
-	}
-	va_start(ap,fmt);
-	vsprintf((char*)pbuf,fmt,ap);
-	va_end(ap);			
-  p = pbuf;
-	rs485_send_str(p);
-	//Picture_ShowString(*pic,x,y,pic->w-x,pic->h-y,size,pbuf);	
-	free(pbuf);
-	#endif
 }
 
 

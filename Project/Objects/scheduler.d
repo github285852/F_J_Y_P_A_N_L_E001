@@ -66,11 +66,13 @@
 .\objects\scheduler.o: ..\Source\HAL\stmflash.h
 .\objects\scheduler.o: ..\Source\HAL\timer.h
 .\objects\scheduler.o: ..\Source\HAL\wdg.h
+.\objects\scheduler.o: ..\Source\HAL\debug.h
 .\objects\scheduler.o: ..\Source\Driver\malloc.h
 .\objects\scheduler.o: ..\Source\HAL\ec11.h
 .\objects\scheduler.o: ..\Source\Driver\menu.h
 .\objects\scheduler.o: ..\Source\Driver\key.h
 .\objects\scheduler.o: ..\Source\APP\color_light.h
+.\objects\scheduler.o: ..\Source\Driver\mymath.h
 .\objects\scheduler.o: ..\Source\HAL\ledpower.h
 .\objects\scheduler.o: ..\Source\Driver\graphical.h
 .\objects\scheduler.o: ..\Source\Driver\st7735s.h

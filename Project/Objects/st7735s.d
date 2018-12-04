@@ -69,11 +69,13 @@
 .\objects\st7735s.o: ..\Source\HAL\stmflash.h
 .\objects\st7735s.o: ..\Source\HAL\timer.h
 .\objects\st7735s.o: ..\Source\HAL\wdg.h
+.\objects\st7735s.o: ..\Source\HAL\debug.h
 .\objects\st7735s.o: ..\Source\Driver\malloc.h
 .\objects\st7735s.o: ..\Source\HAL\ec11.h
 .\objects\st7735s.o: ..\Source\Driver\menu.h
 .\objects\st7735s.o: ..\Source\Driver\key.h
 .\objects\st7735s.o: ..\Source\APP\color_light.h
+.\objects\st7735s.o: ..\Source\Driver\mymath.h
 .\objects\st7735s.o: ..\Source\HAL\ledpower.h
 .\objects\st7735s.o: ..\Source\Driver\graphical.h
 .\objects\st7735s.o: ..\Source\Driver\st7735s.h

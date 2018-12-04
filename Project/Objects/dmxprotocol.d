@@ -66,11 +66,13 @@
 .\objects\dmxprotocol.o: ..\Source\HAL\stmflash.h
 .\objects\dmxprotocol.o: ..\Source\HAL\timer.h
 .\objects\dmxprotocol.o: ..\Source\HAL\wdg.h
+.\objects\dmxprotocol.o: ..\Source\HAL\debug.h
 .\objects\dmxprotocol.o: ..\Source\Driver\malloc.h
 .\objects\dmxprotocol.o: ..\Source\HAL\ec11.h
 .\objects\dmxprotocol.o: ..\Source\Driver\menu.h
 .\objects\dmxprotocol.o: ..\Source\Driver\key.h
 .\objects\dmxprotocol.o: ..\Source\APP\color_light.h
+.\objects\dmxprotocol.o: ..\Source\Driver\mymath.h
 .\objects\dmxprotocol.o: ..\Source\HAL\ledpower.h
 .\objects\dmxprotocol.o: ..\Source\Driver\graphical.h
 .\objects\dmxprotocol.o: ..\Source\Driver\st7735s.h

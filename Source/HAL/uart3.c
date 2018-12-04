@@ -108,10 +108,24 @@ void DMX1_Send(u8 *buf,u16 len)
 void USART2_IRQHandler(void)
 {
 	u8 res;	    
- 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) //接收到数据
+	if(USART_GetFlagStatus(USART2,USART_FLAG_NE)==SET)
+	{
+		//USART_ClearFlag(DMX_USART,USART_FLAG_NE); 
+		USART_ReceiveData(USART2);    
+	}
+	else if(USART_GetFlagStatus(USART2,USART_FLAG_FE)==SET)
+	{
+		//USART_ClearFlag(DMX_USART,USART_FLAG_FE); 
+		USART_ReceiveData(USART2);    
+	}
+	else if(USART_GetFlagStatus(USART2,USART_FLAG_ORE)==SET)
+	{
+		//USART_ClearFlag(DMX_USART,USART_FLAG_ORE); 
+		USART_ReceiveData(USART2);    
+	}	
+	else if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) //接收到数据
 	{	 
-		res =	USART_ReceiveData(USART2); 	//读取接收到的数据
-
-	} 
+		res =USART_ReceiveData(USART2); 	//读取接收到的数据
+	}
 } 
 

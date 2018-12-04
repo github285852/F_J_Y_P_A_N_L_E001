@@ -117,6 +117,9 @@ int CCT_RGBWWCW_OUT_8BIT(CCT_RGBWWCW_8BIT *cct_rgb)
 	int offset;
 	float wight = cct_rgb->w_c/255.0;
 	pos = Sys.Config.cct.max_pos*cct_rgb->kvn/255;
+	pos += 3;
+	if(pos > Sys.Config.cct.max_pos)
+	pos = Sys.Config.cct.max_pos;
 	offset = get_offset_8bit(cct_rgb->grn);
 
 	rgb.r = cct_rgb->r/255.0;
@@ -139,6 +142,9 @@ int CCT_RGBWWCW_OUT_16BIT(CCT_RGBWWCW_16BIT *cct_rgb)
 	int offset;
 	float wight = cct_rgb->w_c/65535.0;
 	pos = Sys.Config.cct.max_pos*cct_rgb->kvn/65535;
+	pos += 3;
+	if(pos > Sys.Config.cct.max_pos)
+	pos = Sys.Config.cct.max_pos;
 	offset = get_offset_16bit(cct_rgb->grn);
 
 	rgb.r = cct_rgb->r/65535.0;
@@ -159,6 +165,9 @@ int CCT_OUT_8BIT(CCT_8BIT *cct)
 	char pos;
 	int offset;
 	pos = Sys.Config.cct.max_pos*cct->kvn/255;
+	pos += 3;
+	if(pos > Sys.Config.cct.max_pos)
+	pos = Sys.Config.cct.max_pos;
 	offset = get_offset_8bit(cct->grn);
 	LightCCTOut(pos,offset,cct->dim/255.0,0);
 	return 0;
@@ -169,6 +178,10 @@ int CCT_OUT_16BIT(CCT_16BIT *cct)
 	char pos;
 	int offset;
 	pos = Sys.Config.cct.max_pos*cct->kvn/65535;
+	pos += 3;
+	if(pos > Sys.Config.cct.max_pos)
+	pos = Sys.Config.cct.max_pos;
+	
 	offset = get_offset_16bit(cct->grn);
 	LightCCTOut(pos,offset,cct->dim/65535.0,0);
 	return 0;
@@ -188,6 +201,10 @@ int CCT_HSI_OUT_8BIT(CCT_HSI_8BIT *cct_hsi)
 	hsi.s = cct_hsi->s/255.0;
 	hsi.i = cct_hsi->dim/255.0;
 	pos = Sys.Config.cct.max_pos*cct_hsi->kvn/255;
+	pos += 3;
+	if(pos > Sys.Config.cct.max_pos)
+	pos = Sys.Config.cct.max_pos;
+	
 	offset = get_offset_8bit(cct_hsi->grn);
 	
 	CCTToCoordinate(pos,offset,&cct_coord);
@@ -211,6 +228,9 @@ int CCT_HSI_OUT_16BIT(CCT_HSI_16BIT *cct_hsi)
 	hsi.s = cct_hsi->s/65535.0;
 	hsi.i = cct_hsi->dim/65535.0;
 	pos = Sys.Config.cct.max_pos*cct_hsi->kvn/65535;
+	pos += 3;
+	if(pos > Sys.Config.cct.max_pos)
+	pos = Sys.Config.cct.max_pos;
 	offset = get_offset_16bit(cct_hsi->grn);
 	
 	CCTToCoordinate(pos,offset,&cct_coord);

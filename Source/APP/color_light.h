@@ -1,51 +1,58 @@
 #ifndef __COLOR_LIGHT_H
 #define __COLOR_LIGHT_H
 
+#include "mymath.h"
 
 #define PI	3.141592653589793
 //标准的RGB色坐标
-#define RX  0.7
-#define RY  0.28
-#define GX	0.08
-#define GY	0.83
-#define BX	0.1
-#define BY	0.1
 
 ////LED发出光的色坐标
-//#define LEDWWX_DEFAULT	0.4475       //0.4438
-//#define LEDWWY_DEFAULT	0.4988       //3958
-//#define LEDCWX_DEFAULT	0.3100      //0.3069
-//#define LEDCWY_DEFAULT	0.3100      //0.3044
-//#define LEDWX_DEFAULT	  0.3278
-//#define LEDWY_DEFAULT		0.3332
-//#define LEDRX_DEFAULT		0.6881
-//#define LEDRY_DEFAULT		0.3115
-//#define LEDGX_DEFAULT		0.1915
-//#define LEDGY_DEFAULT		0.7328
-
-//#define LEDBX_DEFAULT		0.1450 //
-//#define LEDBY_DEFAULT		0.0359
-//#define LEDYX_DEFAULT		0.5722//Y //0.00783	//。
-//#define LEDYY_DEFAULT		0.4248//Y0.4733	// .
-
-//LED发出光的色坐标
-#define LEDWWX_DEFAULT	0.4546       //0.4438
-#define LEDWWY_DEFAULT	0.4078       //3958
-#define LEDCWX_DEFAULT	0.3263      //0.3069
-#define LEDCWY_DEFAULT	0.3297      //0.3044
-#define LEDWX_DEFAULT		0.3278
+#define LEDCWX_DEFAULT	0.3247       //0.4438
+#define LEDCWY_DEFAULT	0.3247       //3958
+#define LEDWWX_DEFAULT	0.4558      //0.3069
+#define LEDWWY_DEFAULT	0.4046      //0.3044
+#define LEDWX_DEFAULT	  0.3278
 #define LEDWY_DEFAULT		0.3332
-#define LEDRX_DEFAULT		0.6881
-#define LEDRY_DEFAULT		0.3115
-#define LEDGX_DEFAULT		0.1815
-#define LEDGY_DEFAULT		0.7112
-#define LEDBX_DEFAULT		0.1412 //
-#define LEDBY_DEFAULT		0.0250
+#define LEDRX_DEFAULT		0.6873
+#define LEDRY_DEFAULT		0.3114
+#define LEDGX_DEFAULT		0.2082
+#define LEDGY_DEFAULT		0.7313
+
+#define LEDBX_DEFAULT		0.1409 //
+#define LEDBY_DEFAULT		0.0286
 #define LEDYX_DEFAULT		0.5722//Y //0.00783	//。
 #define LEDYY_DEFAULT		0.4248//Y0.4733	// .
 
+//LED发出光的色坐标
+//#define LEDWWX_DEFAULT	0.4546       //0.4438
+//#define LEDWWY_DEFAULT	0.4078       //3958
+//#define LEDCWX_DEFAULT	0.3263      //0.3069
+//#define LEDCWY_DEFAULT	0.3297      //0.3044
+//#define LEDWX_DEFAULT		0.3278
+//#define LEDWY_DEFAULT		0.3332
+//#define LEDRX_DEFAULT		0.6881
+//#define LEDRY_DEFAULT		0.3115
+//#define LEDGX_DEFAULT		0.1815
+//#define LEDGY_DEFAULT		0.7112
+//#define LEDBX_DEFAULT		0.1412 //
+//#define LEDBY_DEFAULT		0.0250
+//#define LEDYX_DEFAULT		0.5722//Y //0.00783	//。
+//#define LEDYY_DEFAULT		0.4248//Y0.4733	// .
 
-#define MAX(a,b)	(a>b)?a:b
+
+
+
+#define RX 	LEDRX_DEFAULT	// 0.7
+#define RY 	LEDRY_DEFAULT	// 0.28
+#define GX	LEDGX_DEFAULT//0.08
+#define GY	LEDGY_DEFAULT//0.83
+#define BX	LEDBX_DEFAULT	//0.1
+#define BY	LEDBY_DEFAULT//0.1
+
+
+
+
+
 
 typedef struct{
   unsigned short h;
@@ -61,7 +68,7 @@ typedef struct{
 	float w;
 	float ww;
 	float cw;
-}RGB;
+}RGB,LEDK;
 
 typedef struct{
 	unsigned int *r;
@@ -73,12 +80,6 @@ typedef struct{
 	unsigned int *cw;
 }pRGBPwm;
 
-
-
-typedef struct{
-	float x;
-	float y;
-}COORD;
 typedef struct
 {
 	int grn;
@@ -120,7 +121,8 @@ int LightGELOut(GEL *gel,unsigned char pixel);
 void color_light_init(void);
 void ColorTest(void);
 void HSI_Test(void);
-
+void RGB_to_coordinate(RGB rgb,COORD *coord);
+unsigned char coordinate_to_RGBWWCW(COORD coord,RGB *rgb);
 extern unsigned int RGBPwm[6];
 extern HSI Hsi;
 extern const CCT_TAB cct_tab[];

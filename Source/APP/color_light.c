@@ -4,6 +4,8 @@
 #include "stdio.h"
 #include "string.h"
 #include "includes.h"
+#include "mymath.h"
+#include "ledpower.h"
 /*
 unsigned char gama_tab[256]=
 {
@@ -216,9 +218,32 @@ void HSI_to_RGB(HSI HSI,RGB *rgbk)
 	}
 }
 
+
+/*
+两种颜色的灯合成坐标
+A:LED1的坐标
+B:LED2的坐标
+Ka:LED1的亮度
+Kb:LED2的亮度
+OUT:cood,结果指针
+*/
+
+void TowLED_to_coordinate(COORD A,COORD B,float Ka,float Kb,COORD *co)
+{
+	float temp;
+	temp = Ka + Kb;
+	co->x = A.x - Kb*(A.x-B.x)/temp;
+	co->y = A.y - Kb*(A.y-B.y)/temp;
+	if((co->x<0)||(co->y<0))
+	{
+		Debug_printf("Function:TowLED_to_coordinate erro\r\n");
+	}
+}
+
 void RGB_to_coordinate(RGB rgb,COORD *coord)
 {
 	float RBx,RBy,temp;
+	COORD cia,cib;
 	if(rgb.r != 0)
 	{
 		temp = (1+rgb.b/rgb.r);
@@ -230,17 +255,25 @@ void RGB_to_coordinate(RGB rgb,COORD *coord)
 	}
 	else //在GB线上
 	{
-		coord->x = (GX*rgb.g+BX*rgb.b)/(rgb.g+rgb.b);
-		coord->y = (GY*rgb.g+BY*rgb.b)/(rgb.g+rgb.b);
+//		coord->x = (GX*rgb.g+BX*rgb.b)/(rgb.g+rgb.b);
+//		coord->y = (GY*rgb.g+BY*rgb.b)/(rgb.g+rgb.b);
+		cia.x = GX;
+		cia.y = GY;
+		cib.x = BX;
+		cib.y = BY;
+		TowLED_to_coordinate(cia,cib,rgb.g,rgb.b,coord);
 //		rs485_send_str("rgb.r=0\r\n");
 //		sprintf(buf,"HSI(%d,%.2f,%.2f)\r\n",Hsi.h,Hsi.s,Hsi.i);
 //		rs485_send_str(buf);
 //		rs485_send_str("\r\n");
 	}
 }
+
+
 void RGBWWCW_to_coordinate(RGB rgb,COORD *coord)
 {
 	COORD w_coord;
+	COORD cia,cib;
 	float RBx,RBy,temp;
 	coord->x = coord->y = 0;
 	if((rgb.r+rgb.g+rgb.b)>0.0)
@@ -256,8 +289,13 @@ void RGBWWCW_to_coordinate(RGB rgb,COORD *coord)
 		}
 		else //在GB线上
 		{
-			coord->x = (LEDGX*rgb.g+LEDBX*rgb.b)/(rgb.g+rgb.b);
-			coord->y = (LEDGY*rgb.g+LEDBY*rgb.b)/(rgb.g+rgb.b);
+//			coord->x = (LEDGX*rgb.g+LEDBX*rgb.b)/(rgb.g+rgb.b);
+//			coord->y = (LEDGY*rgb.g+LEDBY*rgb.b)/(rgb.g+rgb.b);
+			cia.x = GX;
+			cia.y = GY;
+			cib.x = BX;
+			cib.y = BY;
+			TowLED_to_coordinate(cia,cib,rgb.g,rgb.b,coord);
 		}
 	}
 
@@ -265,12 +303,18 @@ void RGBWWCW_to_coordinate(RGB rgb,COORD *coord)
 	{
 		if(rgb.cw>0)
 		{
-			w_coord.x = (LEDWWX*rgb.ww+LEDCWX*rgb.cw)/(rgb.ww+rgb.cw);
-			w_coord.y = (LEDWWY*rgb.ww+LEDCWY*rgb.cw)/(rgb.ww+rgb.cw);
+//			w_coord.x = (LEDWWX*rgb.ww+LEDCWX*rgb.cw)/(rgb.ww+rgb.cw);
+//			w_coord.y = (LEDWWY*rgb.ww+LEDCWY*rgb.cw)/(rgb.ww+rgb.cw);
+			cia.x = LEDWWX;
+			cia.y = LEDWWY;
+			cib.x = LEDCWX;
+			cib.y = LEDCWX;
+			TowLED_to_coordinate(cia,cib,rgb.ww,rgb.cw,&w_coord);
 		}
 		else
 		{
 			w_coord.x = LEDWWX;
+			
 			w_coord.y = LEDWWY;
 		}
 	}
@@ -293,6 +337,242 @@ void RGBWWCW_to_coordinate(RGB rgb,COORD *coord)
 	}
 }
 
+//已知两直线的坐标，求 其交点,特殊情况除外
+int TowLineCross(COORD l1a,COORD l1b,COORD l2a,COORD l2b,COORD *crossp)
+{
+	float k1,k2,b1,b2;
+
+	k1 = (l1a.y-l1b.y)/(l1a.x - l1b.x);
+	b1 = l1a.y - k1*l1a.x;
+	
+	k2 = (l2a.y-l2b.y)/(l2a.x - l2b.x);
+	b2 = l2a.y - k2*l2a.x;
+	
+	crossp->x = (b2-b1)/(k1-k2);
+	crossp->y = crossp->x*k1 + b1;
+	return 0;
+}
+
+//已知一直线上的三个坐标，求出中间点到两端的比
+/*
+INPUT: a、b,线段两端点坐标;amongp,中间坐标
+OUTPUT：k,线段 a 对 b 的比例 的指针
+RETURN ：0,OK;
+*/
+int LineSegmentK(COORD a,COORD b,COORD amongp,float *k)
+{
+	*k = (amongp.x - a.x)/(b.x - amongp.x);
+	return 0;
+}
+
+//得出的RGB比例总和为1,
+int coordinate_to_RGB(COORD coord,RGB *rgb)
+{
+	COORD R,G,B;
+	COORD gb_crossp;//gb的交点
+	float R_GB_K,G_B_K;//混光比例
+	float GB;//GB的亮度
+	R.x = LEDRX;
+	R.y = LEDRY;
+	G.x = LEDGX;
+	G.y = LEDGY;
+	B.x = LEDBX;
+	B.y = LEDBY;
+	//求GB的交点。
+	TowLineCross(G,B,R,coord,&gb_crossp);
+	//求gb交点和R对于coord的比例
+	LineSegmentK(gb_crossp,R,coord,&R_GB_K); //混光比和线段比成反比
+	LineSegmentK(B,G,gb_crossp,&G_B_K);
+	memset(rgb,0,sizeof(RGB));
+	//设总亮度为1
+	rgb->r = R_GB_K/(1+R_GB_K);
+	GB = 1 - rgb->r;
+	rgb->g = GB*G_B_K/(1+G_B_K);
+	rgb->b = GB - rgb->g;
+	return 0;
+}
+
+int coordinate_to_threeLEDK(COORD A,COORD B,COORD C,COORD coord,float *a,float *b,float *c)
+{
+	COORD cb_crossp;
+	float A_CB_K,C_B_K;
+	float CB;
+	TowLineCross(C,B,A,coord,&cb_crossp);
+	LineSegmentK(cb_crossp,A,coord,&A_CB_K); //混光比和线段比成反比
+	LineSegmentK(B,C,cb_crossp,&C_B_K);
+	*a = A_CB_K/(1+A_CB_K);
+	CB  = 1 - *a;
+	*c = CB*C_B_K/(1+C_B_K);
+	*b = CB - *c;
+	return 0;
+}
+
+//采用WWCW的比例为 1:1，来达到较大的功率
+/*
+INPUT: coord，要合成的坐标，RGB_W_K,RGB合成点 和 白的比例
+*/
+int coordinate_to_RGBWWCW_mode1(COORD coord,float RGB_W_k,LEDK *ledk)
+{
+	COORD w_center;//冷白，暖白中点
+  coord_f RGBp;
+	COORD R,G,B;
+	LEDK rgbk;//RGB之间的比例
+	float RGB,W;//白的亮度，
+	
+	float L_RGB_W_k = 1.0/RGB_W_k; //线段比例
+	w_center.x = (LEDWWX + LEDCWX)/2.0;
+	w_center.y = (LEDWWY + LEDCWY)/2.0;
+	if( (ABS(w_center.x-coord.x)<0.0001)||(ABS(w_center.x-coord.x)<0.0001) ) //就是 WW CW 的中点
+	{
+		ledk->r = 0;
+		ledk->g = 0;
+		ledk->b = 0;
+		ledk->ww = 0.5;
+		ledk->cw = 0.5;
+		return 0;
+	}
+	//根据比例求出RGB合成的点。
+	RGBp.x = coord.x - L_RGB_W_k*(w_center.x - coord.x);
+	RGBp.y = coord.y - L_RGB_W_k*(w_center.y - coord.y);
+	
+	R.x = LEDRX;
+	R.y = LEDRY;
+	G.x = LEDGX;
+	G.y = LEDGY;
+	B.x = LEDBX;
+	B.y = LEDBY;
+	
+	//RGB合成的点，要在三角形内，且 目标点coord在RGBp、w_center中间
+	if(InTriangle(RGBp,R,G,B)==0)
+	{
+		Debug_printf(">>%s:exp_RGBp not in Triangle\r\n",__FUNCTION__);
+		return 1;
+	}
+	if( ((coord.x > RGBp.x)&&(coord.x < w_center.x)) || ((coord.x > w_center.x)&&(coord.x < RGBp.x)) )
+	{
+		//求出RGB之间的比例rgbk
+		coordinate_to_RGB(RGBp,&rgbk);//得出的RGB比例总和为1,不需要再归一化
+		W = 1/(1+RGB_W_k);
+		RGB = 1 - W;
+		
+		ledk->r = RGB * rgbk.r;
+		ledk->g = RGB * rgbk.g;
+		ledk->b = RGB * rgbk.b;
+		ledk->ww = W/2;
+		ledk->cw = W/2;
+		return 0;
+	}
+	else
+	{
+		Debug_printf(">>%s:exp_RGBp not in center between w_center and exp_coord\r\n",__FUNCTION__);
+		return 1;
+	}
+}
+
+//采用单颗白灯一直亮度为100%,dim>0.5
+/*
+输出的是LED亮度值，CCT模式使用
+*/
+float one_w = 100;
+int coordinate_to_RGBWWCW_mode2(COORD coord,float dim,LEDK *ledk)
+{
+	float temp,sum_light=200*dim;//总亮度200%
+	temp = (LEDWWX + LEDCWX)/2.0;
+	coord_f point;
+	COORD R,G,B,W;
+	float gk,bk,wk,rk;
+	if(dim<0.5)
+		return 1;
+	R.x = LEDRX;
+	R.y = LEDRY;
+	G.x = LEDGX;
+	G.y = LEDGY;
+	B.x = LEDBX;
+	B.y = LEDBY;
+	if((coord.x<temp))//冷白单点100%亮度
+	{
+		sum_light -= one_w;
+		//已知比例，中间点，一端点，求另一点
+		point.x = one_w/sum_light*(coord.x - LEDCWX) + coord.x;
+		point.y = one_w/sum_light*(coord.y - LEDCWY) + coord.y;
+		W.x = LEDWWX;
+		W.y = LEDWWY;
+		if(InTriangle(point,G,B,W)==0)
+		{
+			Debug_printf(">>%s:exp_GBWW not in Triangle\r\n",__FUNCTION__);
+			return 1;
+		}
+		coordinate_to_threeLEDK(G,B,W,point,&gk,&bk,&wk);
+		ledk->r = 0;
+		ledk->g = sum_light*gk;
+		ledk->b = sum_light*bk;
+		ledk->ww = sum_light*wk;
+		ledk->cw = one_w;
+	}
+	else//暖白单点100%亮度
+	{
+		sum_light -= 100;
+		point.x = 100/sum_light*(coord.x - LEDWWX) + coord.x;
+		point.y = 100/sum_light*(coord.y - LEDWWY) + coord.y;
+		W.x = LEDCWX;
+		W.y = LEDCWY;
+		if(InTriangle(point,G,R,W)==0)
+		{
+			Debug_printf(">>%s:exp_GRCW not in Triangle\r\n",__FUNCTION__);
+			return 1;
+		}
+		coordinate_to_threeLEDK(G,R,W,point,&gk,&rk,&wk);
+		ledk->r = sum_light*rk;
+		ledk->g = sum_light*gk;
+		ledk->b = 0;
+		ledk->ww = 100;
+		ledk->cw = sum_light*wk;
+	}
+	return 0;
+}
+//判断特殊点
+/*
+
+RETURN:
+*/
+int IsSpecialPoint(coord_f point)
+{
+	COORD R,G,B,W;
+	R.x = LEDRX;
+	R.y = LEDRY;
+	G.x = LEDGX;
+	G.y = LEDGY;
+	B.x = LEDBX;
+	B.y = LEDBY;
+	if( (ABS(point.x-R.x)<0.0001)&&(ABS(point.y-R.y)<0.0001) )
+	{
+		return 1;
+	}
+	if( (ABS(point.x-G.x)<0.0001)&&(ABS(point.y-G.y)<0.0001) )
+	{
+		return 2;
+	}
+	if( (ABS(point.x-B.x)<0.0001)&&(ABS(point.y-B.y)<0.0001) )
+	{
+		return 3;
+	}
+	
+	if(OnLineSegment(point,R,G))
+	{
+		return 4;
+	}
+
+	if(OnLineSegment(point,R,B))
+	{
+		return 5;
+	}
+	
+	if(OnLineSegment(point,G,B))
+	{
+		return 6;
+	}	
+	return 0;
+}
 
 unsigned char coordinate_to_RGBYW(COORD coord,RGB *rgb)
 {
@@ -634,11 +914,59 @@ unsigned char coordinate_to_RGBWWCW(COORD coord,RGB *rgb)
 	float RGk,RBk,GBk,valid_x=0,valid_y,NWk;
 	float temp1,temp2,temp3,max_k;
 	unsigned char flag =0;
-
 	float ledw_x,ledw_y ,point_x,point_y,ww_cw_k;//目标点向冷白和暖白所在线作垂线
+//特殊点处理
+//
+	switch(IsSpecialPoint(coord))
+	{
+		case 1:
+		{
+			memset(rgb,0,sizeof(RGB)); 
+			rgb->r = 1;
+			return 0;
+		}
+		case 2:
+		{
+			memset(rgb,0,sizeof(RGB)); 
+			rgb->g = 1;
+			return 0;
+		}
+		case 3:
+		{
+			memset(rgb,0,sizeof(RGB)); 
+			rgb->b = 1;
+			return 0;
+		}
+		case 4: //在RG线段上
+		{
+			memset(rgb,0,sizeof(RGB)); 
+			temp1 = (coord.x-LEDGX)/(LEDRX-coord.x);
+			rgb->r = 1/(1+temp1);
+			rgb->g = 1 - rgb->r;
+			return 0;
+		}
+		case 5://在RB线段上
+		{
+			memset(rgb,0,sizeof(RGB)); 
+			temp1 = (coord.x-LEDBX)/(LEDRX-coord.x);
+			rgb->r = 1/(1+temp1);
+			rgb->b = 1 - rgb->r;
+			return 0;
+		}
+		case 6://在GB线段上
+		{
+			memset(rgb,0,sizeof(RGB)); 
+			temp1 = (coord.x-LEDBX)/(LEDGX-coord.x);
+			rgb->g = 1/(1+temp1);
+			rgb->b = 1 - rgb->g;
+			return 0;
+		}
+		default :break;
+	}
+
 //冷白和暖白合成合成的白
 	temp1 = (LEDCWY-LEDWWY)/(LEDCWX-LEDWWX);
-	temp2 = (LEDCWX - LEDWWX)/(LEDCWY-LEDWWY);
+	temp2 = (LEDCWX-LEDWWX)/(LEDCWY-LEDWWY);
 	point_x = (LEDWWX*temp1+coord.x*temp2+coord.y-LEDWWY)/(temp1+temp2);
 	point_y = (point_x-LEDWWX)*temp1+LEDWWY;
 	if(point_x>=LEDWWX)
@@ -763,7 +1091,7 @@ unsigned char coordinate_to_RGBWWCW(COORD coord,RGB *rgb)
 //	rgb->g = rgb->g/max_k;
 //	rgb->b = rgb->b/max_k;
 //	rgb->ww = rgb->ww/max_k;
-//	rgb->cw = rgb->cw/max_k; ，ledpower.c中ChanleDataChange()会做归一化处理
+//	rgb->cw = rgb->cw/max_k; ，ledpower.c中LedkToCurrent()会做归一化处理
 	return 0;
 }
 
@@ -844,21 +1172,16 @@ int HSIToCoordinate(HSI *Hsi,COORD *coord)
 	float temp;
 	int i;
 	hsi = *Hsi;
-	hsi.s = 1; //有些饱和度太高的颜色合成不了
-	if(hsi.i<=0.0009)
-	{
-		AllLedPowerOff();
-		return 0;
-	}
-	do
-	{
-		HSI_to_RGB(hsi,&rgb);
-		RGB_to_coordinate(rgb,coord);
-		hsi.s -= 0.01;//找到饱和度最大的那个点
-	}
-	while(coordinate_to_RGBWWCW(*coord,&rgbk)&&(hsi.s>0));
-	Debug_printf("能达到的最大饱和度=%d\r\n",(u8)(hsi.s*100));
-	hsi.s = hsi.s*Hsi->s; // 饱和度饱和度换
+//	do
+//	{
+//		HSI_to_RGB(hsi,&rgb);
+//		RGB_to_coordinate(rgb,coord);
+	
+//		hsi.s -= 0.01;//找到饱和度最大的那个点
+//	}
+//	while(coordinate_to_RGBWWCW(*coord,&rgbk)&&(hsi.s>0));
+//	Debug_printf("能达到的最大饱和度=%d\r\n",(u8)(hsi.s*100));
+//	hsi.s = hsi.s*Hsi->s; // 饱和度饱和度换
 	
 	HSI_to_RGB(hsi,&rgb);
 	RGB_to_coordinate(rgb,coord);
@@ -895,7 +1218,7 @@ void ColorLightHSIOut(HSI Hsi,unsigned char pixel)
 
 void color_light_init(void)
 {
-	Sys.Config.cct.max_pos = sizeof(cct_tab)/sizeof(CCT_TAB);
+	Sys.Config.cct.max_pos = sizeof(cct_tab)/sizeof(CCT_TAB) - 1;
 	Sys.max_gel_number = sizeof(GEL_TAB)/sizeof(GEL_COORD);
 }
 
@@ -943,28 +1266,109 @@ RETURN:NO ONE
 */
 void LightCCTOut(unsigned char pos,int offset,float dim,unsigned char pixel)
 {
+	COORD coo;
 	COORD target;//负偏坐标
 	if(CCTToCoordinate(pos,offset,&target))
 		return;
 	CoordinateOut(&target,dim,pixel);
+	
+	RGBWWCW_to_coordinate(rgbk,&coo);
 	Debug_printf("\r\n");
-	Debug_printf("色坐标(%.4f,%.4f)\r\n",target.x,target.y);
-	Debug_printf("RGB(%.4f,%.4f,%.4f)\r\n",rgbk.r,rgbk.g,rgbk.b);
+	Debug_printf("计算色坐标(%.4f,%.4f)\r\n",target.x,target.y);
+	Debug_printf("反馈色坐标(%.4f,%.4f)\r\n",coo.x,coo.y);
+	Debug_printf("RGBWWCW(%.4f,%.4f,%.4f,%.4f,%.4f)\r\n",rgbk.r,rgbk.g,rgbk.b,rgbk.ww,rgbk.cw);
 }
 
+
+float rgb_w_k = 1;
 int CoordinateOut(COORD *coord,float dim,unsigned char pixel)
 {
-	int res;
-	res = coordinate_to_RGBWWCW(*coord,&rgbk);
+	int res = 1;
+	RGB ledk;
+	float mode2_could_dim;//CCT mode　混光　能达到的最小亮度，这种显指较好
+	float temp;
+	if(dim<=0.0009)
+	{
+		AllLedPowerOff();
+		return 0;
+	}
+	dim = DIM_MIN + dim*(1-DIM_MIN);//从百分之一开始
+	dim = pow(dim,1.5);//伽马校正
+	
+	if((Sys.Config.lightmode == CCT_M)||( Sys.Config.lightmode == DMX_M &&( Sys.Config.dmx.mode==DMX_M2 ||Sys.Config.dmx.mode==DMX_M7 ||Sys.Config.dmx.mode==DMX_M12 ) ))
+	{ 
+								//  >4400K                  <3600K 且亮度大于于0.5
+		if( (Sys.Config.cct.pos>19)|| ((Sys.Config.cct.pos<11)&&(dim>0.5) ) )  
+		{
+			/////////////////	
+			res = coordinate_to_RGBWWCW_mode2(*coord,dim,&rgbk);//直接输出
+			if(res)
+			{		
+				if(dim>0.5)
+					mode2_could_dim = dim;
+				else
+					mode2_could_dim = 0.51;
+				while(1)
+				{
+					res = coordinate_to_RGBWWCW_mode2(*coord,mode2_could_dim,&rgbk);//直接输出
+					if(res)
+					{		
+						if(mode2_could_dim>=1)
+						{	
+							Debug_printf(">>coordinate_to_RGBWWCW_mode2\r\n,没有合适的比例\r\n");
+							return 1;
+						}
+						mode2_could_dim += 0.01; //1%　找到能达到的最小亮度，在这个基础上再衰减亮度。
+					}
+					else
+					{
+						dim *= 1/mode2_could_dim;
+						//dim = pow(dim,1.1);//伽马校正
+						break;
+					}
+				}
+			}
+			else
+			{
+				ledk = rgbk;
+				current[0] =  LIMIT(ledk.cw * 655.35,0,65535)*OUT_CW_DB;
+				current[1] =  LIMIT(ledk.r * 655.35,0,65535)*OUT_R_DB; 
+				current[2] =  LIMIT(ledk.g * 655.35,0,65535)*OUT_G_DB;
+				current[3] =  LIMIT(ledk.b * 655.35,0,65535)*OUT_B_DB;
+				current[4] =  LIMIT(ledk.ww * 655.35,0,65535)*OUT_WW_DB;
+				ChanleDataSend(A_BOARD_ADDR);
+				
+				current[0] =  LIMIT(ledk.ww * 655.35,0,65535)*OUT_CW_DB;
+				current[1] =  LIMIT(ledk.b * 655.35,0,65535)*OUT_B_DB; 
+				current[2] =  LIMIT(ledk.g * 655.35,0,65535)*OUT_G_DB;
+				current[3] =  LIMIT(ledk.r * 655.35,0,65535)*OUT_R_DB;
+				current[4] =  LIMIT(ledk.cw * 655.35,0,65535)*OUT_CW_DB;
+				ChanleDataSend(B_BOARD_ADDR);
+				return 0;
+			}
+			////////////////
+		}
+		else
+		{
+			res = coordinate_to_RGBWWCW(*coord,&rgbk);
+		//res = coordinate_to_RGBWWCW_mode1(*coord,rgb_w_k,&rgbk);
+		}
+	}
+	else
+	{
+		res = coordinate_to_RGBWWCW(*coord,&rgbk);
+	//	res = coordinate_to_RGB(*coord,&rgbk);
+	}
 	if(res)
 	{
 		 return res;
 	}
-	
+	ledk = rgbk;
 	if(pixel==0)
-		AllLedPowerOut(&rgbk,dim);
+		
+		AllLedPowerOut(&ledk,dim);
 	else
-   LedPowerOut(&rgbk,dim,pixel-1);
+   LedPowerOut(&ledk,dim,pixel-1);
 	return 0;
 }
 

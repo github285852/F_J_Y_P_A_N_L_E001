@@ -66,11 +66,13 @@
 .\objects\dmx512.o: ..\Source\HAL\stmflash.h
 .\objects\dmx512.o: ..\Source\HAL\timer.h
 .\objects\dmx512.o: ..\Source\HAL\wdg.h
+.\objects\dmx512.o: ..\Source\HAL\debug.h
 .\objects\dmx512.o: ..\Source\Driver\malloc.h
 .\objects\dmx512.o: ..\Source\HAL\ec11.h
 .\objects\dmx512.o: ..\Source\Driver\menu.h
 .\objects\dmx512.o: ..\Source\Driver\key.h
 .\objects\dmx512.o: ..\Source\APP\color_light.h
+.\objects\dmx512.o: ..\Source\Driver\mymath.h
 .\objects\dmx512.o: ..\Source\HAL\ledpower.h
 .\objects\dmx512.o: ..\Source\Driver\graphical.h
 .\objects\dmx512.o: ..\Source\Driver\st7735s.h

@@ -66,11 +66,13 @@
 .\objects\usbh_usr.o: ..\Source\HAL\stmflash.h
 .\objects\usbh_usr.o: ..\Source\HAL\timer.h
 .\objects\usbh_usr.o: ..\Source\HAL\wdg.h
+.\objects\usbh_usr.o: ..\Source\HAL\debug.h
 .\objects\usbh_usr.o: ..\Source\Driver\malloc.h
 .\objects\usbh_usr.o: ..\Source\HAL\ec11.h
 .\objects\usbh_usr.o: ..\Source\Driver\menu.h
 .\objects\usbh_usr.o: ..\Source\Driver\key.h
 .\objects\usbh_usr.o: ..\Source\APP\color_light.h
+.\objects\usbh_usr.o: ..\Source\Driver\mymath.h
 .\objects\usbh_usr.o: ..\Source\HAL\ledpower.h
 .\objects\usbh_usr.o: ..\Source\Driver\graphical.h
 .\objects\usbh_usr.o: ..\Source\Driver\st7735s.h

@@ -648,7 +648,7 @@ void SceneFlashInit(void)
 	{
 		pScene->max_frames = 1;
 		pScene->mode = 0;//ÎÞÏÞÑ­»·
-		ChanleDataChange(&rgbk,FlashDim,2);
+		LedkToCurrent(&rgbk,FlashDim,2);
 		for(i=0;i<2;i++)
 		{
 			for(j=0;j<LED_NUMS;j++)

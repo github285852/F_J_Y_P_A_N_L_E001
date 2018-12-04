@@ -1,5 +1,6 @@
 .\objects\color_light.o: ..\Source\APP\color_light.c
 .\objects\color_light.o: ..\Source\APP\color_light.h
+.\objects\color_light.o: ..\Source\Driver\mymath.h
 .\objects\color_light.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\math.h
 .\objects\color_light.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\color_light.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdio.h
@@ -68,6 +69,7 @@
 .\objects\color_light.o: ..\Source\HAL\stmflash.h
 .\objects\color_light.o: ..\Source\HAL\timer.h
 .\objects\color_light.o: ..\Source\HAL\wdg.h
+.\objects\color_light.o: ..\Source\HAL\debug.h
 .\objects\color_light.o: ..\Source\Driver\malloc.h
 .\objects\color_light.o: ..\Source\HAL\ec11.h
 .\objects\color_light.o: ..\Source\Driver\menu.h

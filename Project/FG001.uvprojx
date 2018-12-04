@@ -80,9 +80,9 @@
             <nStopB2X>0</nStopB2X>
           </BeforeMake>
           <AfterMake>
-            <RunUserProg1>0</RunUserProg1>
+            <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name>C:\Keil_v5\ARM\ARMCC\bin\fromelf.exe --bin -o ..\Project\Objects\filmgear001.bin ..\Project\Objects\FG001.axf</UserProg1Name>
+            <UserProg1Name>D:\program\keil5\ARM\ARMCC\bin\fromelf.exe --bin -o ..\Project\Objects\filmgear001.bin ..\Project\Objects\FG001.axf</UserProg1Name>
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
@@ -562,6 +562,11 @@
               <FileType>5</FileType>
               <FilePath>..\Source\Driver\gbk_font.h</FilePath>
             </File>
+            <File>
+              <FileName>mymath.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Driver\mymath.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -596,6 +601,11 @@
               <FileName>scene.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\APP\scene.c</FilePath>
+            </File>
+            <File>
+              <FileName>algorithm_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\algorithm_test.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -666,6 +676,11 @@
               <FileName>wdg.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\HAL\wdg.c</FilePath>
+            </File>
+            <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\HAL\debug.c</FilePath>
             </File>
           </Files>
         </Group>

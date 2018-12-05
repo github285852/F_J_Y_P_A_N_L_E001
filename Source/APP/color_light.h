@@ -3,10 +3,36 @@
 
 #include "mymath.h"
 
+#define SPOT01
+
 #define PI	3.141592653589793
 //标准的RGB色坐标
 
 ////LED发出光的色坐标
+#ifdef SPOT01
+
+#define LEDCWX_DEFAULT	0.3247       //0.4438
+#define LEDCWY_DEFAULT	0.3247       //3958
+#define LEDWWX_DEFAULT	0.4558      //0.3069
+#define LEDWWY_DEFAULT	0.4046      //0.3044
+#define LEDWX_DEFAULT	  0.3278
+#define LEDWY_DEFAULT		0.3332
+#define LEDRX_DEFAULT		0.6862
+#define LEDRY_DEFAULT		0.3064
+#define LEDGX_DEFAULT		0.1739
+#define LEDGY_DEFAULT		0.7166
+#define LEDBX_DEFAULT		0.1579 //
+#define LEDBY_DEFAULT		0.0408
+#define LEDYX_DEFAULT		0.5722//Y //0.00783	//。
+#define LEDYY_DEFAULT		0.4248//Y0.4733	// .
+#define LEDAX_DEFAULT		0.5575
+#define LEDAY_DEFAULT		0.4321
+#define LEDLX_DEFUALT		0.4189
+#define LEDLY_DEFAULT		0.5537
+
+
+#else defined(PANLE01)
+
 #define LEDCWX_DEFAULT	0.3247       //0.4438
 #define LEDCWY_DEFAULT	0.3247       //3958
 #define LEDWWX_DEFAULT	0.4558      //0.3069
@@ -22,6 +48,8 @@
 #define LEDBY_DEFAULT		0.0286
 #define LEDYX_DEFAULT		0.5722//Y //0.00783	//。
 #define LEDYY_DEFAULT		0.4248//Y0.4733	// .
+
+#endif
 
 //LED发出光的色坐标
 //#define LEDWWX_DEFAULT	0.4546       //0.4438
@@ -64,6 +92,8 @@ typedef struct{
 	float r;
 	float g;
 	float b;
+	float a;
+	float l;
 	float y;
 	float w;
 	float ww;

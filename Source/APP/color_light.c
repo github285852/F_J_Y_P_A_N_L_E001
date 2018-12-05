@@ -1281,6 +1281,39 @@ void LightCCTOut(unsigned char pos,int offset,float dim,unsigned char pixel)
 
 
 float rgb_w_k = 1;
+
+#ifdef SPOT01
+
+int CoordinateOut(COORD *coord,float dim,unsigned char pixel)
+{
+	int res = 1;
+	RGB ledk;
+	float mode2_could_dim;//CCT mode　混光　能达到的最小亮度，这种显指较好
+	float temp;
+	if(dim<=0.0009)
+	{
+		AllLedPowerOff();
+		return 0;
+	}
+	dim = DIM_MIN + dim*(1-DIM_MIN);//从百分之一开始
+	dim = pow(dim,1.5);//伽马校正
+	res = coordinate_to_RGB(*coord,&rgbk);
+	if(res)
+	{
+		 return res;
+	}
+	ledk = rgbk;
+	if(pixel==0)
+		
+		AllLedPowerOut(&ledk,dim);
+	else
+   LedPowerOut(&ledk,dim,pixel-1);
+	return 0;
+}
+
+#else  defined(PANLE01)
+
+
 int CoordinateOut(COORD *coord,float dim,unsigned char pixel)
 {
 	int res = 1;
@@ -1371,6 +1404,9 @@ int CoordinateOut(COORD *coord,float dim,unsigned char pixel)
    LedPowerOut(&ledk,dim,pixel-1);
 	return 0;
 }
+
+#endif
+
 
 void LightRGBOut(unsigned int R,unsigned int G,unsigned int B,unsigned char pixel)
 {

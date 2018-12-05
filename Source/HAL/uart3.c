@@ -95,14 +95,14 @@ void DMX1_Send(u8 *buf,u16 len)
 		if(retry>200)	return;
 	}
 	PDout(4) = 1;//发送
-	GPIOD->CRL &= ~(0x03<<20); // 通用推挽输出
+	GPIOD->CRL &= 0xFF3FFFFF;// 通用推挽输出
 	PDout(5) = 0;
 	delay_us(190);
 //	TIM5->CNT=0;
 //	while(TIM5->CNT<100);
 	PDout(5) = 1;
 	delay_us(12);
-	GPIOD->CRL |= (0x02<<20); // 复用推挽输出
+	GPIOD->CRL |= (0x02<<22); // 复用推挽输出
 	uart3_dma_send(buf,len);
 }
 void USART2_IRQHandler(void)

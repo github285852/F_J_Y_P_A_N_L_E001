@@ -75,6 +75,8 @@
 .\objects\color_light.o: ..\Source\Driver\menu.h
 .\objects\color_light.o: ..\Source\Driver\key.h
 .\objects\color_light.o: ..\Source\HAL\ledpower.h
+.\objects\color_light.o: ..\Source\spot\spot.h
+.\objects\color_light.o: ..\Source\APP\includes.h
 .\objects\color_light.o: ..\Source\Driver\graphical.h
 .\objects\color_light.o: ..\Source\Driver\st7735s.h
 .\objects\color_light.o: ..\Source\APP\menutask.h

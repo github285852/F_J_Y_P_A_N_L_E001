@@ -54,6 +54,7 @@
 .\objects\ec11.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_core.h
 .\objects\ec11.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_scsi.h
 .\objects\ec11.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_bot.h
+.\objects\ec11.o: ..\Source\Driver\mymath.h
 .\objects\ec11.o: ..\Source\HAL\sys.h
 .\objects\ec11.o: ..\Source\HAL\delay.h
 .\objects\ec11.o: ..\Source\Driver\scheduler.h
@@ -72,8 +73,9 @@
 .\objects\ec11.o: ..\Source\Driver\menu.h
 .\objects\ec11.o: ..\Source\Driver\key.h
 .\objects\ec11.o: ..\Source\APP\color_light.h
-.\objects\ec11.o: ..\Source\Driver\mymath.h
 .\objects\ec11.o: ..\Source\HAL\ledpower.h
+.\objects\ec11.o: ..\Source\spot\spot.h
+.\objects\ec11.o: ..\Source\APP\includes.h
 .\objects\ec11.o: ..\Source\Driver\graphical.h
 .\objects\ec11.o: ..\Source\Driver\st7735s.h
 .\objects\ec11.o: ..\Source\APP\menutask.h

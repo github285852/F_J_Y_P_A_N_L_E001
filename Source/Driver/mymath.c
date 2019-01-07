@@ -332,15 +332,18 @@ int OnLineSegment(coord_f point,coord_f A,coord_f B)
 	float k,b,temp;
 	if( ((point.x>= A.x)&&(point.x<=B.x))||((point.x<= A.x)&&(point.x>=B.x)) )
 	{
-		k = (A.y - B.y)/(A.x - A.x);
+		k = (A.y - B.y)/(A.x - B.x);
 		b = A.y - k*A.x;
 		
-	}
-	else
-	{
 		temp = k*point.x + b;
 		if(ABS(point.y-temp)<0.0001)
 			return 1;
 	}
 	return 0;
 }
+
+float fit(polyfit *pf,float x)
+{
+	return pf->a*x*x*x + pf->b*x*x + pf->c*x +pf->d;
+}
+

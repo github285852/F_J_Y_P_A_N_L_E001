@@ -55,6 +55,7 @@
 .\objects\usbh_usr.o: ..\Source\APP\includes.h
 .\objects\usbh_usr.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\usbh_usr.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\usbh_usr.o: ..\Source\Driver\mymath.h
 .\objects\usbh_usr.o: ..\Source\HAL\delay.h
 .\objects\usbh_usr.o: ..\Source\Driver\scheduler.h
 .\objects\usbh_usr.o: ..\Source\HAL\pwm16.h
@@ -72,8 +73,9 @@
 .\objects\usbh_usr.o: ..\Source\Driver\menu.h
 .\objects\usbh_usr.o: ..\Source\Driver\key.h
 .\objects\usbh_usr.o: ..\Source\APP\color_light.h
-.\objects\usbh_usr.o: ..\Source\Driver\mymath.h
 .\objects\usbh_usr.o: ..\Source\HAL\ledpower.h
+.\objects\usbh_usr.o: ..\Source\spot\spot.h
+.\objects\usbh_usr.o: ..\Source\APP\includes.h
 .\objects\usbh_usr.o: ..\Source\Driver\graphical.h
 .\objects\usbh_usr.o: ..\Source\Driver\st7735s.h
 .\objects\usbh_usr.o: ..\Source\APP\menutask.h

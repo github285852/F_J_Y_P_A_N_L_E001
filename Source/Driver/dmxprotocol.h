@@ -1,8 +1,7 @@
 #ifndef __DMXPROTOCOL_H
 #define __DMXPROTOCOL_H
 
-
-
+#include "includes.h"
 
 #define DMX_M1					0x01
 #define DMX_M2					0x02
@@ -20,21 +19,15 @@
 #define DMX_M14					0x0E
 #define DMX_M15					0x0F
 
-
-
 typedef struct
 {
 	unsigned char dim;
 	unsigned char kvn;
 	unsigned char grn;
 	unsigned char w_c; //在坐标上的权重
-	unsigned char r;
-  unsigned char g;
-	unsigned char b;
-	unsigned char ww;
-	unsigned char cw;
+	unsigned char ledk[LED_CHS];
 	unsigned char reserved[3];
-}CCT_RGBWWCW_8BIT;
+}CCT_LEDK_8BIT;
 
 
 
@@ -62,13 +55,9 @@ typedef struct
 typedef struct
 {
 	unsigned char dim;
-	unsigned char r;
-	unsigned char g;
-	unsigned char b; 
-	unsigned char ww;
-  unsigned char cw;
+	unsigned char ledk[LED_CHS];
 	unsigned char reserved[3];
-}RGBWWCW_8BIT;
+}LEDK_8BIT;
 
 
 typedef struct
@@ -86,12 +75,8 @@ typedef struct
 	uint16_t kvn;
 	uint16_t grn;
 	uint16_t w_c; //在坐标上的权重
-	uint16_t r;
-  uint16_t g;
-	uint16_t b;
-	uint16_t ww;
-	uint16_t cw;
-}CCT_RGBWWCW_16BIT;
+	uint16_t ledk[LED_CHS];
+}CCT_LEDK_16BIT;
 
 
 typedef struct
@@ -118,13 +103,9 @@ typedef struct
 typedef struct
 {
 	uint16_t dim;
-	uint16_t r;
-	uint16_t g;
-	uint16_t b; 
-	uint16_t ww;
-  uint16_t cw;
+	uint16_t ledk[LED_CHS];
 	unsigned char  reserved[2];
-}RGBWWCW_16BIT;
+}LEDK_16BIT;
 
 
 typedef struct
@@ -147,13 +128,9 @@ typedef struct
 	Coarse_Fine kvn;
 	unsigned char grn;
 	unsigned char w_c; //在坐标上的权重
-	Coarse_Fine r;
-  Coarse_Fine g;
-	Coarse_Fine b;
-	Coarse_Fine ww;
-	Coarse_Fine cw;
+	Coarse_Fine ledk[LED_CHS];
 	unsigned char reserved[2];
-}CCT_RGBWWCW_CF;
+}CCT_LEDK_CF;
 
 
 
@@ -181,13 +158,9 @@ typedef struct
 typedef struct
 {
 	Coarse_Fine dim;
-	Coarse_Fine r;
-	Coarse_Fine g;
-	Coarse_Fine b; 
-	Coarse_Fine ww;
-  Coarse_Fine cw;
+	Coarse_Fine ledk[LED_CHS];
 	unsigned char reserved[2];
-}RGBWWCW_CF;
+}LEDK_CF;
 
 
 typedef struct
@@ -201,20 +174,20 @@ typedef struct
 
 typedef union 
 {
-	CCT_RGBWWCW_8BIT cct_rgbwwcw_8bit;
+	CCT_LEDK_8BIT cct_ledk_8bit;
 	CCT_8BIT	cct_8bit;
 	CCT_HSI_8BIT cct_hsi_8bit;
-  RGBWWCW_8BIT rgbwwcw_8bit;
+  LEDK_8BIT ledk_8bit;
 	HSI_8BIT hsi_8bit;
-	CCT_RGBWWCW_16BIT cct_rgbwwcw_16bit;
+	CCT_LEDK_16BIT cct_ledk_16bit;
 	CCT_16BIT cct_16bit;
 	CCT_HSI_16BIT cct_hsi_16bit;
-	RGBWWCW_16BIT rgbwwcw_16bit;
+	LEDK_16BIT ledk_16bit;
 	HSI_16BIT hsi_16bit;
-	CCT_RGBWWCW_CF cct_rgbwwcw_cf;
+	CCT_LEDK_CF cct_ledk_cf;
 	CCT_CF cct_CF;
 	CCT_HSI_CF cct_hsi_cf;
-	RGBWWCW_CF rgbwwcw_cf;
+	LEDK_CF ledk_cf;
 	HSI_CF hsi_cf;
 }DMXData;
 

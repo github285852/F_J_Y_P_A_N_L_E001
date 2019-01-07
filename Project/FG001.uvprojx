@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>Target 1</TargetName>
+      <TargetName>SPOT</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_CL,USE_STDPERIPH_DRIVER,USE_STM3210C_EVAL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Source\APP;..\Source\CORE;..\Source\Driver;..\Source\HAL;..\Source\STM32F10x_FWLib\inc;..\Source\USER;..\Source\STM32_USB_HOST_Library\Core\inc;..\Source\STM32_USB_HOST_Library\Class\MSC\inc;..\Source\STM32_USB_OTG_Driver\inc;..\Source\fat_fs\inc</IncludePath>
+              <IncludePath>..\Source\APP;..\Source\CORE;..\Source\Driver;..\Source\HAL;..\Source\STM32F10x_FWLib\inc;..\Source\USER;..\Source\STM32_USB_HOST_Library\Core\inc;..\Source\STM32_USB_HOST_Library\Class\MSC\inc;..\Source\STM32_USB_OTG_Driver\inc;..\Source\fat_fs\inc;..\Source\spot</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -593,11 +593,6 @@
               <FilePath>..\Source\APP\menutask.c</FilePath>
             </File>
             <File>
-              <FileName>gui.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Source\APP\gui.c</FilePath>
-            </File>
-            <File>
               <FileName>scene.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\APP\scene.c</FilePath>
@@ -761,6 +756,26 @@
               <FileName>usb_hcd_int.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\STM32_USB_OTG_Driver\src\usb_hcd_int.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>spot</GroupName>
+          <Files>
+            <File>
+              <FileName>spot_gui.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\spot\spot_gui.c</FilePath>
+            </File>
+            <File>
+              <FileName>spot_color_light.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\spot\spot_color_light.c</FilePath>
+            </File>
+            <File>
+              <FileName>spot.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\spot\spot.c</FilePath>
             </File>
           </Files>
         </Group>

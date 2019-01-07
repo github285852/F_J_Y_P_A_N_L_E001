@@ -6,7 +6,8 @@ int menu_pos = 0, pre_pos = 0;
 extern  u8 text_pos;
 struct MenuTyp *current_menu=NULL;
 struct MenuTyp *pre_menu = NULL;
-void (*MenuDuty)(void);
+void (*gui_handle)(void);
+void (*gui_displaytask)(void) = NULL;
 unsigned char menu_key;
 MenuState menu_state;
 Picture MenuPic;
@@ -25,6 +26,8 @@ void MenuBuf_free(void)
 //		MENU_BUF = NULL;
 //	}
 }
+//当退出菜单时，运行的界面
+
 void MenuKeyTask()
 {
 //判断为菜单按键
@@ -33,6 +36,7 @@ void MenuKeyTask()
 		//同级菜单之间的切换
 		case Up_Key: //up
 		{
+			menu_state = SelectMenu;
 			if(current_menu->pLeft != NULL)
 			{
 				current_menu = current_menu->pLeft;
@@ -41,11 +45,13 @@ void MenuKeyTask()
 				{
 					menu_pos = 0;
 				}
+				gui_handle = MenuSelectDisplay;
 			}
 		}
 		break;
 		case Down_Key://down
 		{
+			menu_state = SelectMenu;
 			if(current_menu->pRight != NULL)
 			{
 				current_menu = current_menu->pRight;
@@ -54,12 +60,14 @@ void MenuKeyTask()
 				{
 					menu_pos = DIS_MAX_LINE-1;
 				}
+				gui_handle = MenuSelectDisplay;
 			}
 		}
 		break;
 		//不同级菜单之间的切换
 		case Back_Key://back
 		{
+			menu_state = SelectMenu;
 			if(current_menu != NULL)
 			{
 				if(current_menu->pParent != NULL)
@@ -67,32 +75,44 @@ void MenuKeyTask()
 					current_menu = current_menu->pParent;
 					menu_pos = current_menu->pos;
 				}
+				gui_handle = MenuSelectDisplay;
 			}
 			Sys.menu_mask = 0;
 		}
 		break;
 		case Enter_Key://enter
 		{	
+			gui_handle = MenuSelectDisplay;
+			menu_state = SelectMenu;
 			if(current_menu != NULL)
 			{
+				//遇到BACK选项返回
+				if(strcmp((char *)current_menu->EnName,"BACK")==0)
+				{
+					if(current_menu->pParent != NULL)
+					{
+						current_menu = current_menu->pParent;
+						menu_pos = current_menu->pos;
+					}
+					break;
+				}
 				if(current_menu->pChild != NULL)
 				{
 					current_menu->pos = menu_pos;
 					current_menu = current_menu->pChild;
-					if((current_menu->pMenuTaskInit != NULL)&&(current_menu->pChild == NULL))
+					menu_pos = 0;
+				}
+				else //进入执行界面。
+				{
+					if(current_menu->pMenuTaskInit != NULL)
 					{
 						current_menu->pMenuTaskInit();
 					}
-					//pre_pos = menu_pos;
-					menu_pos = 0;
-				}
-				else
-				{
-					if(current_menu->pTaskKeyEnter != NULL)
+					if(current_menu->pMneuTask != NULL)
 					{
-						current_menu->pTaskKeyEnter();
+						gui_handle = current_menu->pMneuTask;
+						menu_state = HandleGui;
 					}
-					current_menu = current_menu->pParent;//返回上级菜单
 				}
 			}
 			else
@@ -104,33 +124,31 @@ void MenuKeyTask()
 		default:break;
 	}
 	menu_key = 0;
-	if(current_menu != NULL)
-	{
-		
-		if(current_menu->pChild == NULL)//为最低级目录
-		{
-			if(current_menu->pMneuTask != NULL)
-			{
-				current_menu->pMneuTask();//在界面处理状态下，每次有输入，就会处理
-			}
-			menu_state = HandleGui;
-		}
-		else
-		{
-			MenuSelectDisplay();
-			menu_state = SelectMenu;
-		}
-	}
-	else
+	if(current_menu == NULL)
 	{
 		menu_state = HandleGui;
+		gui_handle = gui_displaytask;
 		menu_pos = 0;
 	}
+	if(gui_handle != NULL)
+		gui_handle();
+}
+/*
+FUNCITON:建立通常显示的任务
+INPUT:任务函数指针
+*/
+void CreateNormalDisplayTask( void *function)
+{
+	gui_displaytask = function;
 }
 
 void Menu_back(void)
 {
-	//current_menu = current_menu->pParent;
+//	if( current_menu != NULL)
+//	{
+//		current_menu = current_menu->pParent;
+//	}
+	menu_key =  Back_Key;
 }
 void Menu_init(void)
 {

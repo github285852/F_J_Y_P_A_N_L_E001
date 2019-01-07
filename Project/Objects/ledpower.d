@@ -1,7 +1,6 @@
 .\objects\ledpower.o: ..\Source\HAL\ledpower.c
 .\objects\ledpower.o: ..\Source\HAL\ledpower.h
-.\objects\ledpower.o: ..\Source\APP\color_light.h
-.\objects\ledpower.o: ..\Source\Driver\mymath.h
+.\objects\ledpower.o: ..\Source\spot\spot.h
 .\objects\ledpower.o: ..\Source\APP\includes.h
 .\objects\ledpower.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\ledpower.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\string.h
@@ -57,6 +56,7 @@
 .\objects\ledpower.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_core.h
 .\objects\ledpower.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_scsi.h
 .\objects\ledpower.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_bot.h
+.\objects\ledpower.o: ..\Source\Driver\mymath.h
 .\objects\ledpower.o: ..\Source\HAL\sys.h
 .\objects\ledpower.o: ..\Source\HAL\delay.h
 .\objects\ledpower.o: ..\Source\Driver\scheduler.h
@@ -74,6 +74,8 @@
 .\objects\ledpower.o: ..\Source\HAL\ec11.h
 .\objects\ledpower.o: ..\Source\Driver\menu.h
 .\objects\ledpower.o: ..\Source\Driver\key.h
+.\objects\ledpower.o: ..\Source\APP\color_light.h
+.\objects\ledpower.o: ..\Source\HAL\ledpower.h
 .\objects\ledpower.o: ..\Source\Driver\graphical.h
 .\objects\ledpower.o: ..\Source\Driver\st7735s.h
 .\objects\ledpower.o: ..\Source\APP\menutask.h
@@ -81,5 +83,7 @@
 .\objects\ledpower.o: ..\Source\Driver\picture_data.h
 .\objects\ledpower.o: ..\Source\APP\gui.h
 .\objects\ledpower.o: ..\Source\Driver\dmxprotocol.h
+.\objects\ledpower.o: ..\Source\APP\includes.h
 .\objects\ledpower.o: ..\Source\APP\scene.h
+.\objects\ledpower.o: ..\Source\spot\spot.h
 .\objects\ledpower.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\math.h

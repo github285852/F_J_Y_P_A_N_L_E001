@@ -136,6 +136,7 @@ int main(void)
 	//显示
 	MenuBuf_malloc();
 	MenuPic.data = MENU_BUF;
+	Set_display_option = 3; //不显示选项
 	GUI_DisplayInit();
 	while(DMAING);
 	MenuBuf_free();

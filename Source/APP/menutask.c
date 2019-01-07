@@ -2,6 +2,8 @@
 #include "stdio.h"
 #include "stdlib.h"
 
+u8 Set_display_option = 0;
+u8 param_select = 0; //代表要修改第几个参数
 void point_out(void)
 {
 	if(Sys.Config.english)
@@ -13,7 +15,7 @@ void point_out(void)
 
 //界面执行函数
 //////////////////////////////////////////
-void HSIDisplay(void)
+void HSIDisplay(u8 pos)
 {
 	int i,offset;
 	float dim;
@@ -21,21 +23,24 @@ void HSIDisplay(void)
 	offset = (RECT_H-16)/2;
 	Picture_Fill(MenuPic,MENU_BACK_COLOR);
 	for(i=0;i<DIS_MAX_LINE;i++)
-		Picture_FillRect(MenuPic,Rect[i],OPTION_COLOR);
-	
-	BACK_COLOR = OPTION_COLOR;
+	{
+		if(pos == i )
+			Picture_FillRect(MenuPic,Rect[i],SELECT_COLOR);
+		else
+			Picture_FillRect(MenuPic,Rect[i],OPTION_COLOR);
+	}
 	POINT_COLOR = BLACK;
 	if(Sys.Config.english)
 		sprintf(buf,"Hue:%d",Sys.Config.hsi.h);
 	else
 		sprintf(buf,"色调:%d",Sys.Config.hsi.h);
-	Picture_ShowString(MenuPic,Rect[0].x0+STRING_OFFSET,Rect[0].y0+offset,100,16,16,buf,0);
+	Picture_ShowString(MenuPic,Rect[0].x0+STRING_OFFSET,Rect[0].y0+offset,100,16,16,buf,1);
 	i = Sys.Config.hsi.s*100;
 	if(Sys.Config.english)
 		sprintf(buf,"Sat:%d%%",i);
 	else
 		sprintf(buf,"饱和度:%d%%",i);
-	Picture_ShowString(MenuPic,Rect[1].x0+STRING_OFFSET-8,Rect[1].y0+offset,100,16,16,buf,0);
+	Picture_ShowString(MenuPic,Rect[1].x0+STRING_OFFSET,Rect[1].y0+offset,100,16,16,buf,1);
 	dim = Sys.Config.hsi.i*100;
 	if(Sys.Config.english)
 		sprintf(buf,"Dim:%0.1f%%",dim);
@@ -46,7 +51,7 @@ void HSIDisplay(void)
 		else
 			sprintf(buf,"亮度:100%%");
 	}
-	Picture_ShowString(MenuPic,Rect[2].x0+STRING_OFFSET,Rect[2].y0+offset,100,16,16,buf,0);
+	Picture_ShowString(MenuPic,Rect[2].x0+STRING_OFFSET,Rect[2].y0+offset,100,16,16,buf,1);
 	LCD_Fill_Picture(MENU_POS_X,MENU_POS_Y,MenuPic);
 }
 void HSIInitTask(void)
@@ -56,103 +61,123 @@ void HSIInitTask(void)
 	else
 		HeadDisplay("HSI模式");
 	while(DMAING);
-	HSIDisplay();
+	if(Set_display_option)
+	{
+		param_select = Set_display_option;
+		Set_display_option = 0;
+	}
+	else
+	{
+		param_select = 0;
+	}
+	HSIDisplay(param_select);
 	Sys.Config.lightmode = HSI_M;
 	ColorLightHSIOut(Sys.Config.hsi,0);
+
 }
+
 u8 EC11_speed_cnt;
 void HSITask(void)
 {
-//	if(pic.data == NULL)
-//	{
-//		return;
-//	}
-	if(ec11_pos[0]|ec11_pos[1]|ec11_pos[2])
+	if(ec11_pos[2])
 	{		
-		if(ec11_pos[0])
+		switch(param_select)
 		{
-			if(EC11_speed>45)
+			case 0:
 			{
-				EC11_speed_cnt++;
-				//if(EC11_speed_cnt>2)//消抖
+				if(EC11_speed>45)
 				{
-					Sys.Config.hsi.h -= ec11_pos[0]*0.05*EC11_speed;
+					EC11_speed_cnt++;
+					//if(EC11_speed_cnt>2)//消抖
+					{
+						Sys.Config.hsi.h -= ec11_pos[2]*0.05*EC11_speed;
+						EC11_speed_cnt = 0;
+					}
+				}
+				else
+				{
+					Sys.Config.hsi.h -= ec11_pos[2];
 					EC11_speed_cnt = 0;
 				}
-			}
-			else
+				if(Sys.Config.hsi.h>359)
+					Sys.Config.hsi.h = 0;
+				if(Sys.Config.hsi.h<0)
+					Sys.Config.hsi.h = 359;
+				break;
+			}	
+			case 1:
 			{
-				Sys.Config.hsi.h -= ec11_pos[0];
-				EC11_speed_cnt = 0;
-			}
-			if(Sys.Config.hsi.h>359)
-				Sys.Config.hsi.h = 0;
-			if(Sys.Config.hsi.h<0)
-				Sys.Config.hsi.h = 359;
-			ec11_pos[0] = 0;
-		}	
-		if(ec11_pos[1])
-		{
-			if(EC11_speed>45)
-			{
-				EC11_speed_cnt++;
-				//if(EC11_speed_cnt>2)
+				if(EC11_speed>45)
 				{
-					Sys.Config.hsi.s -= ec11_pos[1]*0.0005*EC11_speed;
-					EC11_speed_cnt = 0;
+					EC11_speed_cnt++;
+					//if(EC11_speed_cnt>2)
+					{
+						Sys.Config.hsi.s -= ec11_pos[2]*0.0005*EC11_speed;
+						EC11_speed_cnt = 0;
+					}
 				}
-			}
-			else
-			{
-				EC11_speed_cnt = 0;
-				Sys.Config.hsi.s -= ec11_pos[1]*0.01;
-			}
-			if(Sys.Config.hsi.s>1)
-				Sys.Config.hsi.s = 1;
-			if(Sys.Config.hsi.s<0)
-				Sys.Config.hsi.s = 0;
-			ec11_pos[1] = 0;
-		}		
-		if(ec11_pos[2])
-		{
-			if(EC11_speed>25)
-			{
-				EC11_speed_cnt++;
-			//	if(EC11_speed_cnt>2)
+				else
 				{
-					Sys.Config.hsi.i -= ec11_pos[2]*0.0005*EC11_speed;
 					EC11_speed_cnt = 0;
+					Sys.Config.hsi.s -= ec11_pos[2]*0.01;
 				}
+				if(Sys.Config.hsi.s>1)
+					Sys.Config.hsi.s = 1;
+				if(Sys.Config.hsi.s<0)
+					Sys.Config.hsi.s = 0;
+				break;
 			}
-			else
+			case 2:
 			{
-				EC11_speed_cnt = 0;
-				Sys.Config.hsi.i -= ec11_pos[2]*0.001;
+				if(EC11_speed>25)
+				{
+					EC11_speed_cnt++;
+				//	if(EC11_speed_cnt>2)
+					{
+						Sys.Config.hsi.i -= ec11_pos[2]*0.0005*EC11_speed;
+						EC11_speed_cnt = 0;
+					}
+				}
+				else
+				{
+					EC11_speed_cnt = 0;
+					Sys.Config.hsi.i -= ec11_pos[2]*0.001;
+				}
+				if(Sys.Config.hsi.i>1)
+					Sys.Config.hsi.i = 1;
+				if(Sys.Config.hsi.i<0)
+					Sys.Config.hsi.i = 0;
+				break;
 			}
-			if(Sys.Config.hsi.i>1)
-				Sys.Config.hsi.i = 1;
-			if(Sys.Config.hsi.i<0)
-				Sys.Config.hsi.i = 0;
-			ec11_pos[2] = 0;
+			default:break;
 		}
-		HSIDisplay();//刷新界面
+		ec11_pos[2] = 0;
+		HSIDisplay(param_select);//刷新界面
 		ColorLightHSIOut(Sys.Config.hsi,0);
 	}
-	if(key_value==S10)
+	if(key_value==PSELECT_KEY)
 	{
-		Menu_back();
+		param_select++;
+		if(param_select>=3)
+			Menu_back();
+		HSIDisplay(param_select);//刷新界面
 	}
 }
 
 ////////////////////////////////////////////////////////////////////CCT
-void CCTDisplay(void)
+void CCTDisplay(u8 pos)
 {
 	int i,offset;
 	char buf[15];
 	offset = (RECT_H-16)/2;
 	Picture_Fill(MenuPic,MENU_BACK_COLOR);
 	for(i=0;i<DIS_MAX_LINE;i++)
-		Picture_FillRect(MenuPic,Rect[i],OPTION_COLOR);
+	{
+		if(pos == i )
+			Picture_FillRect(MenuPic,Rect[i],SELECT_COLOR);
+		else
+			Picture_FillRect(MenuPic,Rect[i],OPTION_COLOR);
+	}
 	BACK_COLOR = OPTION_COLOR;
 	POINT_COLOR = BLACK;
 	Sys.Config.cct.kvn = cct_tab[Sys.Config.cct.pos].num;
@@ -160,13 +185,13 @@ void CCTDisplay(void)
 		sprintf(buf,"Kvn:%dK",Sys.Config.cct.kvn*100);
 	else
 		sprintf(buf,"色温:%dK",Sys.Config.cct.kvn*100);
-	Picture_ShowString(MenuPic,Rect[0].x0+STRING_OFFSET,Rect[0].y0+offset,100,16,16,buf,0);
+	Picture_ShowString(MenuPic,Rect[0].x0+STRING_OFFSET,Rect[0].y0+offset,100,16,16,buf,1);
 	memset(buf,0,15);
 	if(Sys.Config.english)
 		sprintf(buf,"Grn:%d",Sys.Config.cct.grn);
 	else
 		sprintf(buf,"绿偏:%d",Sys.Config.cct.grn);
-	Picture_ShowString(MenuPic,Rect[1].x0+STRING_OFFSET,Rect[1].y0+offset,100,16,16,buf,0);
+	Picture_ShowString(MenuPic,Rect[1].x0+STRING_OFFSET,Rect[1].y0+offset,100,16,16,buf,1);
 	memset(buf,0,15);
 	if(Sys.Config.english)
 		sprintf(buf,"Dim:%0.1f%%",Sys.Config.cct.dim*100);
@@ -178,7 +203,7 @@ void CCTDisplay(void)
 			sprintf(buf,"亮度:100%%");
 	}
 	//	sprintf(buf,"亮度:%0.1f%%",Sys.Config.cct.dim*100);
-	Picture_ShowString(MenuPic,Rect[2].x0+STRING_OFFSET,Rect[2].y0+offset,100,16,16,buf,0);
+	Picture_ShowString(MenuPic,Rect[2].x0+STRING_OFFSET,Rect[2].y0+offset,100,16,16,buf,1);
 	LCD_Fill_Picture(MENU_POS_X,MENU_POS_Y,MenuPic);
 }
 
@@ -189,7 +214,16 @@ void CCTInitTask(void)
 	else
 		HeadDisplay("CCT模式");//CCT MODE
 	LightCCTOut(Sys.Config.cct.pos,Sys.Config.cct.grn,Sys.Config.cct.dim,0);
-	CCTDisplay();
+	if(Set_display_option)
+	{
+		param_select = Set_display_option;
+		Set_display_option = 0;
+	}
+	else
+	{
+		param_select = 0;
+	}
+	CCTDisplay(param_select);
 	Sys.Config.lightmode = CCT_M;
 }
 
@@ -199,125 +233,145 @@ void CCTTask(void)
 //	{
 //		return;
 //	}
-	if(ec11_pos[0]|ec11_pos[1]|ec11_pos[2])
+	if(ec11_pos[2])
 	{
-		if(ec11_pos[0])
+		switch(param_select)
 		{
-			Sys.Config.cct.pos -= (ec11_pos[0]*1);
-			if(Sys.Config.cct.pos>Sys.Config.cct.max_pos)
-				Sys.Config.cct.pos = Sys.Config.cct.max_pos;
-			if(Sys.Config.cct.pos<0)
-				Sys.Config.cct.pos = 0;
-			ec11_pos[0] = 0;
-		}	
-		if(ec11_pos[1])
-		{
-			if(EC11_speed>30)
+			case 0:
 			{
-				EC11_speed_cnt++;
-			//	if(EC11_speed_cnt>2)
+				Sys.Config.cct.pos -= (ec11_pos[2]*1);
+				if(Sys.Config.cct.pos>Sys.Config.cct.max_pos)
+					Sys.Config.cct.pos = Sys.Config.cct.max_pos;
+				if(Sys.Config.cct.pos<0)
+					Sys.Config.cct.pos = 0;
+				break;
+			}
+			case 1:
+			{
+				if(EC11_speed>30)
 				{
-					Sys.Config.cct.grn  -= ec11_pos[1]*0.05*EC11_speed;
+					EC11_speed_cnt++;
+				//	if(EC11_speed_cnt>2)
+					{
+						Sys.Config.cct.grn  -= ec11_pos[2]*0.05*EC11_speed;
+						EC11_speed_cnt = 0;
+					}
+				}
+				else
+				{
+					Sys.Config.cct.grn  -= ec11_pos[2];
 					EC11_speed_cnt = 0;
 				}
-			}
-			else
+				if(Sys.Config.cct.grn>100)
+				{
+					Sys.Config.cct.grn = 100;
+				}else if(Sys.Config.cct.grn<-100)
+				{
+					Sys.Config.cct.grn = -100;
+				}
+
+				break;
+			}	
+			case 2:
 			{
-				Sys.Config.cct.grn  -= ec11_pos[1];
-				EC11_speed_cnt = 0;
-			}
-			if(Sys.Config.cct.grn>100)
-			{
-				Sys.Config.cct.grn = 100;
-			}else if(Sys.Config.cct.grn<-100)
-			{
-				Sys.Config.cct.grn = -100;
-			}
-			ec11_pos[1] = 0;
-		}	
-		if(ec11_pos[2])
-		{
-			if(EC11_speed>25)
-			{
-				EC11_speed_cnt++;
-			//	if(EC11_speed_cnt>2)
+				if(EC11_speed>25)
+				{
+					EC11_speed_cnt++;
+				//	if(EC11_speed_cnt>2)
+					{
+						EC11_speed_cnt = 0;
+						Sys.Config.cct.dim -= ec11_pos[2]*0.0005*EC11_speed;
+					}
+				}
+				else
 				{
 					EC11_speed_cnt = 0;
-					Sys.Config.cct.dim -= ec11_pos[2]*0.0005*EC11_speed;
+					Sys.Config.cct.dim -= ec11_pos[2]*0.001;
 				}
-			}
-			else
-			{
-				EC11_speed_cnt = 0;
-				Sys.Config.cct.dim -= ec11_pos[2]*0.001;
-			}
-			if(Sys.Config.cct.dim>1)
-			{
-				Sys.Config.cct.dim = 1;
-			}
-			else if(Sys.Config.cct.dim<0)
-			{
-				Sys.Config.cct.dim = 0;
-			}
-			ec11_pos[2] = 0;
+				if(Sys.Config.cct.dim>1)
+				{
+					Sys.Config.cct.dim = 1;
+				}
+				else if(Sys.Config.cct.dim<0)
+				{
+					Sys.Config.cct.dim = 0;
+				}
+				break;
+			}	
+			default :break;
 		}
 		LightCCTOut(Sys.Config.cct.pos,Sys.Config.cct.grn,Sys.Config.cct.dim,0);
-		CCTDisplay();
+		CCTDisplay(param_select);
+		ec11_pos[2] = 0;	
 	}
-	if(key_value==S10)
+	if(key_value==PSELECT_KEY)
 	{
-		Menu_back();
+		param_select++;
+		if(param_select>=3)
+			Menu_back();
+		CCTDisplay(param_select);
 	}
 }
 
 //////////////////////////////////////////////////////GEL
 
-void GELDisplay(void)
+void GELDisplay(u8 pos)
 {
 	int i;
 	char buf[50];
 	Picture_Fill(MenuPic,MENU_BACK_COLOR);
-	BACK_COLOR = OPTION_COLOR;
 	POINT_COLOR = BLACK;
 	RECT rect[3]={
 	{0,0,MENU_W,20},
 	{0,24,MENU_W,76},
 	{0,80,MENU_W,100},
 	};
-	
-	for(i=0;i<3;i++)
-		Picture_FillRect(MenuPic,rect[i],OPTION_COLOR);
+	for(i=0;i<DIS_MAX_LINE;i++)
+	{
+		if(pos == i )
+			Picture_FillRect(MenuPic,rect[i],SELECT_COLOR);
+		else
+			Picture_FillRect(MenuPic,rect[i],OPTION_COLOR);
+	}
 	if(Sys.Config.english)
 	{
 		if(Sys.Config.gel.source)
 		{
-			Picture_ShowStringInRectCenter(MenuPic,rect[0],0,16,"SOURCE:DAY LIGHT");
+			Picture_ShowStringInRectCenter(MenuPic,rect[0],1,16,"SOURCE:DAY LIGHT");
 		}
 		else
 		{
-			Picture_ShowStringInRectCenter(MenuPic,rect[0],0,16,"SOURCE:TUNGSTEN");
+			Picture_ShowStringInRectCenter(MenuPic,rect[0],1,16,"SOURCE:TUNGSTEN");
 		}
 		sprintf(buf,"GEL:%s",GEL_TAB[Sys.Config.gel.number].NAME[0]);
-		Picture_ShowString(MenuPic,rect[1].x0+16,rect[1].y0+1,MENU_W,16,16,buf,0);
-		Pictrue_printf(&MenuPic,rect[1].x0+1,rect[1].y0+17,16,GEL_TAB[Sys.Config.gel.number].NAME[1]);
+		Picture_ShowString(MenuPic,rect[1].x0+16,rect[1].y0+1,MENU_W,16,16,buf,1);
+		if(pos == 1)
+			BACK_COLOR = SELECT_COLOR;
+		else
+			BACK_COLOR = OPTION_COLOR;
+		Pictrue_printf(&MenuPic,rect[1].x0+1,rect[1].y0+17,16,(char *)GEL_TAB[Sys.Config.gel.number].NAME[1]);
 		sprintf(buf,"DIM:%0.1f%%",Sys.Config.gel.dim*100);
-		Picture_ShowStringInRectCenter(MenuPic,rect[2],0,16,buf);
+		Picture_ShowStringInRectCenter(MenuPic,rect[2],1,16,buf);
 	}
 	else
 	{
 		if(Sys.Config.gel.source)
 		{
-			Picture_ShowStringInRectCenter(MenuPic,rect[0],0,16,"光源:日光灯");
+			Picture_ShowStringInRectCenter(MenuPic,rect[0],1,16,"光源:日光灯");
 		}
 		else
 		{
-			Picture_ShowStringInRectCenter(MenuPic,rect[0],0,16,"光源:钨丝灯");
+			Picture_ShowStringInRectCenter(MenuPic,rect[0],1,16,"光源:钨丝灯");
 		}
 		sprintf(buf,"GEL:%s",GEL_TAB[Sys.Config.gel.number].NAME[0]);
-		Picture_ShowString(MenuPic,rect[1].x0+16,rect[1].y0+1,MENU_W,16,16,buf,0);
-		Pictrue_printf(&MenuPic,rect[1].x0+1,rect[1].y0+17,16,GEL_TAB[Sys.Config.gel.number].NAME[1]);
+		Picture_ShowString(MenuPic,rect[1].x0+16,rect[1].y0+1,MENU_W,16,16,buf,1);
+		if(pos == 1)
+			BACK_COLOR = SELECT_COLOR;
+		else
+			BACK_COLOR = OPTION_COLOR;
+		Pictrue_printf(&MenuPic,rect[1].x0+1,rect[1].y0+17,16,(char *)GEL_TAB[Sys.Config.gel.number].NAME[1]);
 		sprintf(buf,"亮度:%0.1f%%",Sys.Config.gel.dim*100);
-		Picture_ShowStringInRectCenter(MenuPic,rect[2],0,16,buf);
+		Picture_ShowStringInRectCenter(MenuPic,rect[2],1,16,buf);
 	}
 	LCD_Fill_Picture(MENU_POS_X,MENU_POS_Y,MenuPic);
 }
@@ -329,74 +383,90 @@ void GELInitTask(void)
 	else
 		HeadDisplay("GEL模式");
 	LightGELOut(&Sys.Config.gel,0);
-	GELDisplay();
+	if(Set_display_option)
+	{
+		param_select = Set_display_option;
+		Set_display_option = 0;
+	}
+	else
+	{
+		param_select = 0;
+	}	
+	GELDisplay(param_select);
 	Sys.Config.lightmode = GEL_M;
 }
 
 void GELTask(void)
 {
 	int temp;
-	if(ec11_pos[0]|ec11_pos[1]|ec11_pos[2])
+	if(ec11_pos[2])
 	{
-		if(ec11_pos[2])//dim
+		switch(param_select)
 		{
-			if(EC11_speed>25)
+			case 0:			
 			{
-				EC11_speed_cnt++;
-			//	if(EC11_speed_cnt>2)
+				if(Sys.Config.gel.source)
+				{
+					Sys.Config.gel.source = 0;
+				}
+				else
+				{
+					Sys.Config.gel.source = 1;
+				}
+				break;
+			}	
+			case 2:
+			{
+				if(EC11_speed>25)
+				{
+					EC11_speed_cnt++;
+				//	if(EC11_speed_cnt>2)
+					{
+						EC11_speed_cnt = 0;
+						Sys.Config.gel.dim -= ec11_pos[2]*0.0005*EC11_speed;
+					}
+				}
+				else
 				{
 					EC11_speed_cnt = 0;
-					Sys.Config.gel.dim -= ec11_pos[2]*0.0005*EC11_speed;
+					Sys.Config.gel.dim -= ec11_pos[2]*0.001;
 				}
+				if(Sys.Config.gel.dim>1)
+				{
+					Sys.Config.gel.dim = 1;
+				}
+				else if(Sys.Config.gel.dim<0)
+				{
+					Sys.Config.gel.dim = 0;
+				}	
+				break;
 			}
-			else
+			case 1:
 			{
-				EC11_speed_cnt = 0;
-				Sys.Config.gel.dim -= ec11_pos[2]*0.001;
+				temp = Sys.Config.gel.number+0;
+				temp -= (int)ec11_pos[2]*1;
+				if(temp > (Sys.max_gel_number-1))
+				{
+					temp = Sys.max_gel_number-1;
+				}
+				else if(temp<0)
+				{
+					temp = 0;
+				}
+				Sys.Config.gel.number  = (unsigned char)temp;
+				break;				
 			}
-			if(Sys.Config.gel.dim>1)
-			{
-				Sys.Config.gel.dim = 1;
-			}
-			else if(Sys.Config.gel.dim<0)
-			{
-				Sys.Config.gel.dim = 0;
-			}
-			ec11_pos[2] = 0;	
-		}			
-		if(ec11_pos[0])
-		{
-			if(Sys.Config.gel.source)
-			{
-				Sys.Config.gel.source = 0;
-			}
-			else
-			{
-				Sys.Config.gel.source = 1;
-			}
-			ec11_pos[0] = 0;
-		}	
-		if(ec11_pos[1])
-		{			
-			temp = Sys.Config.gel.number+0;
-			temp -= (int)ec11_pos[1]*1;
-			if(temp > (Sys.max_gel_number-1))
-			{
-				temp = Sys.max_gel_number-1;
-			}
-			else if(temp<0)
-			{
-				temp = 0;
-			}
-			Sys.Config.gel.number  = (unsigned char)temp;
-			ec11_pos[1] = 0;
-		}	
+		}
 		LightGELOut(&Sys.Config.gel,0);
-		GELDisplay();
+		GELDisplay(param_select);
+		ec11_pos[2] = 0;
 	}
-	if(key_value==S10)
+	if(key_value==PSELECT_KEY)
 	{
-		Menu_back();
+		param_select++;
+		if(param_select>=3)
+			Menu_back();
+		GELDisplay(param_select);
 	}
 }
 
@@ -502,7 +572,7 @@ void RGBTask(void)
 			if(Sys.Config.rgb.b>10000)
 			{
 				Sys.Config.rgb.b = 10000;
-			}else if(Sys.Config.rgb.b<0)
+			}else if(Sys.Config.rgb.b<0.0)
 			{
 				Sys.Config.rgb.b = 0;
 			}
@@ -511,7 +581,7 @@ void RGBTask(void)
 		LightRGBOut(Sys.Config.rgb.r,Sys.Config.rgb.g,Sys.Config.rgb.b,0xff);
 		RGBDisplay();
 	}
-	if(key_value==S10)
+	if(key_value==PSELECT_KEY)
 	{
 		Menu_back();
 	}
@@ -527,6 +597,354 @@ void FreshMenu(void)
 	LCD_Fill_Picture(MENU_POS_X,MENU_POS_Y,MenuPic);
 }
 
+void SceneBegain(SceneData *pscene);
+SceneData *pscene;
+SceneData scendatabuf;
+extern RGB rgbk;
+//闪烁场景
+float FlashDim = 0.5;
+u16 FlashTimOn = 500;
+u16 FlashTimOff = 500;
+u8 flash_flg = 0;
+
+void SceneBack(void)
+{
+	SceneTimDisable();
+//	myfree(SRAMIN,pscene);
+	pscene = 0;
+}
+
+void LoadFlashData(void)
+{
+	int i,j;
+	u16 current[LED_CHS];
+
+//	if(pscene == NULL)
+//		pscene = mymalloc(SRAMIN,sizeof(SceneData)); //
+	pscene = &scendatabuf;
+	if(pscene != NULL)
+	{
+		pscene->max_frames = 1;
+		pscene->mode = 0;//无限循环
+		MixLightKToCurrent((float *)&rgbk,FlashDim,current);
+		for(i=0;i<2;i++)
+		{
+			for(j=0;j<LED_NUMS;j++)
+				pscene->frame[0].ch[i][j] = current[j];
+			
+			for(j=0;j<LED_NUMS;j++)
+				pscene->frame[1].ch[i][j] = 0;
+			
+			pscene->frame[0].tim = FlashTimOn;
+			pscene->frame[1].tim = FlashTimOff;
+		}
+	}
+	else
+	{
+		Debug_printf(">>SceneFlashInit:mymalloc()fail\r\n");
+	}
+}
+
+void SceneFlashInit(void)
+{
+	LoadFlashData();
+	//SceneBegain(pscene);
+	Sys.Config.lightmode = SCENE_M;
+	Sys.Config.scene.num = 1;
+	Sys.menu_mask = 1;
+	flash_flg = 0;
+	param_select = 0;
+}
+
+void SceneFlashTask(void)//50 ms
+{
+	ClearMenu(OPTION_COLOR);
+	BACK_COLOR = OPTION_COLOR;
+	POINT_COLOR = BLACK;
+	
+	if(ec11_pos[2])
+	{
+		switch(param_select)
+		{
+			case 0:
+			{
+				if(EC11_speed>25)
+				{
+					FlashTimOn -= ec11_pos[2]*0.5*EC11_speed;
+				}
+				else
+				{
+
+					FlashTimOn -= ec11_pos[2];
+				}
+				if(FlashTimOn<FRAME_MIN_T)
+				{
+					FlashTimOn = FRAME_MIN_T;
+				}
+				break;
+			}
+			case 1:
+			{
+				if(EC11_speed>25)
+				{
+					FlashTimOff -= ec11_pos[2]*0.5*EC11_speed;
+				}
+				else
+				{
+
+					FlashTimOff -= ec11_pos[2];
+				}
+				if(FlashTimOff<FRAME_MIN_T)
+				{
+					FlashTimOff = FRAME_MIN_T;
+				}			
+				break;
+			}
+			case 2:
+			{
+				if(EC11_speed>25)
+				{
+					FlashDim -= ec11_pos[2]*0.0005*EC11_speed;
+				}
+				else
+				{
+					FlashDim -= ec11_pos[2]*0.001;
+				}
+				if(FlashDim>1)
+				{
+					FlashDim = 1;
+				}
+				else if(FlashDim<0)
+				{
+					FlashDim = 0;
+				}
+				break;
+			}
+			default :break;	
+		}
+		LoadFlashData();
+		ec11_pos[2] = 0;
+	}
+	Pictrue_printf(&MenuPic,0,0,16,	"  Flash");
+	if(param_select == 0)
+			BACK_COLOR = SELECT_COLOR;
+	else
+			BACK_COLOR = OPTION_COLOR;
+	Pictrue_printf(&MenuPic,0,16,16,"  ON:%dms         ",FlashTimOn);
+	if(param_select == 1)
+			BACK_COLOR = SELECT_COLOR;
+	else
+			BACK_COLOR = OPTION_COLOR;
+	Pictrue_printf(&MenuPic,0,32,16,"  OFF:%dms        ",FlashTimOff);
+	if(param_select == 2)
+			BACK_COLOR = SELECT_COLOR;
+	else
+			BACK_COLOR = OPTION_COLOR;
+	Pictrue_printf(&MenuPic,0,48,16,"  Dim:%0.1f%%      ",FlashDim*100);
+	FreshMenu();
+	
+  if(key_value==PSELECT_KEY)
+	{
+		if(param_select<3)
+			param_select++;
+		else
+		{
+			if(flash_flg==0)
+			{
+				flash_flg = 1;
+				SceneBegain(pscene);
+			}
+			else
+			{
+				flash_flg = 0;
+				SceneTimDisable();
+			}
+		}
+	}
+}
+
+int SOS_speed = 5;
+// 短闪烁，最快100ms，最慢1000ms，长闪烁是短的两倍时间
+void LoadSOSData(void)
+{
+	int i,j,k;
+//	if(pscene == NULL)
+//		pscene = mymalloc(SRAMIN,sizeof(SceneData)); //
+	u16 current[LED_CHS];
+	pscene = &scendatabuf;
+	if(pscene != NULL)
+	{
+		pscene->max_frames = 18;
+		pscene->mode = 0;//无限循环
+		MixLightKToCurrent((float *)&rgbk,FlashDim,current);
+		for(i=0;i<2;i++)
+		{
+			for(k=0;k<9;k++)
+			{
+				for(j=0;j<LED_NUMS;j++)
+					pscene->frame[k*2].ch[i][j] = current[j];
+				
+				for(j=0;j<LED_NUMS;j++)
+					pscene->frame[k*2+1].ch[i][j] = 0;
+			}
+			for(j=0;j<6;j++)
+				pscene->frame[j].tim = 100*SOS_speed;//短
+			for(j=6;j<12;j++)
+				pscene->frame[j].tim = 200*SOS_speed;//长
+			for(j=12;j<18;j++)
+				pscene->frame[j].tim = 100*SOS_speed;
+			
+			for(j=0;j<LED_NUMS;j++)
+				pscene->frame[18].ch[i][j] = 0;
+			pscene->frame[18].tim = 200*SOS_speed;
+		}
+	}
+	else
+	{
+		Debug_printf(">>SceneFlashInit:mymalloc()fail\r\n");
+	}
+}
+
+//SOS 三短三长三短
+void SceneSOSInit(void)
+{
+	LoadSOSData();
+	Sys.Config.lightmode = SCENE_M;
+	Sys.Config.scene.num = 2;
+	Sys.menu_mask = 1;
+	flash_flg = 0;
+	param_select = 0;
+}
+
+
+void SceneSOSTask(void)//50 ms
+{
+	ClearMenu(OPTION_COLOR);
+	BACK_COLOR = OPTION_COLOR;
+	POINT_COLOR = BLACK;
+	if(ec11_pos[2])
+	{
+		switch(param_select)
+		{
+			case 0:
+			{
+				SOS_speed -= ec11_pos[2];
+				if(SOS_speed<1)
+				{
+					SOS_speed = 1;
+				}
+				if(SOS_speed>10)
+					SOS_speed = 10;
+				break;
+			}
+			case 1:
+			{
+				if(EC11_speed>25)
+				{
+					FlashDim -= ec11_pos[2]*0.0005*EC11_speed;
+				}
+				else
+				{
+					FlashDim -= ec11_pos[2]*0.001;
+				}
+				if(FlashDim>1)
+				{
+					FlashDim = 1;
+				}
+				else if(FlashDim<0)
+				{
+					FlashDim = 0;
+				}
+				break;
+			}
+			default :break;
+		}
+		ec11_pos[2] = 0;
+		LoadSOSData();
+	}
+	Pictrue_printf(&MenuPic,0,0,16,	"  SOS");
+	if(param_select == 0)
+			BACK_COLOR = SELECT_COLOR;
+	else
+			BACK_COLOR = OPTION_COLOR;
+	Pictrue_printf(&MenuPic,0,16,16,"  Speed:%d        ",SOS_speed);
+	if(param_select == 1)
+			BACK_COLOR = SELECT_COLOR;
+	else
+			BACK_COLOR = OPTION_COLOR;
+	Pictrue_printf(&MenuPic,0,32,16,"  Dim:%0.1f%%     ",FlashDim*100);
+	FreshMenu();
+	
+  if(key_value==PSELECT_KEY)
+	{
+		if(param_select<2)
+			param_select++;
+		else
+		{
+			if(flash_flg==0)
+			{
+				flash_flg = 1;
+				SceneBegain(pscene);
+			}
+			else
+			{
+				flash_flg = 0;
+				SceneTimDisable();
+			}
+		}
+	}
+
+}
+
+const u8 stom_table[8][11] = 
+{
+{0,38,0,20,40 ,0,38,0,20,40, 30},
+{0,0,0,0,0,0,0,0,0,0,80},
+{0,38,0,20,40 ,0,38,0,20,40, 20},
+{0,0,0,0,0,0,0,0,0,0,80},
+{0,38,0,20,40 ,0,38,0,20,40, 20},
+{0,0,0,0,0,0,0,0,0,0,80},
+{0,0,0,0,0,0,0,0,0,0,80},
+{0,38,0,20,40 ,0,38,0,20,40, 20},
+};
+
+void SceneStormInit(void)
+{
+	int i,j,k;
+//	if(pscene == NULL)
+//		pscene = mymalloc(SRAMIN,sizeof(SceneData)); //
+	pscene = &scendatabuf;
+	pscene->max_frames = 8;
+	pscene->mode = 255;//播放完熄灭
+	
+	for(i=0;i<8;i++)
+	{
+		for(j=0;j<5;j++)
+		{
+			pscene->frame[i].ch[0][j] = 65535/stom_table[i][j];
+			pscene->frame[i].ch[1][j] = 65535/stom_table[i][5+j];
+			pscene->frame[i].tim = stom_table[i][10];
+		}
+	}
+	SceneBegain(pscene);
+	Sys.Config.lightmode = SCENE_M;
+	Sys.Config.scene.num = 3;
+	Sys.menu_mask = 1;
+	flash_flg = 0;
+}
+
+void SceneStormTask(void)//50 ms
+{
+	ClearMenu(OPTION_COLOR);
+	BACK_COLOR = OPTION_COLOR;
+	POINT_COLOR = BLACK;
+	Pictrue_printf(&MenuPic,0,0,16,	"  STORM");
+	FreshMenu();
+	if(key_value == PSELECT_KEY)
+	{
+		SceneBegain(pscene);
+	}
+}
 
 
 void InfoTaskInit(void)
@@ -562,8 +980,6 @@ void MonitorInit(void)
 	FreshMenu();
 }	
 
-
-
 void MonitorTask(void)
 {
 	static int i;
@@ -596,7 +1012,7 @@ void DefaultTask(void)
 	BACK_COLOR = OPTION_COLOR;
 	POINT_COLOR = BLACK;
 	Pictrue_printf(&MenuPic,16,0,16,(char *)"Are you sure to restore default parameters?");
-	if(key_value == S10)
+	if(key_value == PSELECT_KEY)
 	{
 		Sys.Config = default_data;
 	}
@@ -702,7 +1118,7 @@ void Art_NetINTask(void)
 			Pictrue_printf(&MenuPic,offset,0,16,"  没有检测到RJ45连接，默认使用DMX。");
 	}
 	FreshMenu();
-  if(key_value==S10)
+  if(key_value==PSELECT_KEY)
 	{
 		Menu_back();
 	}
@@ -773,44 +1189,44 @@ void DMX_ModeTask(void)
 	if(Sys.Config.english)
 		switch(temp_dmx_mode)
 		{
-			case DMX_M1:DMX_ModeDisplay("M1:CCT&RGBWWCW","8BITS",sizeof(CCT_RGBWWCW_8BIT));break;
+			case DMX_M1:DMX_ModeDisplay("M1:CCT&RALGB","8BITS",sizeof(CCT_LEDK_8BIT));break;
 			case DMX_M2:DMX_ModeDisplay("M2:CCT","8BITS",sizeof(CCT_8BIT));break;		
 			case DMX_M3:DMX_ModeDisplay("M3:CCT&HSI","8BITS",sizeof(CCT_HSI_8BIT));break;
-			case DMX_M4:DMX_ModeDisplay("M4:RGBWWCW","8BITS",sizeof(RGBWWCW_8BIT));break;
+			case DMX_M4:DMX_ModeDisplay("M4:RALGB","8BITS",sizeof(LEDK_8BIT));break;
 			case DMX_M5:DMX_ModeDisplay("M5:HSI","8BITS",sizeof(HSI_8BIT));break;
-			case DMX_M6:DMX_ModeDisplay("M6:CCT&RGBWWCW","16BITS",sizeof(CCT_RGBWWCW_16BIT));break;
+			case DMX_M6:DMX_ModeDisplay("M6:CCT&RALGB","16BITS",sizeof(CCT_LEDK_16BIT));break;
 			case DMX_M7:DMX_ModeDisplay("M7:CCT","16BITS",sizeof(CCT_16BIT));break;
 			case DMX_M8:DMX_ModeDisplay("M8:CCT&HSI","16BITS",sizeof(CCT_HSI_16BIT));break;
-			case DMX_M9:DMX_ModeDisplay("M9:RGBWWCW","16Bits",sizeof(RGBWWCW_16BIT));break;
+			case DMX_M9:DMX_ModeDisplay("M9:RALGB","16BITS",sizeof(LEDK_16BIT));break;
 			case DMX_M10:DMX_ModeDisplay("M10:HSI","16BITS",sizeof(HSI_16BIT));break;		
-			case DMX_M11:DMX_ModeDisplay("M11:CCT&RGBWWCW","Coare/Fine",sizeof(CCT_RGBWWCW_CF));break;
+			case DMX_M11:DMX_ModeDisplay("M11:CCT&RALGB","Coare/Fine",sizeof(CCT_LEDK_CF));break;
 			case DMX_M12:DMX_ModeDisplay("M12:CCT","Coare/Fine",sizeof(CCT_CF));break;
 			case DMX_M13:DMX_ModeDisplay("M13:CCT&HSI","Coare/Fine",sizeof(CCT_HSI_CF));break;
-			case DMX_M14:DMX_ModeDisplay("M14:RGBWWCW","Coare/Fine",sizeof(RGBWWCW_CF));break;
+			case DMX_M14:DMX_ModeDisplay("M14:RALGB","Coare/Fine",sizeof(LEDK_CF));break;
 			case DMX_M15:DMX_ModeDisplay("M15:HSI","Coare/Fine",sizeof(HSI_CF));break;
 			default:break;
 		}
 	else
 		switch(temp_dmx_mode)
 		{
-			case DMX_M1:DMX_ModeDisplay("M1:CCT&RGBWWCW","8位",sizeof(CCT_RGBWWCW_8BIT));break;
+			case DMX_M1:DMX_ModeDisplay("M1:CCT&RALGB","8位",sizeof(CCT_LEDK_8BIT));break;
 			case DMX_M2:DMX_ModeDisplay("M2:CCT","8位",sizeof(CCT_8BIT));break;		
 			case DMX_M3:DMX_ModeDisplay("M3:CCT&HSI","8位",sizeof(CCT_HSI_8BIT));break;
-			case DMX_M4:DMX_ModeDisplay("M4:RGBWWCW","8位",sizeof(RGBWWCW_8BIT));break;
+			case DMX_M4:DMX_ModeDisplay("M4:RALGB","8位",sizeof(LEDK_8BIT));break;
 			case DMX_M5:DMX_ModeDisplay("M5:HSI","8位",sizeof(HSI_8BIT));break;
-			case DMX_M6:DMX_ModeDisplay("M6:CCT&RGBWWCW","16位",sizeof(CCT_RGBWWCW_16BIT));break;
+			case DMX_M6:DMX_ModeDisplay("M6:CCT&RALGB","16位",sizeof(CCT_LEDK_16BIT));break;
 			case DMX_M7:DMX_ModeDisplay("M7:CCT","16位",sizeof(CCT_16BIT));break;
 			case DMX_M8:DMX_ModeDisplay("M8:CCT&HSI","16位",sizeof(CCT_HSI_16BIT));break;
-			case DMX_M9:DMX_ModeDisplay("M9:RGBWWCW","16B位",sizeof(RGBWWCW_16BIT));break;
+			case DMX_M9:DMX_ModeDisplay("M9:RALGB","16B位",sizeof(LEDK_16BIT));break;
 			case DMX_M10:DMX_ModeDisplay("M10:HSI","16位",sizeof(HSI_16BIT));break;		
-			case DMX_M11:DMX_ModeDisplay("M11:CCT&RGBWWCW","粗调/细调",sizeof(CCT_RGBWWCW_CF));break;
+			case DMX_M11:DMX_ModeDisplay("M11:CCT&RALGB","粗调/细调",sizeof(CCT_LEDK_CF));break;
 			case DMX_M12:DMX_ModeDisplay("M12:CCT","粗调/细调",sizeof(CCT_CF));break;
 			case DMX_M13:DMX_ModeDisplay("M13:CCT&HSI","粗调/细调",sizeof(CCT_HSI_CF));break;
-			case DMX_M14:DMX_ModeDisplay("M14:RGBWWCW","粗调/细调",sizeof(RGBWWCW_CF));break;
+			case DMX_M14:DMX_ModeDisplay("M14:RALGB","粗调/细调",sizeof(LEDK_CF));break;
 			case DMX_M15:DMX_ModeDisplay("M15:HSI","粗调/细调",sizeof(HSI_CF));break;
 			default:break;
 		}
-	if(key_value==S10)
+	if(key_value==PSELECT_KEY)
 	{
 		Sys.Config.dmx.mode = temp_dmx_mode;
 	//	SaveConfig();
@@ -852,20 +1268,20 @@ void DMX_AdressTaskInit(void)
 	unsigned char ch;
 		switch(Sys.Config.dmx.mode)
 		{
-			case DMX_M1:ch = sizeof(CCT_RGBWWCW_8BIT);break;
+			case DMX_M1:ch = sizeof(CCT_LEDK_8BIT);break;
 			case DMX_M2:ch = sizeof(CCT_8BIT);break;		
 			case DMX_M3:ch = sizeof(CCT_HSI_8BIT);break;
-			case DMX_M4:ch = sizeof(RGBWWCW_8BIT);break;
+			case DMX_M4:ch = sizeof(LEDK_8BIT);break;
 			case DMX_M5:ch = sizeof(HSI_8BIT);break;
-			case DMX_M6:ch = sizeof(CCT_RGBWWCW_16BIT);break;
+			case DMX_M6:ch = sizeof(CCT_LEDK_16BIT);break;
 			case DMX_M7:ch = sizeof(CCT_16BIT);break;
 			case DMX_M8:ch = sizeof(CCT_HSI_16BIT);break;
-			case DMX_M9:ch = sizeof(RGBWWCW_16BIT);break;
+			case DMX_M9:ch = sizeof(LEDK_16BIT);break;
 			case DMX_M10:ch = sizeof(HSI_16BIT);break;		
-			case DMX_M11:ch = sizeof(CCT_RGBWWCW_CF);break;
+			case DMX_M11:ch = sizeof(CCT_LEDK_CF);break;
 			case DMX_M12:ch = sizeof(CCT_CF);break;
 			case DMX_M13:ch = sizeof(CCT_HSI_CF);break;
-			case DMX_M14:ch = sizeof(RGBWWCW_CF);break;
+			case DMX_M14:ch = sizeof(LEDK_CF);break;
 			case DMX_M15:ch = sizeof(HSI_CF);break;
 			default:break;
 		}
@@ -884,20 +1300,20 @@ void DMX_AdressTask(void)
 	unsigned char ch;
 		switch(Sys.Config.dmx.mode)
 		{
-			case DMX_M1:ch = sizeof(CCT_RGBWWCW_8BIT);break;
+			case DMX_M1:ch = sizeof(CCT_LEDK_8BIT);break;
 			case DMX_M2:ch = sizeof(CCT_8BIT);break;		
 			case DMX_M3:ch = sizeof(CCT_HSI_8BIT);break;
-			case DMX_M4:ch = sizeof(RGBWWCW_8BIT);break;
+			case DMX_M4:ch = sizeof(LEDK_8BIT);break;
 			case DMX_M5:ch = sizeof(HSI_8BIT);break;
-			case DMX_M6:ch = sizeof(CCT_RGBWWCW_16BIT);break;
+			case DMX_M6:ch = sizeof(CCT_LEDK_16BIT);break;
 			case DMX_M7:ch = sizeof(CCT_16BIT);break;
 			case DMX_M8:ch = sizeof(CCT_HSI_16BIT);break;
-			case DMX_M9:ch = sizeof(RGBWWCW_16BIT);break;
+			case DMX_M9:ch = sizeof(LEDK_16BIT);break;
 			case DMX_M10:ch = sizeof(HSI_16BIT);break;		
-			case DMX_M11:ch = sizeof(CCT_RGBWWCW_CF);break;
+			case DMX_M11:ch = sizeof(CCT_LEDK_CF);break;
 			case DMX_M12:ch = sizeof(CCT_CF);break;
 			case DMX_M13:ch = sizeof(CCT_HSI_CF);break;
-			case DMX_M14:ch = sizeof(RGBWWCW_CF);break;
+			case DMX_M14:ch = sizeof(LEDK_CF);break;
 			case DMX_M15:ch = sizeof(HSI_CF);break;
 			default:break;
 		}
@@ -919,7 +1335,7 @@ void DMX_AdressTask(void)
 		DMX_AdressDisplay(ch);	
 		ec11_pos[2] = 0;
 	}	
-	if(key_value==S10)
+	if(key_value==PSELECT_KEY)
 	{
 		Sys.Config.dmx.addr = dmx_addr;
 		//SaveConfig();
@@ -981,7 +1397,7 @@ void FAN_DMX_TaskInit(void)
 //	point_out();
 	FreshMenu();
 	
-	if(key_value==S10)
+	if(key_value==PSELECT_KEY)
 	{
 		Menu_back();
 	}	
@@ -1037,7 +1453,7 @@ void LCD_DIM_Task(void)
 		LCD_DIM_display();
 		ec11_pos[2] = 0;
 	}	
-	if(key_value==S10)
+	if(key_value==PSELECT_KEY)
 	{
 		Menu_back();
 	}	
@@ -1103,7 +1519,7 @@ void LCD_TIM_Task(void)
 		LCD_TIM_display();
 		ec11_pos[2] = 0;
 	}	
-	if(key_value==S10)
+	if(key_value==PSELECT_KEY)
 	{
 		Menu_back();
 	}	
@@ -1202,7 +1618,7 @@ void firmware_update(void)
 	}
 	Sys.usb.USBH_USR_ApplicationState = USH_USR_FS_UPDATE;
 	FreshMenu();
-	if(key_value==S10)
+	if(key_value==PSELECT_KEY)
 	{
 		Menu_back();
 	}	

@@ -32,7 +32,6 @@
 ".\objects\color_light.o"
 ".\objects\filmgear_data.o"
 ".\objects\menutask.o"
-".\objects\gui.o"
 ".\objects\scene.o"
 ".\objects\algorithm_test.o"
 ".\objects\usb_bsp.o"
@@ -63,6 +62,9 @@
 ".\objects\usb_core.o"
 ".\objects\usb_hcd.o"
 ".\objects\usb_hcd_int.o"
+".\objects\spot_gui.o"
+".\objects\spot_color_light.o"
+".\objects\spot.o"
 --strict --scatter ".\Objects\FG001.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

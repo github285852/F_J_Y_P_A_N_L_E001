@@ -1,5 +1,5 @@
 #include "stm32f10x.h"
-
+#include "scene.h"
 
 void timer4_init(u16 period,u16 Prescaler)
 {
@@ -57,20 +57,23 @@ void SceneTimerInit()
 
 void SceneSetframeTim(u16 ms)
 {
-	if(ms<=100)
-		ms = 100;
+	if(ms<=FRAME_MIN_T)
+		ms = FRAME_MIN_T;
 	TIM4->ARR = ms;
 }
-
-void SceneTimEnable(void)
+void ClearCNT(void)
 {
 	TIM4->CNT = 0;
+}
+void SceneTimEnable(void)
+{
+	//TIM4->CNT = 0;
 	TIM_Cmd(TIM4, ENABLE);
 }
 
 void SceneTimDisable(void)
 {
-	TIM4->CNT = 0;
+	//TIM4->CNT = 0;
 	TIM_Cmd(TIM4, DISABLE);
 }
 

@@ -11,25 +11,6 @@
 ////LED发出光的色坐标
 #ifdef SPOT01
 
-#define LEDCWX_DEFAULT	0.3247       //0.4438
-#define LEDCWY_DEFAULT	0.3247       //3958
-#define LEDWWX_DEFAULT	0.4558      //0.3069
-#define LEDWWY_DEFAULT	0.4046      //0.3044
-#define LEDWX_DEFAULT	  0.3278
-#define LEDWY_DEFAULT		0.3332
-#define LEDRX_DEFAULT		0.6862
-#define LEDRY_DEFAULT		0.3064
-#define LEDGX_DEFAULT		0.1739
-#define LEDGY_DEFAULT		0.7166
-#define LEDBX_DEFAULT		0.1579 //
-#define LEDBY_DEFAULT		0.0408
-#define LEDYX_DEFAULT		0.5722//Y //0.00783	//。
-#define LEDYY_DEFAULT		0.4248//Y0.4733	// .
-#define LEDAX_DEFAULT		0.5575
-#define LEDAY_DEFAULT		0.4321
-#define LEDLX_DEFUALT		0.4189
-#define LEDLY_DEFAULT		0.5537
-
 
 #else defined(PANLE01)
 
@@ -68,18 +49,12 @@
 //#define LEDYY_DEFAULT		0.4248//Y0.4733	// .
 
 
-
-
 #define RX 	LEDRX_DEFAULT	// 0.7
 #define RY 	LEDRY_DEFAULT	// 0.28
 #define GX	LEDGX_DEFAULT//0.08
 #define GY	LEDGY_DEFAULT//0.83
 #define BX	LEDBX_DEFAULT	//0.1
 #define BY	LEDBY_DEFAULT//0.1
-
-
-
-
 
 
 typedef struct{
@@ -90,10 +65,10 @@ typedef struct{
 
 typedef struct{
 	float r;
-	float g;
-	float b;
 	float a;
 	float l;
+	float g;
+	float b;
 	float y;
 	float w;
 	float ww;
@@ -124,6 +99,8 @@ typedef struct
 	char num;
 	COORD centre;
 	COORD offset;
+	float ra_k;
+	float lg_k;
 }CCT_TAB;
 
 typedef struct
@@ -139,6 +116,7 @@ typedef struct
 	COORD coord[2];
 }GEL_COORD;
 
+void LEDK_to_coordinate(coord_f *ledc,float *ledk,coord_f *coord);
 void HSI_to_RGB(HSI HSI,RGB *rgbk);
 void ColorLightHSIOut(HSI Hsi,unsigned char pixel);
 void LightCCTOut( unsigned char pos,int offset,float dim,unsigned char pixel);
@@ -153,6 +131,7 @@ void ColorTest(void);
 void HSI_Test(void);
 void RGB_to_coordinate(RGB rgb,COORD *coord);
 unsigned char coordinate_to_RGBWWCW(COORD coord,RGB *rgb);
+int coordinate_RGBLA(coord_f exp_point,LEDK *ledk);
 extern unsigned int RGBPwm[6];
 extern HSI Hsi;
 extern const CCT_TAB cct_tab[];

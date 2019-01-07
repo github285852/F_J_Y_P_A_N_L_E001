@@ -54,6 +54,7 @@
 .\objects\dmxprotocol.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_core.h
 .\objects\dmxprotocol.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_scsi.h
 .\objects\dmxprotocol.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_bot.h
+.\objects\dmxprotocol.o: ..\Source\Driver\mymath.h
 .\objects\dmxprotocol.o: ..\Source\HAL\sys.h
 .\objects\dmxprotocol.o: ..\Source\HAL\delay.h
 .\objects\dmxprotocol.o: ..\Source\Driver\scheduler.h
@@ -72,8 +73,9 @@
 .\objects\dmxprotocol.o: ..\Source\Driver\menu.h
 .\objects\dmxprotocol.o: ..\Source\Driver\key.h
 .\objects\dmxprotocol.o: ..\Source\APP\color_light.h
-.\objects\dmxprotocol.o: ..\Source\Driver\mymath.h
 .\objects\dmxprotocol.o: ..\Source\HAL\ledpower.h
+.\objects\dmxprotocol.o: ..\Source\spot\spot.h
+.\objects\dmxprotocol.o: ..\Source\APP\includes.h
 .\objects\dmxprotocol.o: ..\Source\Driver\graphical.h
 .\objects\dmxprotocol.o: ..\Source\Driver\st7735s.h
 .\objects\dmxprotocol.o: ..\Source\APP\menutask.h

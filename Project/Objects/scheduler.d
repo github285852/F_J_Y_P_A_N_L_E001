@@ -57,6 +57,7 @@
 .\objects\scheduler.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_core.h
 .\objects\scheduler.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_scsi.h
 .\objects\scheduler.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_bot.h
+.\objects\scheduler.o: ..\Source\Driver\mymath.h
 .\objects\scheduler.o: ..\Source\HAL\pwm16.h
 .\objects\scheduler.o: ..\Source\HAL\dmx512.h
 .\objects\scheduler.o: ..\Source\HAL\led.h
@@ -72,8 +73,9 @@
 .\objects\scheduler.o: ..\Source\Driver\menu.h
 .\objects\scheduler.o: ..\Source\Driver\key.h
 .\objects\scheduler.o: ..\Source\APP\color_light.h
-.\objects\scheduler.o: ..\Source\Driver\mymath.h
 .\objects\scheduler.o: ..\Source\HAL\ledpower.h
+.\objects\scheduler.o: ..\Source\spot\spot.h
+.\objects\scheduler.o: ..\Source\APP\includes.h
 .\objects\scheduler.o: ..\Source\Driver\graphical.h
 .\objects\scheduler.o: ..\Source\Driver\st7735s.h
 .\objects\scheduler.o: ..\Source\APP\menutask.h

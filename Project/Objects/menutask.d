@@ -54,6 +54,7 @@
 .\objects\menutask.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_core.h
 .\objects\menutask.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_scsi.h
 .\objects\menutask.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_bot.h
+.\objects\menutask.o: ..\Source\Driver\mymath.h
 .\objects\menutask.o: ..\Source\HAL\sys.h
 .\objects\menutask.o: ..\Source\HAL\delay.h
 .\objects\menutask.o: ..\Source\Driver\scheduler.h
@@ -72,8 +73,9 @@
 .\objects\menutask.o: ..\Source\Driver\menu.h
 .\objects\menutask.o: ..\Source\Driver\key.h
 .\objects\menutask.o: ..\Source\APP\color_light.h
-.\objects\menutask.o: ..\Source\Driver\mymath.h
 .\objects\menutask.o: ..\Source\HAL\ledpower.h
+.\objects\menutask.o: ..\Source\spot\spot.h
+.\objects\menutask.o: ..\Source\APP\includes.h
 .\objects\menutask.o: ..\Source\Driver\graphical.h
 .\objects\menutask.o: ..\Source\Driver\st7735s.h
 .\objects\menutask.o: ..\Source\APP\menutask.h

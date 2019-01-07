@@ -2,7 +2,7 @@
 #define __MENU_HANDLE_H
 
 #include "graphical.h"
-
+#include "menu.h"
 
 #define Enter_Key			0x01
 #define Up_Key				0x02
@@ -23,7 +23,6 @@ void MenuTask(void);
 
 void MenuBuf_malloc(void);
 void MenuBuf_free(void);
-
 void Menu_init(void);
 extern void (*MenuDuty)(void);
 extern unsigned char menu_key;
@@ -35,7 +34,9 @@ extern MenuState menu_state;
 extern u16 MENU_BUF[MENU_W*MENU_H];
 //extern u16 *MENU_BUF;
 
+void CreateNormalDisplayTask( void *function);
 void Menu_back(void);
+
 #endif
 
 

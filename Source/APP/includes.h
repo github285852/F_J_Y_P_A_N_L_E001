@@ -1,6 +1,11 @@
 #ifndef __INCLUDES_H
 #define __INCLUDES_H
 
+#define DEBUG			1
+#define LED_NUMS	5
+
+#define LED_CHS		LED_NUMS
+
 #include "stdlib.h"
 #include "string.h"
 #include "stdio.h"
@@ -16,6 +21,7 @@
 #include "usbh_usr.h"
 #include "usbh_msc_core.h"
 
+#include "mymath.h"
 #include "sys.h"
 #include "delay.h"
 #include "scheduler.h"
@@ -47,11 +53,12 @@
 #include "scene.h"
 
 
+#include "spot.h"
 
 
 
-#define DEBUG			1
-#define LED_NUMS	5
+
+
 #define LED_PIXELS	2
 #define VERSION	"V0.1.12"
 #define DXM_PRO	"V1.0"
@@ -79,11 +86,13 @@ FLASH
   0x08000000
  
 */
-#define APP_ADDR_OFFSET				0xC800        //50k
-#define CNFIG_DATA_SIZE				0x2800				//10k
+#define APP_ADDR_OFFSET				0xC800        //50k   
+#define CONFIG_DATA_SIZE			0x2800				//10k
+#define PARAMS_DATA_SIZE			0x400         //1K
 
 #define STM32_FLASH_APP_BASE   (STM32_FLASH_BASE + APP_ADDR_OFFSET)             //偏移量 0x200的倍数
-#define CONFIG_ADDRESS				 (STM32_FLASH_APP_BASE - CNFIG_DATA_SIZE)        // 
+#define CONFIG_ADDRESS				 (STM32_FLASH_APP_BASE - CONFIG_DATA_SIZE)        // 
+#define PARAMS_ADDRESS				 (CONFIG_ADDRESS - PARAMS_DATA_SIZE)
 
 #define FIRMWARE_NAME								"filmgear001.bin"
 #define DIM_MIN		0.05
@@ -171,6 +180,13 @@ typedef struct
 }CONFIG;
 
 typedef struct{
+	polyfit ledfit[LED_CHS];//流明光流拟合参数
+	coord_f i_coord[LED_CHS][10];// 10等级 电流大小对应的坐标。
+	float maxlu[LED_CHS];//能输出的最大流明
+	float mixluf[LED_CHS]；//LED 混光的CIE1931 色度比例。
+}ProductParam;//出厂参数，检验之后写入，之后不能有修改的风险
+
+typedef struct{
 	uint8_t USBH_USR_ApplicationState;
 	uint8_t mass_connect;
 	uint8_t update_state;
@@ -186,6 +202,7 @@ typedef struct
 {
 	RGB rgbw;
 	u16 fan_pwm;
+	u8 check;
 	unsigned char menu_mask;
 	unsigned char max_gel_number;
 	unsigned char dmx_handle;

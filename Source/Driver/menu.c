@@ -212,19 +212,16 @@ struct MenuTyp MenuTab[] = {
 //所在坐标
 //为菜单等级   | 
 //   菜单等级                     英文名      中文名        指针函数
-	{1,0,0,0,0,0,(unsigned char *)"CCT MODE",   "CCT模式",  				},
-	{2,0,0,0,0,0,(unsigned char *)"HSI MODE",   "HSI模式",    0,0,0,},
-	{3,0,0,0,0,0,(unsigned char *)"GEL MODE",   "GEL模式",					},
+	{1,0,0,0,0,0,(unsigned char *)"CCT MODE",   "CCT模式",		     CCTInitTask,0,0,CCTTask},
+	{2,0,0,0,0,0,(unsigned char *)"HSI MODE",   "HSI模式",         HSIInitTask,0,0,HSITask},
+	{3,0,0,0,0,0,(unsigned char *)"GEL MODE",   "GEL模式",		     GELInitTask,0,0,GELTask},
 	{4,0,0,0,0,0,(unsigned char *)"SCENE MODE", "场景模式",				  },
 	{5,0,0,0,0,0,(unsigned char *)"SETTINGS",		"设置"			        },
-//二级
-	{1,1,0,0,0,0,(unsigned char *)"CCT DUTY",			0,       CCTInitTask,0,0,CCTTask},
-	{2,1,0,0,0,0,(unsigned char *)"HSI DUTY",     0,       HSIInitTask,0,0,HSITask},
-	{3,1,0,0,0,0,(unsigned char *)"GEL DUTY",			0,       GELInitTask,0,0,GELTask},
-	{4,1,0,0,0,0,(unsigned char *)"SCENE 1",		 "场景一"								       }, 
-	{4,2,0,0,0,0,(unsigned char *)"SCENE 2",		 "场景二"								      }, 
-	{4,3,0,0,0,0,(unsigned char *)"SCENE 3",		 "场景三"											}, 
-	{4,4,0,0,0,0,(unsigned char *)"IMPORT",		  	"导入场景"								  }, 
+//二级			
+	{4,1,0,0,0,0,(unsigned char *)"FLASH",		 "闪烁",	  						SceneFlashInit,	SceneBack,SceneBack,SceneFlashTask}, 
+	{4,2,0,0,0,0,(unsigned char *)"SOS",		 		"SOS",	   						SceneSOSInit,	SceneBack,SceneBack,SceneSOSTask}, 							      
+	{4,3,0,0,0,0,(unsigned char *)"STORM",		   "闪电",	   		 			SceneStormInit,	SceneBack,SceneBack,SceneStormTask},  
+	{4,4,0,0,0,0,(unsigned char *)"IMPORT",		  	"导入场景",					ImportInit,		0,0,ImportTask}, 
 	
 	{5,1,0,0,0,0,(unsigned char *)"DMX", "DMX"                    },
 	{5,2,0,0,0,0,(unsigned char *)"FAN", "风扇"   },
@@ -233,51 +230,26 @@ struct MenuTyp MenuTab[] = {
 	{5,5,0,0,0,0,(unsigned char *)"LANGUAGE",      "语言"},
 	{5,6,0,0,0,0,(unsigned char *)"SYSTEM",        "系统"     },
 //三级                             英文名              中文名           指针函数
-	{4,1,1,0,0,0,(unsigned char *)"SCENE 1 DUTY",   		 0,	  			SceneFlashInit	,	SceneBack,SceneBack,SceneFlashTask}, 
-	{4,2,1,0,0,0,(unsigned char *)"SCENE 2 DUTY",	   		 0,					SceneFlashInit	,	SceneBack,SceneBack,SceneFlashTask}, 
-	{4,3,1,0,0,0,(unsigned char *)"SCENE 3 DUTY",	   		 0,					SceneFlashInit	,	SceneBack,SceneBack,SceneFlashTask}, 
-	{4,4,1,0,0,0,(unsigned char *)"IMPORT SCENE DUTY",   0,			ImportInit,		0,0,ImportTask		}, 
-	
-	{5,1,1,0,0,0,(unsigned char *)"DMX MODE ",     "DMX模式"           },
-	{5,1,2,0,0,0,(unsigned char *)"DMX ADDRES",      "DMX地址"             },
-	{5,2,1,0,0,0,(unsigned char *)"FAN AUTO",        "自动"      },
-	{5,2,2,0,0,0,(unsigned char *)"FAN OFF",         "关"   },
-	{5,2,3,0,0,0,(unsigned char *)"DMX FAN",         "DMX控制"          },
-	
-	{5,3,1,0,0,0,(unsigned char *)"DIM",	    "背光亮度"},
-	{5,3,2,0,0,0,(unsigned char *)"TIME",	  "背光时间"},
-	{5,3,3,0,0,0,(unsigned char *)"ROTATE",	  "屏幕翻转"},
 
-	{5,4,1,0,0,0,(unsigned char *)"UPDATE",	  "固件更新"},
+	{5,1,1,0,0,0,(unsigned char *)"DMX MODE ",     "DMX模式"  ,  DMX_ModeTaskInit,  0,0,DMX_ModeTask},
+	{5,1,2,0,0,0,(unsigned char *)"DMX ADDRES",      "DMX地址" , DMX_AdressTaskInit,0,0,DMX_AdressTask}, 
+	{5,2,1,0,0,0,(unsigned char *)"FAN AUTO",        "自动" ,  FAN_AUTO_TaskInit, 0,SaveFanConfig},         
+	{5,2,2,0,0,0,(unsigned char *)"FAN OFF",         "关"  ,   FAN_OFF_TaskInit,  0,SaveFanConfig},
+	{5,2,3,0,0,0,(unsigned char *)"DMX FAN",         "DMX控制" ,FAN_DMX_TaskInit,  0,SaveFanConfig},
+	
+	{5,3,1,0,0,0,(unsigned char *)"TIME",	  	"背光时间"},
+	{5,3,2,0,0,0,(unsigned char *)"ROTATE",	  "屏幕翻转"},
+
+	{5,4,1,0,0,0,(unsigned char *)"UPDATE",	  "固件更新",firmware_update_init,0,firmware_update_Enter, firmware_update},
 	{5,4,2,0,0,0,(unsigned char *)"IMPORT",	            "导入文件" },
 	
-	{5,5,1,0,0,0,(unsigned char *)"ENGLISH",	          "英文"     },
-	{5,5,2,0,0,0,(unsigned char *)"CHINESE",	          "中文"     },
+	{5,5,1,0,0,0,(unsigned char *)"英文" ,"ENGLISH",	          EnglishTaskInit,0,0,ChineseTask  },
+	{5,5,2,0,0,0,(unsigned char *)"中文" ,"CHINESE",	          ChineseTaskInit,0,0,ChineseTask},
 	
-	{5,6,1,0,0,0,(unsigned char *)"INFO",	              "关于设备"  },
-	{5,6,2,0,0,0,(unsigned char *)"DEAULTS",	          "恢复出厂设置"  },
-	{5,6,3,0,0,0,(unsigned char *)"MONITOR",	          "监控"     },
-	
-//四级  //最后一级目录 上下目录指针都为空
-	{5,1,1,1,0,0,(unsigned char *)"DMX Mode DUTY",       0,					DMX_ModeTaskInit,  0,0,DMX_ModeTask, },
-	{5,1,2,1,0,0,(unsigned char *)"DMX ADDRES DUTY",     0,         DMX_AdressTaskInit,0,0,DMX_AdressTask,    },
-	{5,2,1,1,0,0,(unsigned char *)"FAN AUTO DUTY",       0,         FAN_AUTO_TaskInit, 0,SaveFanConfig  },
-	{5,2,2,1,0,0,(unsigned char *)"FAN OFF DUTY",        0,         FAN_OFF_TaskInit,  0,SaveFanConfig},
-	{5,2,3,1,0,0,(unsigned char *)"DMX FAN DUTY",        0,         FAN_DMX_TaskInit,  0,SaveFanConfig},
-	
-	{5,3,1,1,0,0,(unsigned char *)"BACKLITE DIM DUTY",	    0,         LCD_DIM_TaskInit,0,0, LCD_DIM_Task,  },
-	{5,3,2,1,0,0,(unsigned char *)"BACKLITE TIME DUTY",	    0,         LCD_TIM_TaskInit,0,0,LCD_TIM_Task,  },
-	{5,3,3,1,0,0,(unsigned char *)"ROTATE SCREEN DUTY",     0,         LCD_RotateTaskInit,0,0,LCD_RotateTask  },
-
-	{5,4,1,1,0,0,(unsigned char *)"FIRMWARE UPDATE DUTY",	     0,      firmware_update_init,0,firmware_update_Enter, firmware_update   },
-	{5,4,2,1,0,0,(unsigned char *)"IMPORT DUTY",	      0,         },
-	
-	{5,5,1,1,0,0,(unsigned char *)"ENGLISH DUTY",	      0,               EnglishTaskInit,0,0,ChineseTask      },
-	{5,5,2,1,0,0,(unsigned char *)"CHINESE DUTY",	      0,               ChineseTaskInit,0,0,ChineseTask},
-	
-	{5,6,1,1,0,0,(unsigned char *)"INFO DUTY",	        0,         InfoTaskInit,0,0,InfoTask},
-	{5,6,2,1,0,0,(unsigned char *)"DEFAULT DUTY",	      0,         DefaultInit,0,0,DefaultTask},
-	{5,6,3,1,0,0,(unsigned char *)"MONITOR DUTY",	      0,         MonitorInit,0,0,MonitorTask},
+	{5,6,1,0,0,0,(unsigned char *)"INFO",	              "关于设备" ,InfoTaskInit,0,0,InfoTask},
+	{5,6,2,0,0,0,(unsigned char *)"DEAULTS",	          "恢复出厂设置" , DefaultInit,0,0,DefaultTask},
+	{5,6,3,0,0,0,(unsigned char *)"MONITOR",	          "监控"     ,  MonitorInit,0,0,MonitorTask},
+	     
 };
 
 #endif

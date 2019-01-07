@@ -74,6 +74,8 @@
 .\objects\algorithm_test.o: ..\Source\Driver\menu.h
 .\objects\algorithm_test.o: ..\Source\Driver\key.h
 .\objects\algorithm_test.o: ..\Source\HAL\ledpower.h
+.\objects\algorithm_test.o: ..\Source\spot\spot.h
+.\objects\algorithm_test.o: ..\Source\APP\includes.h
 .\objects\algorithm_test.o: ..\Source\Driver\graphical.h
 .\objects\algorithm_test.o: ..\Source\Driver\st7735s.h
 .\objects\algorithm_test.o: ..\Source\APP\menutask.h

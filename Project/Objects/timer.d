@@ -28,3 +28,4 @@
 .\objects\timer.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_usart.h
 .\objects\timer.o: ..\Source\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 .\objects\timer.o: ..\Source\STM32F10x_FWLib\inc\misc.h
+.\objects\timer.o: ..\Source\APP\scene.h

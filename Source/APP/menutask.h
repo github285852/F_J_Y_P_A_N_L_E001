@@ -16,11 +16,18 @@ void RGBInitTask(void);
 void RGBTask(void);
 
 
-void Scene1TaskInit(void);
-void Scene2TaskInit(void);
-void Scene3TaskInit(void);
+void SceneFlashTask(void);
+void SceneFlashInit(void);
+void SceneBack(void);
+void SceneSOSInit(void);
+void SceneSOSTask(void);//50 ms
+void SceneStormInit(void);
+void SceneStormTask(void);//50 ms
+
+
+
 void ImportSceneTaskInit(void);
-void Scene1Task(void);
+
 
 void DMXINTaskInit(void);
 void Art_NetINTask(void);
@@ -64,6 +71,8 @@ void firmware_update_init(void);
 void firmware_update(void);
 void firmware_update_Enter(void);
 
+
+extern unsigned char  Set_display_option;
 #endif
 
 

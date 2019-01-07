@@ -10,17 +10,21 @@ void DMX512_handle(void);
 //将数据放入缓存
 void receiving_dmx_data(void)
 {
-	u8 len = sizeof(DMXData) ;
-	memcpy( &DmxData,(&DMX512_RX_BUF[Sys.Config.dmx.addr]) ,len);
-	Sys.dmx_handle = 1;
+	if(Sys.dmx_handle ==0)
+	{
+		u8 len = sizeof(DMXData) ;
+		memcpy( &DmxData,(&DMX512_RX_BUF[Sys.Config.dmx.addr]) ,len);
+		Sys.dmx_handle = 1;
+	}
 }
 	
 void DMXTask(void)
 {
 	static unsigned char dmx_detect = 0;
+	if(Sys.check)
+		return;
 	if(Sys.dmx_handle)
 	{
-
 		Sys.dmx_handle = 0;
 		DMX512_handle();
 		dmx_detect=200;
@@ -108,55 +112,55 @@ int  get_offset_8bit(unsigned char grn)
 	}
  }
  
- 	
-int CCT_RGBWWCW_OUT_8BIT(CCT_RGBWWCW_8BIT *cct_rgb)
+
+int CCT_LEDK_OUT_8BIT(CCT_LEDK_8BIT *cct_ledk)
 {
-	RGB rgb;
-	COORD rgb_coord,cct_coord,temp_coord;
+	float ledk[LED_CHS];
+	COORD ledk_coord;
+	coord_f cct_coord,temp_coord;
+	int i;
 	char pos;
 	int offset;
-	float wight = cct_rgb->w_c/255.0;
-	pos = Sys.Config.cct.max_pos*cct_rgb->kvn/255;
+	LEDK rgbk;
+	float wight = cct_ledk->w_c/255.0;
+	pos = Sys.Config.cct.max_pos*cct_ledk->kvn/255;
 	pos += 3;
 	if(pos > Sys.Config.cct.max_pos)
 	pos = Sys.Config.cct.max_pos;
-	offset = get_offset_8bit(cct_rgb->grn);
-
-	rgb.r = cct_rgb->r/255.0;
-	rgb.g = cct_rgb->g/255.0;
-	rgb.b = cct_rgb->b/255.0;
-	rgb.ww = cct_rgb->ww/255.0;
-	rgb.cw = cct_rgb->cw/255.0;
-	RGBWWCW_to_coordinate(rgb,&rgb_coord);
+	offset = get_offset_8bit(cct_ledk->grn);
+	for(i=0;i<LED_CHS;i++)
+	{
+		ledk[i] = cct_ledk->ledk[i]/255.0;
+	}
+	LEDK_to_coordinate(led_coord,ledk,&ledk_coord);
 	CCTToCoordinate(pos,offset,&cct_coord);
-	temp_coord.x = wight*rgb_coord.x + (1-wight)*cct_coord.x;
-	temp_coord.y = wight*rgb_coord.y + (1-wight)*cct_coord.y;
-	CoordinateOut(&temp_coord,cct_rgb->dim/255.0,0);
+	temp_coord.x = wight*ledk_coord.x + (1-wight)*cct_coord.x;
+	temp_coord.y = wight*ledk_coord.y + (1-wight)*cct_coord.y;
+	CoordinateOut(&temp_coord,cct_ledk->dim/255.0,0);
 	return 0;
 }
-int CCT_RGBWWCW_OUT_16BIT(CCT_RGBWWCW_16BIT *cct_rgb)
+
+int CCT_LEDK_OUT_16BIT(CCT_LEDK_16BIT *cct_ledk)
 {
-	RGB rgb;
-	COORD rgb_coord,cct_coord,temp_coord;
+	float ledk[LED_CHS];
+	COORD ledk_coord,cct_coord,temp_coord;
+	int i;
 	char pos;
 	int offset;
-	float wight = cct_rgb->w_c/65535.0;
-	pos = Sys.Config.cct.max_pos*cct_rgb->kvn/65535;
+	float wight = cct_ledk->w_c/65535.0;
+	pos = Sys.Config.cct.max_pos*cct_ledk->kvn/65535;
 	pos += 3;
 	if(pos > Sys.Config.cct.max_pos)
 	pos = Sys.Config.cct.max_pos;
-	offset = get_offset_16bit(cct_rgb->grn);
+	offset = get_offset_16bit(cct_ledk->grn);
+	for(i=0;i<LED_CHS;i++)
+		ledk[i] = cct_ledk->ledk[i]/65535.0;
 
-	rgb.r = cct_rgb->r/65535.0;
-	rgb.g = cct_rgb->g/65535.0;
-	rgb.b = cct_rgb->b/65535.0;
-	rgb.ww = cct_rgb->ww/65535.0;
-	rgb.cw = cct_rgb->cw/65535.0;
-	RGBWWCW_to_coordinate(rgb,&rgb_coord);
+	LEDK_to_coordinate(led_coord,ledk,&ledk_coord);
 	CCTToCoordinate(pos,offset,&cct_coord);
-	temp_coord.x = wight*rgb_coord.x + (1-wight)*cct_coord.x;
-	temp_coord.y = wight*rgb_coord.y + (1-wight)*cct_coord.y;
-	CoordinateOut(&temp_coord,cct_rgb->dim/65535.0,0);
+	temp_coord.x = wight*ledk_coord.x + (1-wight)*cct_coord.x;
+	temp_coord.y = wight*ledk_coord.y + (1-wight)*cct_coord.y;
+	CoordinateOut(&temp_coord,cct_ledk->dim/65535.0,0);
 	return 0;
 }
 
@@ -242,15 +246,13 @@ int CCT_HSI_OUT_16BIT(CCT_HSI_16BIT *cct_hsi)
 	
 }
 
-RGB panle_ledk;
-int RGBWWCW_OUT(RGBWWCW_16BIT *rgbwwcw)
+int LEDK_OUT(LEDK_16BIT *ledk_16bit)
 {
-	panle_ledk.r = (float)(rgbwwcw->r/65535.0);
-	panle_ledk.g = rgbwwcw->g/65535.0;
-	panle_ledk.b = rgbwwcw->b/65535.0;
-	panle_ledk.ww = rgbwwcw->ww/65535.0;
-	panle_ledk.cw = rgbwwcw->cw/65535.0;
-	AllLedPowerOut(&panle_ledk,rgbwwcw->dim/65535.0);
+	int i;
+	float ledk[LED_CHS];
+	for(i=0;i<LED_CHS;i++)
+		ledk[i] = ledk_16bit->ledk[i]/65535.0;
+	AllLedPowerOut(ledk,ledk_16bit->dim/65535.0);
 	return 0;
 }
 HSI panle_hsi;
@@ -262,19 +264,15 @@ int HSI_OUT(HSI_16BIT *hsi)
 	ColorLightHSIOut(panle_hsi,0);
 	return 0;
 }
-DMXData temp;
-RGBWWCW_16BIT rgbwwcw;
 void DMX512_handle(void)
 {
-	CCT_RGBWWCW_16BIT cct_rgb;
-	CCT_16BIT  cct;
-	CCT_HSI_16BIT cct_hsi;
-	HSI_16BIT hsi;
+	int i;
+	DMXData temp;
 	unsigned int d32;
 		switch(Sys.Config.dmx.mode)
 		{
 			case DMX_M1:
-				CCT_RGBWWCW_OUT_8BIT(&DmxData.cct_rgbwwcw_8bit);
+				CCT_LEDK_OUT_8BIT(&DmxData.cct_ledk_8bit);
 				break;
 			case DMX_M2:
 				CCT_OUT_8BIT(&DmxData.cct_8bit);			
@@ -283,79 +281,69 @@ void DMX512_handle(void)
 				CCT_HSI_OUT_8BIT(&DmxData.cct_hsi_8bit);
 				break;
 			case DMX_M4:
-				temp.rgbwwcw_16bit.dim = DmxData.rgbwwcw_8bit.dim*65535/255;//转换成16位
-				temp.rgbwwcw_16bit.r = DmxData.rgbwwcw_8bit.r*65535/255;//转换成16位
-				temp.rgbwwcw_16bit.g = DmxData.rgbwwcw_8bit.g*65535/255;//转换成16位
-				temp.rgbwwcw_16bit.b = DmxData.rgbwwcw_8bit.b*65535/255;//转换成16位
-				temp.rgbwwcw_16bit.ww = DmxData.rgbwwcw_8bit.ww*65535/255;//转换成16位
-				temp.rgbwwcw_16bit.cw = DmxData.rgbwwcw_8bit.cw*65535/255;//转换成16位	
-				RGBWWCW_OUT(&temp.rgbwwcw_16bit);
+				temp.ledk_16bit.dim = DmxData.ledk_8bit.dim*65535/255;//转换成16位
+				for(i=0;i<LED_CHS;i++)
+					temp.ledk_16bit.ledk[i] = DmxData.ledk_8bit.ledk[i]*65535/255;//转换成16位
+				LEDK_OUT(&temp.ledk_16bit);
 				break;
 			case DMX_M5:
-				hsi.dim = DmxData.hsi_8bit.dim*65535/255;
-				hsi.h = DmxData.hsi_8bit.h*65535/255;
-				hsi.s = DmxData.hsi_8bit.s*65535/255;
-				HSI_OUT(&hsi);
+				temp.hsi_16bit.dim = DmxData.hsi_8bit.dim*65535/255;
+				temp.hsi_16bit.h = DmxData.hsi_8bit.h*65535/255;
+				temp.hsi_16bit.s = DmxData.hsi_8bit.s*65535/255;
+				HSI_OUT(&temp.hsi_16bit);
 				break;
 			case DMX_M6:
-				cct_rgb.dim = DmxData.cct_rgbwwcw_16bit.dim >> 8 | DmxData.cct_rgbwwcw_16bit.dim << 8;
-				cct_rgb.kvn = DmxData.cct_rgbwwcw_16bit.kvn >> 8 | DmxData.cct_rgbwwcw_16bit.kvn << 8;
-				cct_rgb.grn = DmxData.cct_rgbwwcw_16bit.grn >> 8 | DmxData.cct_rgbwwcw_16bit.grn << 8;
-				cct_rgb.w_c = DmxData.cct_rgbwwcw_16bit.w_c >> 8 | DmxData.cct_rgbwwcw_16bit.w_c<< 8;
-				cct_rgb.r = DmxData.cct_rgbwwcw_16bit.r >> 8 | DmxData.cct_rgbwwcw_16bit.r << 8;
-				cct_rgb.g = DmxData.cct_rgbwwcw_16bit.g >> 8 | DmxData.cct_rgbwwcw_16bit.g << 8;
-				cct_rgb.b= DmxData.cct_rgbwwcw_16bit.b >> 8 | DmxData.cct_rgbwwcw_16bit.b << 8;
-				cct_rgb.ww = DmxData.cct_rgbwwcw_16bit.ww >> 8 | DmxData.cct_rgbwwcw_16bit.ww << 8;
-				cct_rgb.cw= DmxData.cct_rgbwwcw_16bit.cw >> 8 | DmxData.cct_rgbwwcw_16bit.cw << 8;
-				CCT_RGBWWCW_OUT_16BIT(&cct_rgb);
+				temp.cct_ledk_16bit.dim = DmxData.cct_ledk_16bit.dim >> 8 | DmxData.cct_ledk_16bit.dim << 8;
+				temp.cct_ledk_16bit.kvn = DmxData.cct_ledk_16bit.kvn >> 8 | DmxData.cct_ledk_16bit.kvn << 8;
+				temp.cct_ledk_16bit.grn = DmxData.cct_ledk_16bit.grn >> 8 | DmxData.cct_ledk_16bit.grn << 8;
+				temp.cct_ledk_16bit.w_c = DmxData.cct_ledk_16bit.w_c >> 8 | DmxData.cct_ledk_16bit.w_c<< 8;
+				for(i=0;i<LED_CHS;i++)
+					temp.cct_ledk_16bit.ledk[i] = DmxData.cct_ledk_16bit.ledk[i] >> 8 | DmxData.cct_ledk_16bit.ledk[i] << 8;
+				CCT_LEDK_OUT_16BIT(&temp.cct_ledk_16bit);
 				break;
 			case DMX_M7:
-				cct.dim = DmxData.cct_16bit.dim >> 8 | DmxData.cct_16bit.dim << 8;
-				cct.grn = DmxData.cct_16bit.grn >> 8 | DmxData.cct_16bit.grn << 8;
-				cct.kvn = DmxData.cct_16bit.kvn >> 8 | DmxData.cct_16bit.kvn << 8;
-				CCT_OUT_16BIT(&cct);
+				temp.cct_16bit.dim = DmxData.cct_16bit.dim >> 8 | DmxData.cct_16bit.dim << 8;
+				temp.cct_16bit.grn = DmxData.cct_16bit.grn >> 8 | DmxData.cct_16bit.grn << 8;
+				temp.cct_16bit.kvn = DmxData.cct_16bit.kvn >> 8 | DmxData.cct_16bit.kvn << 8;
+				CCT_OUT_16BIT(&temp.cct_16bit);
 				break;
 			case DMX_M8:
-				cct_hsi.dim = DmxData.cct_hsi_16bit.dim >> 8 | DmxData.cct_hsi_16bit.dim << 8;
-				cct_hsi.kvn = DmxData.cct_hsi_16bit.kvn >> 8 | DmxData.cct_hsi_16bit.kvn << 8;
-				cct_hsi.grn = DmxData.cct_hsi_16bit.grn >> 8 | DmxData.cct_hsi_16bit.grn << 8;
-				cct_hsi.w_c = DmxData.cct_hsi_16bit.w_c >> 8 | DmxData.cct_hsi_16bit.w_c<< 8;
-				cct_hsi.h = DmxData.cct_hsi_16bit.h >> 8 | DmxData.cct_hsi_16bit.h << 8;
-				cct_hsi.s = DmxData.cct_hsi_16bit.s >> 8 | DmxData.cct_hsi_16bit.s << 8;
-				CCT_HSI_OUT_16BIT(&cct_hsi);
+				temp.cct_hsi_16bit.dim = DmxData.cct_hsi_16bit.dim >> 8 | DmxData.cct_hsi_16bit.dim << 8;
+				temp.cct_hsi_16bit.kvn = DmxData.cct_hsi_16bit.kvn >> 8 | DmxData.cct_hsi_16bit.kvn << 8;
+				temp.cct_hsi_16bit.grn = DmxData.cct_hsi_16bit.grn >> 8 | DmxData.cct_hsi_16bit.grn << 8;
+				temp.cct_hsi_16bit.w_c = DmxData.cct_hsi_16bit.w_c >> 8 | DmxData.cct_hsi_16bit.w_c<< 8;
+				temp.cct_hsi_16bit.h = DmxData.cct_hsi_16bit.h >> 8 | DmxData.cct_hsi_16bit.h << 8;
+				temp.cct_hsi_16bit.s = DmxData.cct_hsi_16bit.s >> 8 | DmxData.cct_hsi_16bit.s << 8;
+				CCT_HSI_OUT_16BIT(&temp.cct_hsi_16bit);
 				break;
 			case DMX_M9:
-				rgbwwcw.dim = DmxData.rgbwwcw_16bit.dim >> 8 | DmxData.rgbwwcw_16bit.dim << 8;
-				rgbwwcw.r = DmxData.rgbwwcw_16bit.r >> 8 | DmxData.rgbwwcw_16bit.r << 8;
-				rgbwwcw.g = DmxData.rgbwwcw_16bit.g >> 8 | DmxData.rgbwwcw_16bit.g << 8;
-				rgbwwcw.b= DmxData.rgbwwcw_16bit.b >> 8 | DmxData.rgbwwcw_16bit.b << 8;
-				rgbwwcw.ww = DmxData.rgbwwcw_16bit.ww >> 8 | DmxData.rgbwwcw_16bit.ww << 8;
-				rgbwwcw.cw= DmxData.rgbwwcw_16bit.cw >> 8 | DmxData.rgbwwcw_16bit.cw << 8;	
-				RGBWWCW_OUT(&rgbwwcw);
-				//RGBWWCW_OUT(&DmxData.rgbwwcw_16bit);
+				temp.ledk_16bit.dim = DmxData.ledk_16bit.dim >> 8 | DmxData.ledk_16bit.dim << 8;
+				for(i=0;i<LED_CHS;i++)
+					temp.ledk_16bit.ledk[i] = DmxData.ledk_16bit.ledk[i] >> 8 | DmxData.ledk_16bit.ledk[i] << 8;
+				LEDK_OUT(&temp.ledk_16bit);
 			break;
 			case DMX_M10:
-				hsi.dim = DmxData.hsi_16bit.dim>>8 | DmxData.hsi_16bit.dim<<8;
-				hsi.h = DmxData.hsi_16bit.h>>8 | DmxData.hsi_16bit.h<<8;
-				hsi.s = DmxData.hsi_16bit.s>>8 | DmxData.hsi_16bit.s<<8;
-				HSI_OUT(&hsi);
+				temp.hsi_16bit.dim = DmxData.hsi_16bit.dim>>8 | DmxData.hsi_16bit.dim<<8;
+				temp.hsi_16bit.h = DmxData.hsi_16bit.h>>8 | DmxData.hsi_16bit.h<<8;
+				temp.hsi_16bit.s = DmxData.hsi_16bit.s>>8 | DmxData.hsi_16bit.s<<8;
+				HSI_OUT(&temp.hsi_16bit);
 				break;
-			case DMX_M11://CCT_RGBWWCW_CF
-				temp.cct_rgbwwcw_8bit.dim = DmxData.cct_rgbwwcw_cf.dim.coarse + (DmxData.cct_rgbwwcw_cf.dim.fine)*FINE;if(temp.cct_rgbwwcw_8bit.dim<DmxData.cct_rgbwwcw_cf.dim.coarse)temp.cct_rgbwwcw_8bit.dim = 255;
-				temp.cct_rgbwwcw_8bit.kvn = DmxData.cct_rgbwwcw_cf.kvn.coarse + (DmxData.cct_rgbwwcw_cf.kvn.fine)*FINE;if(temp.cct_rgbwwcw_8bit.kvn<DmxData.cct_rgbwwcw_cf.kvn.coarse)temp.cct_rgbwwcw_8bit.kvn= 255;
-				temp.cct_rgbwwcw_8bit.grn = DmxData.cct_rgbwwcw_cf.grn;
-				temp.cct_rgbwwcw_8bit.w_c = DmxData.cct_rgbwwcw_cf.w_c;
-				temp.cct_rgbwwcw_8bit.r = DmxData.cct_rgbwwcw_cf.r.coarse + (DmxData.cct_rgbwwcw_cf.r.fine)*FINE;if(temp.cct_rgbwwcw_8bit.r<DmxData.cct_rgbwwcw_cf.r.coarse)temp.cct_rgbwwcw_8bit.r = 255;
-				temp.cct_rgbwwcw_8bit.g = DmxData.cct_rgbwwcw_cf.g.coarse + (DmxData.cct_rgbwwcw_cf.g.fine)*FINE;if(temp.cct_rgbwwcw_8bit.g<DmxData.cct_rgbwwcw_cf.g.coarse)temp.cct_rgbwwcw_8bit.g = 255;
-				temp.cct_rgbwwcw_8bit.b = DmxData.cct_rgbwwcw_cf.b.coarse + (DmxData.cct_rgbwwcw_cf.b.fine)*FINE;if(temp.cct_rgbwwcw_8bit.b<DmxData.cct_rgbwwcw_cf.b.coarse)temp.cct_rgbwwcw_8bit.b = 255;
-				temp.cct_rgbwwcw_8bit.ww = DmxData.cct_rgbwwcw_cf.ww.coarse + (DmxData.cct_rgbwwcw_cf.ww.fine)*FINE;if(temp.cct_rgbwwcw_8bit.ww<DmxData.cct_rgbwwcw_cf.ww.coarse)temp.cct_rgbwwcw_8bit.ww = 255;
-				temp.cct_rgbwwcw_8bit.cw = DmxData.cct_rgbwwcw_cf.cw.coarse + (DmxData.cct_rgbwwcw_cf.cw.fine)*FINE;if(temp.cct_rgbwwcw_8bit.cw<DmxData.cct_rgbwwcw_cf.cw.coarse)temp.cct_rgbwwcw_8bit.cw = 255;	
-				CCT_RGBWWCW_OUT_8BIT(&temp.cct_rgbwwcw_8bit);
+			case DMX_M11://CCT_ledk_CF
+				temp.cct_ledk_8bit.dim = DmxData.cct_ledk_cf.dim.coarse + (DmxData.cct_ledk_cf.dim.fine)*FINE;if(temp.cct_ledk_8bit.dim<DmxData.cct_ledk_cf.dim.coarse)temp.cct_ledk_8bit.dim = 255;
+				temp.cct_ledk_8bit.kvn = DmxData.cct_ledk_cf.kvn.coarse + (DmxData.cct_ledk_cf.kvn.fine)*FINE;if(temp.cct_ledk_8bit.kvn<DmxData.cct_ledk_cf.kvn.coarse)temp.cct_ledk_8bit.kvn= 255;
+				temp.cct_ledk_8bit.grn = DmxData.cct_ledk_cf.grn;
+				temp.cct_ledk_8bit.w_c = DmxData.cct_ledk_cf.w_c;
+				for(i=0;i<LED_CHS;i++)
+				{
+					temp.cct_ledk_8bit.ledk[i] = DmxData.cct_ledk_cf.ledk[i].coarse + (DmxData.cct_ledk_cf.ledk[i].fine)*FINE;
+					if(temp.cct_ledk_8bit.ledk[i]<DmxData.cct_ledk_cf.ledk[i].coarse)temp.cct_ledk_8bit.ledk[i] = 255;
+				}
+				CCT_LEDK_OUT_8BIT(&temp.cct_ledk_8bit);
 				break;
 			case DMX_M12://CCT__CF
-				temp.cct_8bit.dim = DmxData.cct_rgbwwcw_cf.dim.coarse + (DmxData.cct_rgbwwcw_cf.dim.fine)*FINE;if(temp.cct_rgbwwcw_8bit.dim<DmxData.cct_rgbwwcw_cf.dim.coarse)temp.cct_rgbwwcw_8bit.dim = 255;
-				temp.cct_8bit.kvn = DmxData.cct_rgbwwcw_cf.kvn.coarse + (DmxData.cct_rgbwwcw_cf.kvn.fine)*FINE;if(temp.cct_rgbwwcw_8bit.kvn<DmxData.cct_rgbwwcw_cf.kvn.coarse)temp.cct_rgbwwcw_8bit.kvn= 255;
-				temp.cct_8bit.grn = DmxData.cct_rgbwwcw_cf.grn;
+				temp.cct_8bit.dim = DmxData.cct_ledk_cf.dim.coarse + (DmxData.cct_ledk_cf.dim.fine)*FINE;if(temp.cct_ledk_8bit.dim<DmxData.cct_ledk_cf.dim.coarse)temp.cct_ledk_8bit.dim = 255;
+				temp.cct_8bit.kvn = DmxData.cct_ledk_cf.kvn.coarse + (DmxData.cct_ledk_cf.kvn.fine)*FINE;if(temp.cct_ledk_8bit.kvn<DmxData.cct_ledk_cf.kvn.coarse)temp.cct_ledk_8bit.kvn= 255;
+				temp.cct_8bit.grn = DmxData.cct_ledk_cf.grn;
 				CCT_OUT_8BIT(&temp.cct_8bit);
 				break;
 			case DMX_M13://CCT_HSI_CF
@@ -367,14 +355,17 @@ void DMX512_handle(void)
 				temp.cct_hsi_8bit.s = DmxData.cct_hsi_cf.s.coarse + (DmxData.cct_hsi_cf.s.fine)*FINE;if(temp.cct_hsi_8bit.s<DmxData.cct_hsi_cf.s.coarse)temp.cct_hsi_8bit.s = 255;
 				CCT_HSI_OUT_8BIT(&temp.cct_hsi_8bit);
 				break;
-			case DMX_M14://RGBWWCW_CF
-				d32 = DmxData.rgbwwcw_cf.dim.coarse*257 + (DmxData.rgbwwcw_cf.dim.fine)*257*FINE;if(d32>65535) temp.rgbwwcw_16bit.dim = 65535;else temp.rgbwwcw_16bit.dim = d32;
-				d32 = DmxData.rgbwwcw_cf.r.coarse*257 + (DmxData.rgbwwcw_cf.r.fine)*257*FINE;if(d32>65535) temp.rgbwwcw_16bit.r = 65535;else temp.rgbwwcw_16bit.r = d32;
-				d32 = DmxData.rgbwwcw_cf.g.coarse*257 + (DmxData.rgbwwcw_cf.g.fine)*257*FINE;if(d32>65535)temp.rgbwwcw_16bit.g = 65535;else temp.rgbwwcw_16bit.g = d32;
-				d32 = DmxData.rgbwwcw_cf.b.coarse*257 + (DmxData.rgbwwcw_cf.b.fine)*257*FINE;if(d32>65535)temp.rgbwwcw_16bit.b = 65535;else temp.rgbwwcw_16bit.b = d32;
-				d32 = DmxData.rgbwwcw_cf.ww.coarse*257 + (DmxData.rgbwwcw_cf.ww.fine)*257*FINE;if(d32>65535)temp.rgbwwcw_16bit.ww = 65535;else temp.rgbwwcw_16bit.ww = d32;
-				d32 = DmxData.rgbwwcw_cf.cw.coarse*257 + (DmxData.rgbwwcw_cf.cw.fine)*257*FINE;if(d32>65535)temp.rgbwwcw_16bit.cw = 65535;else temp.rgbwwcw_16bit.cw = d32;
-				RGBWWCW_OUT(&temp.rgbwwcw_16bit);
+			case DMX_M14://ledk_CF
+				d32 = DmxData.ledk_cf.dim.coarse*257 + (DmxData.ledk_cf.dim.fine)*257*FINE;if(d32>65535) temp.ledk_16bit.dim = 65535;else temp.ledk_16bit.dim = d32;
+				for(i=0;i<LED_CHS;i++)
+				{
+					d32 = DmxData.ledk_cf.ledk[i].coarse*257 + (DmxData.ledk_cf.ledk[i].fine)*257*FINE;
+					if(d32>65535)
+						temp.ledk_16bit.ledk[i] = 65535;
+					else 
+						temp.ledk_16bit.ledk[i] = d32;
+				}
+				LEDK_OUT(&temp.ledk_16bit);
 				break;
 			case DMX_M15://CCT_HSI_CF
 				d32  = DmxData.hsi_cf.dim.coarse*257 + (DmxData.hsi_cf.dim.fine)*257*FINE;if(d32>65535)temp.hsi_16bit.dim = 65535;else temp.hsi_16bit.dim = d32;

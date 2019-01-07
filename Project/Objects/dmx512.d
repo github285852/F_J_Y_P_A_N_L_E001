@@ -54,6 +54,7 @@
 .\objects\dmx512.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_core.h
 .\objects\dmx512.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_scsi.h
 .\objects\dmx512.o: ..\Source\STM32_USB_HOST_Library\Class\MSC\inc\usbh_msc_bot.h
+.\objects\dmx512.o: ..\Source\Driver\mymath.h
 .\objects\dmx512.o: ..\Source\HAL\sys.h
 .\objects\dmx512.o: ..\Source\HAL\delay.h
 .\objects\dmx512.o: ..\Source\Driver\scheduler.h
@@ -72,8 +73,9 @@
 .\objects\dmx512.o: ..\Source\Driver\menu.h
 .\objects\dmx512.o: ..\Source\Driver\key.h
 .\objects\dmx512.o: ..\Source\APP\color_light.h
-.\objects\dmx512.o: ..\Source\Driver\mymath.h
 .\objects\dmx512.o: ..\Source\HAL\ledpower.h
+.\objects\dmx512.o: ..\Source\spot\spot.h
+.\objects\dmx512.o: ..\Source\APP\includes.h
 .\objects\dmx512.o: ..\Source\Driver\graphical.h
 .\objects\dmx512.o: ..\Source\Driver\st7735s.h
 .\objects\dmx512.o: ..\Source\APP\menutask.h

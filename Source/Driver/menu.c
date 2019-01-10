@@ -2,7 +2,16 @@
 #include "menu.h"
 #include "menu_handle.h"
 #include "string.h"
-#include "menutask.h"
+
+//#ifdef SPOT
+//#include "spot_menutask.h"
+//#endif
+
+#include"includes.h"
+
+//#ifdef PANLE
+//#include "panle_menutask.h"
+//#endif
 #include "scene.h"
 
 unsigned char MAX_MENUS;

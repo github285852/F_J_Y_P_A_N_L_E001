@@ -45,17 +45,20 @@
 #include "graphical.h"
 #include "st7735s.h"
 #include "menu.h"
-#include "menutask.h"
 #include "menu_handle.h"
 #include "picture_data.h"
 #include "gui.h"
 #include "dmxprotocol.h"
 #include "scene.h"
 
-
+#ifdef SPOT
 #include "spot.h"
+#endif
 
+#ifdef PANLE
+#include "panle.h"
 
+#endif
 
 
 
@@ -175,6 +178,7 @@ typedef struct
 		unsigned char _16bits;
 		unsigned char mode;
 	}dmx;
+	u32 work_time;
 	u8 Art_net_en;
 	u32 check;
 }CONFIG;
@@ -183,7 +187,7 @@ typedef struct{
 	polyfit ledfit[LED_CHS];//流明光流拟合参数
 	coord_f i_coord[LED_CHS][10];// 10等级 电流大小对应的坐标。
 	float maxlu[LED_CHS];//能输出的最大流明
-	float mixluf[LED_CHS]；//LED 混光的CIE1931 色度比例。
+	float mixluf[LED_CHS];//LED 混光的CIE1931 色度比例。
 }ProductParam;//出厂参数，检验之后写入，之后不能有修改的风险
 
 typedef struct{

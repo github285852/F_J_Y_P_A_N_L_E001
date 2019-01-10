@@ -40,6 +40,11 @@ COORD led_coord[LED_NUMS]=
 };
 
 
+void spot_init(void)
+{
+	Set_display_option = 3; //不显示选项
+}
+
 void DMXChanleDataRefresh(u8 pixel,u16 *current)
 {
 	char *p;
@@ -69,4 +74,7 @@ void DMXChanleDataRefresh(u8 pixel,u16 *current)
 	}
 	p[i] = sum; //校验和
 }
+
+
+
 

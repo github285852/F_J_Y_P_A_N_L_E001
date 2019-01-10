@@ -2,6 +2,8 @@
 #define __SPOT_H
 
 #include "includes.h"
+#include "spot_menutask.h"
+
 //LED Config
 #define LEDCWX_DEFAULT	0.3247       //0.4438
 #define LEDCWY_DEFAULT	0.3247       //3958
@@ -56,6 +58,7 @@ extern float maxlumen[LED_CHS];
 extern COORD led_coord[LED_NUMS];
 
 void DMXChanleDataRefresh(u8 pixel,u16 *current);
+void spot_init(void);
 
 
 #endif

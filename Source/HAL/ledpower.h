@@ -1,7 +1,7 @@
 #ifndef __LEDPOWER_H
 #define __LEDPOWER_H
 
-#include "spot.h"
+//#include "spot.h"
 #define DMX_LEN	50
 
 //同等电流，两者混光不再中点，有点偏移
@@ -38,7 +38,6 @@ void LedPowerOut(float  *ledk,float dim,unsigned char pixel);
 void AllLedPowerOut(float  *ledk,float dim);
 void LedPowerOff(unsigned char pixel);
 void AllLedPowerOff(void);
-void ChanleDataSend(unsigned char addr);
 void LedkToCurrent(float	*ledk,float dim,unsigned char pixel);
 void LedDmxTask(void);
 void MixLightKToCurrent(float *mixk,float dim,unsigned short *current);

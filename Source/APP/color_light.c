@@ -1447,7 +1447,8 @@ void LightCCTOut(unsigned char pos,int offset,float dim,unsigned char pixel)
 }
 
 float rgb_w_k = 1;
-#ifdef SPOT01
+
+#ifdef SPOT
 
 int CoordinateOut(COORD *coord,float dim,unsigned char pixel)
 {
@@ -1484,7 +1485,7 @@ int CoordinateOut(COORD *coord,float dim,unsigned char pixel)
 	return 0;
 }
 
-#else  defined(PANLE01)
+#elif defined PANLE
 
 
 int CoordinateOut(COORD *coord,float dim,unsigned char pixel)
@@ -1500,71 +1501,10 @@ int CoordinateOut(COORD *coord,float dim,unsigned char pixel)
 	}
 	dim = DIM_MIN + dim*(1-DIM_MIN);//从百分之一开始
 	dim = pow(dim,1.5);//伽马校正
-	
-	if((Sys.Config.lightmode == CCT_M)||( Sys.Config.lightmode == DMX_M &&( Sys.Config.dmx.mode==DMX_M2 ||Sys.Config.dmx.mode==DMX_M7 ||Sys.Config.dmx.mode==DMX_M12 ) ))
-	{ 
-								//  >4400K                  <3600K 且亮度大于于0.5
-		if( (Sys.Config.cct.pos>19)|| ((Sys.Config.cct.pos<11)&&(dim>0.5) ) )  
-		{
-			/////////////////	
-			res = coordinate_to_RGBWWCW_mode2(*coord,dim,&rgbk);//直接输出
-			if(res)
-			{		
-				if(dim>0.5)
-					mode2_could_dim = dim;
-				else
-					mode2_could_dim = 0.51;
-				while(1)
-				{
-					res = coordinate_to_RGBWWCW_mode2(*coord,mode2_could_dim,&rgbk);//直接输出
-					if(res)
-					{		
-						if(mode2_could_dim>=1)
-						{	
-							Debug_printf(">>coordinate_to_RGBWWCW_mode2\r\n,没有合适的比例\r\n");
-							return 1;
-						}
-						mode2_could_dim += 0.01; //1%　找到能达到的最小亮度，在这个基础上再衰减亮度。
-					}
-					else
-					{
-						dim *= 1/mode2_could_dim;
-						//dim = pow(dim,1.1);//伽马校正
-						break;
-					}
-				}
-			}
-			else
-			{
-				ledk = rgbk;
-				current[0] =  LIMIT(ledk.cw * 655.35,0,65535)*OUT_CW_DB;
-				current[1] =  LIMIT(ledk.r * 655.35,0,65535)*OUT_R_DB; 
-				current[2] =  LIMIT(ledk.g * 655.35,0,65535)*OUT_G_DB;
-				current[3] =  LIMIT(ledk.b * 655.35,0,65535)*OUT_B_DB;
-				current[4] =  LIMIT(ledk.ww * 655.35,0,65535)*OUT_WW_DB;
-				ChanleDataSend(A_BOARD_ADDR);
-				
-				current[0] =  LIMIT(ledk.ww * 655.35,0,65535)*OUT_CW_DB;
-				current[1] =  LIMIT(ledk.b * 655.35,0,65535)*OUT_B_DB; 
-				current[2] =  LIMIT(ledk.g * 655.35,0,65535)*OUT_G_DB;
-				current[3] =  LIMIT(ledk.r * 655.35,0,65535)*OUT_R_DB;
-				current[4] =  LIMIT(ledk.cw * 655.35,0,65535)*OUT_CW_DB;
-				ChanleDataSend(B_BOARD_ADDR);
-				return 0;
-			}
-			////////////////
-		}
-		else
-		{
-			res = coordinate_to_RGBWWCW(*coord,&rgbk);
-		//res = coordinate_to_RGBWWCW_mode1(*coord,rgb_w_k,&rgbk);
-		}
-	}
-	else
-	{
-		res = coordinate_to_RGBWWCW(*coord,&rgbk);
+
+	res = coordinate_to_RGBWWCW(*coord,&rgbk);
 	//	res = coordinate_to_RGB(*coord,&rgbk);
-	}
+
 	if(res)
 	{
 		 return res;
@@ -1572,9 +1512,9 @@ int CoordinateOut(COORD *coord,float dim,unsigned char pixel)
 	ledk = rgbk;
 	if(pixel==0)
 		
-		AllLedPowerOut(&ledk,dim);
+		AllLedPowerOut((float *)&ledk,dim);
 	else
-   LedPowerOut(&ledk,dim,pixel-1);
+   LedPowerOut((float *)&ledk,dim,pixel-1);
 	return 0;
 }
 

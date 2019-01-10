@@ -48,8 +48,9 @@ void MixLightKToCurrent(float *mixk,float dim,unsigned short *current)
 		else
 			i_temp[i] = 0;
 	}
-	max_p = (i_temp[RCH]*45 + i_temp[GCH]*52 + i_temp[BCH]*45 + i_temp[ACH]*45 + i_temp[GCH]*45)/1000;
-	
+	#ifdef SPOT
+	max_p = (i_temp[RCH]*45 + i_temp[LCH]*52 + i_temp[BCH]*45 + i_temp[ACH]*45 + i_temp[GCH]*45)/1000;
+	#endif
 	temp = (float)(dim*(lu_max)/temp);//归一化
 	//各通道流明转电流输出,绝对输出,0-800mA
 	for(i=0;i<LED_CHS;i++)
@@ -68,26 +69,6 @@ void MixLightKToCurrent(float *mixk,float dim,unsigned short *current)
 	Debug_printf("Iout(%.4f,%.4f,%.4f,%.4f,,%.4f),max p:%d\r\n",i_temp[0],i_temp[1],i_temp[2],i_temp[3],i_temp[4],max_p);	
 }
 
-
-void ChanleDataSend(u8 addr)
-{
-	char *p;
-	int i;
-	u8 sum=0;
-	p = &DMX1_TX_BUF[addr];// addr 1 ,11 chanle
-	for(i=0;i<5;i++) //地址从一开始
-	{
-		p[i*2] = ((u16)current[i])>>8; //高八位
-	  p[i*2+1] = ((u16)current[i])&0xff;//低八位
-	}
-	p[10] = fan_pwm>>8; //高八位
-	p[11] = fan_pwm&0xff;//低八位
-	for(i=0;i<16;i++)//8通道
-	{
-		sum += p[i];
-	}
-	p[i] = sum; //校验和
-}
 
 /*
 INPUT: ledk,LED intensit P，dim，亮度0.0 -1.0;pixel：像素号0，全部量，1,第一个像素

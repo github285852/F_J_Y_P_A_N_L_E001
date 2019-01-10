@@ -136,6 +136,9 @@ int main(void)
 	//œ‘ æ
 	MenuBuf_malloc();
 	MenuPic.data = MENU_BUF;
+#ifdef SPOT
+	spot_init();
+#endif
 	GUI_DisplayInit();
 	while(DMAING);
 	MenuBuf_free();

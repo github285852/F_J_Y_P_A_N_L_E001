@@ -83,10 +83,12 @@ void Duty_20ms(void)
 }
 u16 t;
 void change_baude(void);
+LEDK RALGBK;
 void Duty_50ms(void)
 {
 	int i;
 	static u8 t=0;
+	LEDK ledk = RALGBK;
 	//u8 buf[50];
 	LedDmxTask();
 	duty_time[5][0] = GetSysTime_us()/1000000.0f;
@@ -100,6 +102,7 @@ void Duty_50ms(void)
 	}
   duty_time[5][1] = GetSysTime_us()/1000000.0f - duty_time[5][0];
 	
+	//LedkToCurrent(&ledk,Sys.Config.hsi.i,0);
 //	t++;
 //	if(t<20)
 //		return;

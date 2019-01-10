@@ -4,16 +4,15 @@
 typedef struct
 {
 	char name[EXFile_MAX_NUM+1][EXFile_MAX_LEN];
-	int option;//第几选项
+	int option;//显示第几选项
 	int line;//选项在第几行显示
-	int max_nums;//显示的最大个数
-	int max_line;//显示的最大行
+	int max_nums;//显示的最大个数,整个选择条要显示的个数
+	int max_line;//显示的最大行，一次能显示的个数
 	RECT *rect;//显示的矩形行指针
 }SELECTBAR;
 
 void SceneBegain(SceneData *pscene);
 
-SceneData scendatabuf;
 SELECTBAR import_scene_bar;
 
 SceneData *scene;
@@ -314,7 +313,7 @@ int PraseSceneFile(char *fname,SceneData *scene_data)
 //	free(pfile);
 	return 1;
 }
-void SelectBar(Picture *pic,SELECTBAR *bar);
+void SelectBar(Picture *pic,SELECTBAR *bar,int changeline);
 
 
 
@@ -407,27 +406,14 @@ void ImportTask(void)
 		case SELECT_FILE:
 		{
 			Sys.menu_mask = 1;//屏蔽 EnterKey
-			if(ec11_pos[2])
-			{
-				import_scene_bar.option += ec11_pos[2];
-				import_scene_bar.line += ec11_pos[2];
-				if(import_scene_bar.option>=import_scene_bar.max_nums)
-					import_scene_bar.option = import_scene_bar.max_nums-1;
-				else if(import_scene_bar.option<0)
-					import_scene_bar.option = 0;
-				
-				if(import_scene_bar.line>=DIS_MAX_LINE)
-					import_scene_bar.line= DIS_MAX_LINE-1;
-				else if(import_scene_bar.line<0)
-					import_scene_bar.line = 0;		
-				ec11_pos[2] = 0; //清零
-			}
-			if(key_value == S10)//不用清零
+
+			if(key_value == PSELECT_KEY)//不用清零
 			{
 				Sys.scene.state = SAVE_SCENE;
 				Sys.menu_mask = 0;		
 			}
-			SelectBar(&MenuPic,&import_scene_bar);
+			SelectBar(&MenuPic,&import_scene_bar,ec11_pos[2]);
+			ec11_pos[2] = 0; //清零
 		}
 		break;
 		case SAVE_SCENE:
@@ -445,11 +431,6 @@ void ImportTask(void)
 				{
 					Pictrue_printf(&MenuPic,offset,0,16,"  文件无效。");
 				}
-				if(key_value == S10)//不用清零
-				{
-					Sys.scene.state = SELECT_FILE;;
-					Sys.menu_mask = 0;		
-				}
 			}
 			else
 			{
@@ -462,6 +443,10 @@ void ImportTask(void)
 				Pictrue_printf(&MenuPic,offset,0+16,16,"mode:%d",scene->mode);
 				Pictrue_printf(&MenuPic,offset,0+32,16,"max_frame:%d",scene->max_frames);
 				Pictrue_printf(&MenuPic,offset,0+48,16,"frame:%d",scene->frame_pos);
+				if(key_value == PSELECT_KEY)//不用清零
+				{
+					SceneBegain(&Sys.Config.ImportSceneData);
+				}
 			break;
 		default: break;
 	}
@@ -469,38 +454,40 @@ end:
 	FreshMenu();
 }
 
-
-void SelectBar(Picture *pic,SELECTBAR *bar)
+//显示选择条
+void SelectBar(Picture *pic,SELECTBAR *bar,int changeline)
 {
 	BMP bmp;
 	int i;
-	int move_pos;
+	int dis_pos;
 	static TRANDISPLAY tran;
+	int line;
+	bar->option += changeline;
+	if(bar->option>=bar->max_nums)
+		bar->option = bar->max_nums-1;
+	else if(bar->option<0)
+		bar->option = 0;
+		
+	line = bar->option/bar->max_line; //从第几行开始显示
+	dis_pos = bar->option%bar->max_line;//显示区域行数坐标 0 - bar->max_line-1
+	
 	Picture_Fill(*pic,MENU_BACK_COLOR);
-	//显示
+	//显示选项
 	POINT_COLOR = BLACK;
-	Picture_FillRect(*pic,bar->rect[bar->line],SELECT_COLOR);//选中选项以灰色表示
+	Picture_FillRect(*pic,bar->rect[dis_pos],SELECT_COLOR);//选中选项以灰色表示
 	//Picture_ShowStringInRectCenter(*pic,bar->rect[bar->line],1,16,bar->name[bar->option]);
-	Picture_TranDispalyOnline(pic,&bar->rect[bar->line],&tran,16,1,bar->name[bar->option]);
-	move_pos = bar->option;
+	Picture_TranDispalyOnline(pic,&bar->rect[dis_pos],&tran,16,1,bar->name[bar->option]);
+
 	tran.move_t = 20;
 	//显示前面的行
-	for(i=bar->line-1;i>=0;i--)
+	for(i=dis_pos-1;i>=0;i--)
 	{
-		move_pos--;
-		if(move_pos>=0)
-		{
-			POINT_COLOR = BLACK;
-			Picture_FillRect(*pic,bar->rect[i],OPTION_COLOR);
-		Picture_ShowStringInRectCenter(*pic,bar->rect[i],1,16,bar->name[move_pos]);
-			//Picture_TranDispalyOnline(pic,&bar->rect[i],&tran,16,1,bar->name[move_pos]);
-			
-			
-		}
-		else
-			break;	
+		POINT_COLOR = BLACK;
+		Picture_FillRect(*pic,bar->rect[i],OPTION_COLOR);
+		Picture_ShowStringInRectCenter(*pic,bar->rect[i],1,16,bar->name[line*bar->max_line+i]);
+		//Picture_TranDispalyOnline(pic,&bar->rect[i],&tran,16,1,bar->name[move_pos]);	
 	}
-	if(move_pos>0)//提示上面还有选项
+	if(line>0)//提示上面还有选项
 	{
 		//Picture_DrawTrigon(MenuPic,MENU_W/2-10,0,8,10,LGRAY);
 		bmp.w = 16;
@@ -510,23 +497,18 @@ void SelectBar(Picture *pic,SELECTBAR *bar)
 	}
 	
 	//显示后面的
-	move_pos = bar->option;
-	for(i=bar->line+1;i<bar->max_line;i++)
+//	move_pos = bar->option;
+	for(i=dis_pos+1;i<bar->max_line;i++)
 	{
-		move_pos++;
-		if(move_pos < bar->max_nums)
+		if(line*bar->max_line+i < bar->max_nums)
 		{
 			POINT_COLOR = BLACK;
 			Picture_FillRect(*pic,bar->rect[i],OPTION_COLOR);
-			Picture_ShowStringInRectCenter(*pic,bar->rect[i],1,16,bar->name[move_pos]);
+			Picture_ShowStringInRectCenter(*pic,bar->rect[i],1,16,bar->name[line*bar->max_line+i]);
 			//Picture_TranDispalyOnline(pic,&bar->rect[i],&tran,16,1,bar->name[move_pos]);
 		}
-		else
-		{
-			break;
-		}
 	}
-	if(move_pos < bar->max_nums-1)
+	if((bar->max_nums - line*bar->max_line) > bar->max_line)//提示下面还有选项
 	{
 		//Picture_DrawTrigon(MenuPic,MENU_W/2-10,0,8,10,LGRAY);
 		bmp.w = 16;
@@ -536,33 +518,24 @@ void SelectBar(Picture *pic,SELECTBAR *bar)
 	}
 }
 
-//	
+//根据导入的 Scene 数据 执行场景任务
 void SceneDuty(SceneData *scene)
 {
 	RGB ledk;
 	float dim = 0;;
-	u16 *temp;
 	int i,j;
 	if(scene == NULL)
 		return;
 	//装载LED输出数据
-	for(j=0;j<2;j++) 
+	for(j=0;j<PIXELS;j++) 
 	{
-		temp = scene->frame[scene->frame_pos].ch[j];
-		for(i=0;i<LED_NUMS;i++)
-		{
-			dim += temp[i];
-		}
-		dim = dim/65535.0;
-		if(dim>1)
-			dim = 1;
-		ledk.ww = temp[0];
-		ledk.cw = temp[1];
-		ledk.r = temp[2];
-		ledk.g = temp[3];
-		ledk.b = temp[4];
-		LedPowerOut(&ledk,dim,j);
+		DMXChanleDataRefresh(j,scene->frame[scene->frame_pos].ch[j]);
 	}
+	if(scene->frame[scene->frame_pos].tim>100)
+		DMX1_TX_BUF[0] = 0;
+	else
+		DMX1_TX_BUF[0] = 1;
+	DMX1_Send(DMX1_TX_BUF,DMX_LEN);
 	//设置下一帧的时间
 	SceneSetframeTim(scene->frame[scene->frame_pos].tim);
 	scene->frame_pos++;
@@ -602,10 +575,13 @@ void SceneDuty(SceneData *scene)
 				if(scene->loop>0)
 				{
 					scene->frame_pos = 0;
-					scene->loop = 0;
+					scene->loop--;
 				}
-				scene = NULL;
-				SceneTimDisable();
+				else
+				{
+					scene = NULL;
+					SceneTimDisable();
+				}
 			}
 			break;
 		}
@@ -620,6 +596,7 @@ void SceneBegain(SceneData *pscene)
 	scene->frame_pos = 0;
 	scene->loop = scene->mode;
 	SceneSetframeTim(1);
+	ClearCNT();
 	SceneTimEnable();
 }
 
@@ -633,98 +610,7 @@ void TIM4_IRQHandler(void)
 	}
 }
 
-extern RGB rgbk;
-extern u16 current[LED_NUMS];
-//闪烁场景
-float FlashDim = 0.5;
-u16 FlashTim = 100;
-void SceneFlashInit(void)
-{
-	int i,j;
-	SceneData *pScene=NULL;
-	//pScene = mymalloc(SRAMIN,sizeof(SceneData));
-	pScene = &scendatabuf;
-	if(pScene != NULL)
-	{
-		pScene->max_frames = 1;
-		pScene->mode = 0;//无限循环
-		LedkToCurrent(&rgbk,FlashDim,2);
-		for(i=0;i<2;i++)
-		{
-			for(j=0;j<LED_NUMS;j++)
-				pScene->frame[0].ch[i][j] = current[j];
-			
-			for(j=0;j<LED_NUMS;j++)
-				pScene->frame[1].ch[i][j] = 0;
-			
-			pScene->frame[0].tim = FlashTim;
-			pScene->frame[1].tim = FlashTim;
-		}
-	}
-	else
-	{
-		Debug_printf(">>SceneFlashInit:mymalloc()fail\r\n");
-	}
-	SceneBegain(pScene);
-	Sys.Config.lightmode = SCENE_M;
-	Sys.Config.scene.num = 1;
-}
 
-void SceneFlashTask(void)//50 ms
-{
-	ClearMenu(OPTION_COLOR);
-	BACK_COLOR = OPTION_COLOR;
-	POINT_COLOR = BLACK;
-	static int tim=0,tim_cnt=0;
-	if(ec11_pos[2])
-	{
-		if(EC11_speed>25)
-		{
-			FlashDim -= ec11_pos[2]*0.0005*EC11_speed;
-		}
-		else
-		{
 
-			FlashDim -= ec11_pos[2]*0.001;
-		}
-		if(FlashDim>1)
-		{
-			FlashDim = 1;
-		}
-		else if(FlashDim<0)
-		{
-			FlashDim = 0;
-		}
-		ec11_pos[2] = 0;
-		SceneFlashInit();
-	}
-	if(ec11_pos[1])
-	{
-		if(EC11_speed>25)
-		{
-			FlashTim -= ec11_pos[1]*0.5*EC11_speed;
-		}
-		else
-		{
 
-			FlashTim -= ec11_pos[1];
-		}
-		if(FlashTim<100)
-		{
-			FlashTim = 100;
-		}
-		ec11_pos[1] = 0;
-		SceneFlashInit();
-	}
-	
-	Pictrue_printf(&MenuPic,0,0,16,"   Flash");
-	Pictrue_printf(&MenuPic,0,16,16,"  T:%dms",FlashTim);
-	Pictrue_printf(&MenuPic,0,32,16,"  Dim:%0.1f%%",FlashDim*100);
-	FreshMenu();
-}
-
-void SceneBack(void)
-{
-	SceneTimDisable();
-}
 

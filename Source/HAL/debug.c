@@ -96,83 +96,75 @@ void debug_send_str(unsigned char *str)
 	}		
 }
 
-unsigned int pwm[32]={0,0};
+/*
+FUNCTION:判定该字符串是命令
+INPUT:buf,要判别的字符，cmd 判定的命令。params,参数个数
+OUTPUT:param,取得的参数 指针
+RETURN：1,是该命令
+命令后面直接跟参数，参数之间用','隔开
+*/
+int IsCmd(unsigned char *buf,char *cmd,u8 params,float *param)
+{
+	unsigned short len;
+	char *p;
+	int i = 0;
+	p = strstr((const char*)buf,(const char*)cmd);
+	if(p != NULL)
+	{	
+		p += strlen(cmd);
+		while(i<params)
+		{
+			param[i] = atof((const char*)p);
+			p = strstr((const char*)p,(const char*)",");
+			if( p!= NULL)
+			{
+				i++;
+				p++;
+			}
+			else
+			{
+				break;
+			}
+		}
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 void uart_duty(void)
 {
-	unsigned char *p,*base_p;
-	unsigned char cmd;
-	unsigned char buf[50];
-	unsigned int h;
-	unsigned char s,i;
-	unsigned temp;
-	float temp_f;
-	u16 temp_u16;
-	
-//		if(USART_RX_STA&0x8000)
-//		{
-//			USART_RX_BUF[USART_RX_STA&0X3FFF]=0;
-//			p = strstr((const char*)USART_RX_BUF,(const char*)"PWM");
-//			if(p != NULL)
-//			{
-//				p += 3;
-//				cmd = atoi((const char*)p);
-//				if(cmd<32)
-//				{
-//					p = strstr((const char*)USART_RX_BUF,(const char*)":");
-//					if(p != NULL)
-//					{
-//						pwm[cmd] = atoi((const char*)(p+1));
-//						set_pwm(cmd,pwm[cmd]);
-
-//					}
-//					Debug_printf("PWM%d=%d Done\r\n",cmd,pwm[cmd]);
-//				}
-//				else
-//					Debug_printf("ERROR\r\n");
-//			}
-//			p = strstr((const char*)USART_RX_BUF,(const char*)"HSI:");
-//			if(p!=NULL)
-//			{
-//				h = atoi((const char*)(p+4));
-//				if(h>=0&&(h<=360))
-//				{
-//					p = strstr((const char*)p,(const char*)",");
-//					if(p!=NULL)
-//					{
-//						s = atoi((const char*)(p+1));
-//						if((s>=0)&&(s<=100))
-//						{
-//							p = strstr((const char*)(p+1),(const char*)",");
-//							if(p!=NULL)
-//							{
-//								i = atoi((const char*)(p+1));
-//								if((i>=0)&&(i<=100))
-//								{
-//	//								Sys.Config.hsi.h = h;
-//	//								Sys.Config.hsi.s =(float)(s/100.0);
-//	//								Sys.Config.hsi.i =(float)(i/100.0);
-//	//								ColorLightHSIOut(Sys.Config.hsi,0);
-//								}
-//								else
-//								{
-//									Debug_printf("I ERROR\r\n");
-//								}
-//							}
-//						}
-//						else
-//						{
-//							Debug_printf("S ERROR\r\n");
-//						}
-//					}
-//				}
-//				else
-//				{
-//					Debug_printf("H ERROR\r\n");
-//				}
-//			}
-//			
-//			USART_RX_STA=0;  
-//	}
+	float param_f[LED_CHS];
+	unsigned short param_u16[LED_CHS];
+	int i;
+	if(USART_RX_STA&0x8000)
+	{
+		USART_RX_BUF[USART_RX_STA&0X3FFF]=0; //字符串结束标志
+		if(IsCmd(USART_RX_BUF,"Seach device",0,NULL))
+		{
+			DeviceACK("%s,ID=%s\r\n",DEVICE_NAME,DEVICE_VER);
+		}
+		if(IsCmd(USART_RX_BUF,"IOUT:",LED_CHS,param_f))
+		{
+			for(i=0;i<LED_CHS;i++)
+				param_u16[i] = (unsigned short)param_f[i];
+			DMXChanleDataRefresh(0,param_u16);
+			DeviceACK("IOUT OK\r\n");
+		}
+		if(IsCmd(USART_RX_BUF,"Start check",0,NULL))
+		{
+			Sys.check = 1;
+			DeviceACK("Start check\r\n");
+		}
+		if(IsCmd(USART_RX_BUF,"End check",0,NULL))
+		{
+			Sys.check = 0;
+			DeviceACK("End check\r\n");
+		}
+		USART_RX_STA=0;  
+	}
 }
 
 
@@ -205,7 +197,7 @@ void DEBUG_USART_IRQHandler(void)
 
 void Debug_printf(char* fmt,...)  
 {
-	#if DEBUG
+//	#if DEBUG
 	u8 *pbuf,*p;
 	va_list ap;
 	pbuf = malloc(50);
@@ -219,7 +211,7 @@ void Debug_printf(char* fmt,...)
   p = pbuf;
 	debug_send_str(p);
 	free(pbuf);
-	#endif
+//	#endif
 }
 
 

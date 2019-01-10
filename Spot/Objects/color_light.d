@@ -1,0 +1,9 @@
+.\objects\color_light.o: ..\Source\APP\color_light.c
+.\objects\color_light.o: ..\Source\APP\color_light.h
+.\objects\color_light.o: ..\Source\Driver\mymath.h
+.\objects\color_light.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\math.h
+.\objects\color_light.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\color_light.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\color_light.o: D:\program\keil5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\color_light.o: ..\Source\APP\includes.h
+.\objects\color_light.o: D:\program\keil5\ARM\PACK\Keil\STM32F1xx_DFP\1.0.5\Device\Include\stm32f10x.h

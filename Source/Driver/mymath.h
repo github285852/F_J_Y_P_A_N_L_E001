@@ -29,6 +29,14 @@ typedef struct{
 	float y;
 }COORD,coord_f;
 
+typedef struct
+{
+	float a;
+	float b;
+	float c;
+	float d;
+}polyfit;
+
 float my_abs(float f);
 REAL fast_atan2(REAL y, REAL x);
 float my_pow(float a);
@@ -42,6 +50,8 @@ float To_180_degrees(float x);
 float my_pow_2_curve(float in,float a,float max);
 int InTriangle(COORD point,COORD A,COORD B,COORD C);//判断一个点是否在三角形内
 int OnLineSegment(coord_f point,coord_f A,coord_f B);
+float fit(polyfit *pf,float x);
+
 
 #endif
 

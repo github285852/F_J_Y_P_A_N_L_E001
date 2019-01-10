@@ -22,4 +22,7 @@ void Debug_init(void);
 void Debug_printf(char* fmt,...);
 void uart_duty(void);
 
+
+#define DeviceACK			Debug_printf
+
 #endif

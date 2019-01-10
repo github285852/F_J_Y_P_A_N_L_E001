@@ -14,7 +14,7 @@ unsigned char gama_tab[256]=
 */
 
 
-
+int IsSpecialPoint(coord_f point);
 RGB rgb={0,0,0,0};
 RGB rgbk={0,0,0,0};
 COORD coord={0.3,0.5};
@@ -36,14 +36,15 @@ LEDBY = LEDBY_DEFAULT,
 LEDYX = LEDYX_DEFAULT,
 LEDYY = LEDYY_DEFAULT;
 
-//COORD LED[LED_NUMS]=
-//{
-//	{LEDRX_DEFAULT,LEDRY_DEFAULT},//R
-//	{LEDGX_DEFAULT,LEDGY_DEFAULT},//G
-//	{LEDBX_DEFAULT,LEDBY_DEFAULT},//B
-//	{LEDWWX_DEFAULT,LEDWWY_DEFAULT},//WW
-//	{LEDCWX_DEFAULT,LEDCWY_DEFAULT},//CW
-//};
+coord_f 
+ledr={LEDRX_DEFAULT,LEDRY_DEFAULT},
+ledg={LEDGX_DEFAULT,LEDGY_DEFAULT},
+ledb={LEDBX_DEFAULT,LEDBY_DEFAULT},
+ledww={LEDWWX_DEFAULT,LEDWWY_DEFAULT},
+ledcw={LEDCWX_DEFAULT,LEDCWY_DEFAULT},
+ledl={LEDLX_DEFAULT,LEDLY_DEFAULT},
+leda={LEDAX_DEFAULT,LEDAY_DEFAULT};
+
 	
 	
 const GEL_COORD GEL_TAB[] =
@@ -98,82 +99,82 @@ const GEL_COORD GEL_TAB[] =
 
 
 const CCT_TAB cct_tab[] = {
-{25,0.4769,0.4137,0.5200,0.4820},
-{26,0.4681,0.4120,0.5100,0.4810},
-{27,0.4597,0.4105,0.4990,0.4790}, 
-{28,0.4518,0.4086,0.4890,0.4770}, 
-{29,0.4441,0.4064,0.4780,0.4730}, 
-{30,0.4369,0.4040,0.4690,0.4700},
-{31,0.4299,0.4015,0.4600,0.4660}, 
-{32,0.4233,0.3989,0.4510,0.4625}, 
-{33,0.4170,0.3962,0.4430,0.4590}, 
-{34,0.4109,0.3934,0.4350,0.4550}, 
-{35,0.4052,0.3907,0.4280,0.4510},
-{36,0.3998,0.3879,0.4210,0.4470}, 
-{37,0.3948,0.3851,0.4145,0.4430}, 
-{38,0.3895,0.3823,0.4080,0.4390},
-{39,0.3849,0.3795,0.4025,0.4360},
-{40,0.3804,0.3767,0.3970,0.4320},
-{41,0.3761,0.3740,0.3910,0.4280},
-{42,0.3720,0.3713,0.3850,0.4240}, 
-{43,0.3681,0.3687,0.3800,0.4210}, 
-{44,0.3643,0.3661,0.3750,0.4180}, 
-{45,0.3607,0.3635,0.3705,0.4140}, 
-{46,0.3573,0.3611,0.3660,0.4100}, 
-{47,0.3541,0.3586,0.3620,0.4070}, 
-{48,0.3510,0.3562,0.3580,0.4040}, 
-{49,0.3480,0.3539,0.3540,0.4005}, 
-{50,0.3450,0.3516,0.3500,0.3970}, 
-{51,0.3423,0.3494,0.3460,0.3940}, 
-{52,0.3397,0.3473,0.3425,0.3910}, 
-{53,0.3371,0.3451,0.3390,0.3880}, 
-{54,0.3348,0.3431,0.3360,0.3850}, 
-{55,0.3324,0.3410,0.3330,0.3820}, 
-{56,0.3302,0.3391,0.3300,0.3800}, 
-{57,0.3281,0.3372,0.3270,0.3770}, 
-{58,0.3260,0.3353,0.3245,0.3745}, 
-{59,0.3240,0.3335,0.3220,0.3720}, 
-{60,0.3222,0.3318,0.3195,0.3700}, 
-{61,0.3203,0.3301,0.3170,0.3680}, 
-{62,0.3185,0.3284,0.3150,0.3660}, 
-{63,0.3168,0.3267,0.3130,0.3630}, 
-{64,0.3152,0.3252,0.3110,0.3610}, 
-{65,0.3136,0.3237,0.3090,0.3590}, 
-{66,0.3121,0.3221,0.3070,0.3570}, 
-{67,0.3105,0.3206,0.3050,0.3551}, 
-{68,0.3092,0.3193,0.3030,0.3538}, 
-{69,0.3078,0.3179,0.3015,0.3520}, 
-{70,0.3065,0.3166,0.3000,0.3500}, 
-{71,0.3051,0.3152,0.2980,0.3480}, 
-{72,0.3038,0.3139,0.2962,0.3465}, 
-{73,0.3027,0.3127,0.2945,0.3450}, 
-{74,0.3016,0.3116,0.2930,0.3430}, 
-{75,0.3004,0.3104,0.2915,0.3420}, 
-{76,0.2993,0.3092,0.2905,0.3390}, 
-{77,0.2981,0.3080,0.2890,0.3380}, 
-{78,0.2972,0.3070,0.2878,0.3370}, 
-{79,0.2962,0.3060,0.2865,0.3360}, 
-{80,0.2953,0.3049,0.2852,0.3350}, 
-{81,0.2943,0.3039,0.2840,0.3338}, 
-{82,0.2934,0.3029,0.2830,0.3322}, 
-{83,0.2924,0.3018,0.2820,0.3310},
-{84,0.2916,0.3009,0.2810,0.3300},
-{85,0.2908,0.3000,0.2800,0.3290}, 
-{86,0.2901,0.2992,0.2790,0.3280}, 
-{87,0.2893,0.2983,0.2781,0.3270}, 
-{88,0.2885,0.2974,0.2772,0.3258}, 
-{89,0.2878,0.2965,0.2763,0.3245}, 
-{90,0.2870,0.2956,0.2754,0.3235}, 
-{91,0.2862,0.2948,0.2746,0.3224},
-{92,0.2856,0.2941,0.2738,0.3212}, 
-{93,0.2850,0.2934,0.2730,0.3200}, 
-{94,0.2844,0.2927,0.2722,0.3190}, 
-{95,0.2837,0.2919,0.2715,0.3180},
-{96,0.2831,0.2912,0.2708,0.3170}, 
-{97,0.2825,0.2905,0.2700,0.3160},
-{98,0.2819,0.2898,0.2692,0.3150},
-{99,0.2812,0.2890,0.2685,0.3135},
-{100,0.2806,0.2883,0.2680,0.3120}
+{25,0.4769,0.4137,0.5200,0.4820,0.5,5.555556},
+{26,0.4681,0.4120,0.5100,0.4810,0.5,5.555556},
+{27,0.4597,0.4105,0.4990,0.4790,0.5,5.555556},
+{28,0.4518,0.4086,0.4890,0.4770,0.36,2.77778}, 
+{29,0.4441,0.4064,0.4780,0.4730,0.36,2.77778},
+{30,0.4369,0.4040,0.4690,0.4700,0.36,2.77778},
+{31,0.4299,0.4015,0.4600,0.4660,0.24,1.470588}, 
+{32,0.4233,0.3989,0.4510,0.4625,0.24,1.470588}, 
+{33,0.4170,0.3962,0.4430,0.4590,0.24,1.470588}, 
+{34,0.4109,0.3934,0.4350,0.4550,0.18,0.96},
+{35,0.4052,0.3907,0.4280,0.4510,0.18,0.96},
+{36,0.3998,0.3879,0.4210,0.4470,0.18,0.96},
+{37,0.3948,0.3851,0.4145,0.4430,1.2,0.5}, 
+{38,0.3895,0.3823,0.4080,0.4390,1.2,0.5},
+{39,0.3849,0.3795,0.4025,0.4360,1.2,0.5},
+{40,0.3804,0.3767,0.3970,0.4320,0.1,0.38},
+{41,0.3761,0.3740,0.3910,0.4280,0.1,0.38},
+{42,0.3720,0.3713,0.3850,0.4240,0.1,0.38}, 
+{43,0.3681,0.3687,0.3800,0.4210,0.06,0.12}, 
+{44,0.3643,0.3661,0.3750,0.4180,0.06,0.12},  
+{45,0.3607,0.3635,0.3705,0.4140,0.06,0.12}, 
+{46,0.3573,0.3611,0.3660,0.4100,0.04,0.02}, 
+{47,0.3541,0.3586,0.3620,0.4070,0.04,0.02},  
+{48,0.3510,0.3562,0.3580,0.4040,0.04,0.02}, 
+{49,0.3480,0.3539,0.3540,0.4005,0.04,0.06}, 
+{50,0.3450,0.3516,0.3500,0.3970,0.04,0.06}, 
+{51,0.3423,0.3494,0.3460,0.3940,0.04,0.06}, 
+{52,0.3397,0.3473,0.3425,0.3910,0.02,0}, 
+{53,0.3371,0.3451,0.3390,0.3880,0.02,0},  
+{54,0.3348,0.3431,0.3360,0.3850,0.02,0},  
+{55,0.3324,0.3410,0.3330,0.3820,0,0},
+{56,0.3302,0.3391,0.3300,0.3800,0,0},
+{57,0.3281,0.3372,0.3270,0.3770,0,0},
+{58,0.3260,0.3353,0.3245,0.3745,0,0},
+{59,0.3240,0.3335,0.3220,0.3720,0,0},
+{60,0.3222,0.3318,0.3195,0.3700,0,0},
+{61,0.3203,0.3301,0.3170,0.3680,0,0}, 
+{62,0.3185,0.3284,0.3150,0.3660,0,0},
+{63,0.3168,0.3267,0.3130,0.3630,0,0},
+{64,0.3152,0.3252,0.3110,0.3610,0,0},
+{65,0.3136,0.3237,0.3090,0.3590,0,0},
+{66,0.3121,0.3221,0.3070,0.3570,0,0}, 
+{67,0.3105,0.3206,0.3050,0.3551,0,0.02}, 
+{68,0.3092,0.3193,0.3030,0.3538,0,0.02}, 
+{69,0.3078,0.3179,0.3015,0.3520,0,0.02}, 
+{70,0.3065,0.3166,0.3000,0.3500,0,0.04}, 
+{71,0.3051,0.3152,0.2980,0.3480,0,0.04}, 
+{72,0.3038,0.3139,0.2962,0.3465,0,0.04}, 
+{73,0.3027,0.3127,0.2945,0.3450,0,0.06},  
+{74,0.3016,0.3116,0.2930,0.3430,0,0.06}, 
+{75,0.3004,0.3104,0.2915,0.3420,0,0.06},
+{76,0.2993,0.3092,0.2905,0.3390,0,0.08}, 
+{77,0.2981,0.3080,0.2890,0.3380,0,0.08},  
+{78,0.2972,0.3070,0.2878,0.3370,0,0.08},  
+{79,0.2962,0.3060,0.2865,0.3360,0,0.08}, 
+{80,0.2953,0.3049,0.2852,0.3350,0,0.08}, 
+{81,0.2943,0.3039,0.2840,0.3338,0,0.08},  
+{82,0.2934,0.3029,0.2830,0.3322,0,0.1},  
+{83,0.2924,0.3018,0.2820,0.3310,0,0.1},
+{84,0.2916,0.3009,0.2810,0.3300,0,0.1},
+{85,0.2908,0.3000,0.2800,0.3290,0,0.1},
+{86,0.2901,0.2992,0.2790,0.3280,0,0.1},
+{87,0.2893,0.2983,0.2781,0.3270,0,0.1}, 
+{88,0.2885,0.2974,0.2772,0.3258,0,0.12}, 
+{89,0.2878,0.2965,0.2763,0.3245,0,0.12},
+{90,0.2870,0.2956,0.2754,0.3235,0,0.12},
+{91,0.2862,0.2948,0.2746,0.3224,0,0.12},
+{92,0.2856,0.2941,0.2738,0.3212,0,0.12},
+{93,0.2850,0.2934,0.2730,0.3200,0,0.12},
+{94,0.2844,0.2927,0.2722,0.3190,0,0.12}, 
+{95,0.2837,0.2919,0.2715,0.3180,0,0.12},
+{96,0.2831,0.2912,0.2708,0.3170,0,0.12}, 
+{97,0.2825,0.2905,0.2700,0.3160,0,0.12},
+{98,0.2819,0.2898,0.2692,0.3150,0,0.12},
+{99,0.2812,0.2890,0.2685,0.3135,0,0.12},
+{100,0.2806,0.2883,0.2680,0.3120,0,0.12},
 };
 	
 	
@@ -239,6 +240,31 @@ void TowLED_to_coordinate(COORD A,COORD B,float Ka,float Kb,COORD *co)
 		Debug_printf("Function:TowLED_to_coordinate erro\r\n");
 	}
 }
+/*
+多种种颜色的灯合成坐标
+ledc:led坐标指针
+ledk:led CIE1931 色度比例
+OUT:cood,结果指针
+*/
+
+void LEDK_to_coordinate(coord_f *ledc,float *ledk,coord_f *coord)
+{
+	int i;
+	coord_f pre_coord={0,0},temp_coord = {0,0};
+	float sumk = 0;
+	for(i=0;i<LED_CHS;i++)
+	{
+		if(ledk[i]>0.0)
+		{
+			TowLED_to_coordinate(pre_coord,ledc[i],sumk,ledk[i],&temp_coord);	
+			pre_coord = temp_coord;
+			sumk += ledk[i];
+		}
+	}
+	coord->x = temp_coord.x;
+	coord->y = temp_coord.y;
+}
+
 
 void RGB_to_coordinate(RGB rgb,COORD *coord)
 {
@@ -268,6 +294,7 @@ void RGB_to_coordinate(RGB rgb,COORD *coord)
 //		rs485_send_str("\r\n");
 	}
 }
+
 
 
 void RGBWWCW_to_coordinate(RGB rgb,COORD *coord)
@@ -337,6 +364,66 @@ void RGBWWCW_to_coordinate(RGB rgb,COORD *coord)
 	}
 }
 
+void RGBLA_to_coordinate(RGB rgb,COORD *coord)
+{
+	COORD la_coord;
+	COORD cia,cib;
+	float RBx,RBy,temp;
+	coord->x = coord->y = 0;
+	if((rgb.r+rgb.g+rgb.b)>0.0)
+	{
+		if(rgb.r != 0)
+		{
+			temp = (1+rgb.b/rgb.r);
+			RBx = (LEDRX+rgb.b*LEDBX/rgb.r)/temp;
+			RBy = (LEDRY+rgb.b*LEDBY/rgb.r)/temp;
+			temp = 1+rgb.g/(rgb.r+rgb.b);
+			coord->x = (RBx+rgb.g*LEDGX/(rgb.b+rgb.r))/temp;
+			coord->y = (RBy+rgb.g*LEDGY/(rgb.b+rgb.r))/temp;
+		}
+		else //在GB线上
+		{
+//			coord->x = (LEDGX*rgb.g+LEDBX*rgb.b)/(rgb.g+rgb.b);
+//			coord->y = (LEDGY*rgb.g+LEDBY*rgb.b)/(rgb.g+rgb.b);
+			cia.x = GX;
+			cia.y = GY;
+			cib.x = BX;
+			cib.y = BY;
+			TowLED_to_coordinate(cia,cib,rgb.g,rgb.b,coord);
+		}
+	}
+
+	if(rgb.l>0)
+	{
+		if(rgb.a>0)
+		{
+			cia = ledl;
+			cib = leda;
+			TowLED_to_coordinate(cia,cib,rgb.l,rgb.a,&la_coord);
+		}
+		else
+		{
+			la_coord= ledl;
+		}
+	}
+	else
+	{
+		if(rgb.a>0)
+		{
+			la_coord = leda;
+		}
+		else
+		{
+			return ;
+		}
+	}
+	if((rgb.r+rgb.g+rgb.b+rgb.l+rgb.a)>0)
+	{
+		coord->x = (la_coord.x*(rgb.l+rgb.a) + coord->x*(rgb.r+rgb.g+rgb.b))/(rgb.r+rgb.g+rgb.b+rgb.l+rgb.a);
+		coord->y = (la_coord.y*(rgb.l+rgb.a) + coord->y*(rgb.r+rgb.g+rgb.b))/(rgb.r+rgb.g+rgb.b+rgb.l+rgb.a);
+	}
+}
+
 //已知两直线的坐标，求 其交点,特殊情况除外
 int TowLineCross(COORD l1a,COORD l1b,COORD l2a,COORD l2b,COORD *crossp)
 {
@@ -361,7 +448,10 @@ RETURN ：0,OK;
 */
 int LineSegmentK(COORD a,COORD b,COORD amongp,float *k)
 {
-	*k = (amongp.x - a.x)/(b.x - amongp.x);
+	if(ABS(b.x - amongp.x)<0.0001)
+		*k = 10000;
+	else
+		*k = (amongp.x - a.x)/(b.x - amongp.x);
 	return 0;
 }
 
@@ -372,6 +462,55 @@ int coordinate_to_RGB(COORD coord,RGB *rgb)
 	COORD gb_crossp;//gb的交点
 	float R_GB_K,G_B_K;//混光比例
 	float GB;//GB的亮度
+	float temp1;
+//特殊点处理
+//
+	switch(IsSpecialPoint(coord))
+	{
+		case 1:
+		{
+			memset(rgb,0,sizeof(RGB)); 
+			rgb->r = 1;
+			return 0;
+		}
+		case 2:
+		{
+			memset(rgb,0,sizeof(RGB)); 
+			rgb->g = 1;
+			return 0;
+		}
+		case 3:
+		{
+			memset(rgb,0,sizeof(RGB)); 
+			rgb->b = 1;
+			return 0;
+		}
+		case 4: //在RG线段上
+		{
+			memset(rgb,0,sizeof(RGB)); 
+			temp1 = (coord.x-LEDGX)/(LEDRX-coord.x);
+			rgb->r = temp1/(1+temp1);
+			rgb->g = 1 - rgb->r;
+			return 0;
+		}
+		case 5://在RB线段上
+		{
+			memset(rgb,0,sizeof(RGB)); 
+			temp1 = (coord.x-LEDBX)/(LEDRX-coord.x);
+			rgb->r = temp1/(1+temp1);
+			rgb->b = 1 - rgb->r;
+			return 0;
+		}
+		case 6://在GB线段上
+		{
+			memset(rgb,0,sizeof(RGB)); 
+			temp1 = (coord.x-LEDBX)/(LEDGX-coord.x);
+			rgb->g = temp1/(1+temp1);
+			rgb->b = 1 - rgb->g;
+			return 0;
+		}
+		default :break;
+	}
 	R.x = LEDRX;
 	R.y = LEDRY;
 	G.x = LEDGX;
@@ -387,8 +526,16 @@ int coordinate_to_RGB(COORD coord,RGB *rgb)
 	//设总亮度为1
 	rgb->r = R_GB_K/(1+R_GB_K);
 	GB = 1 - rgb->r;
-	rgb->g = GB*G_B_K/(1+G_B_K);
-	rgb->b = GB - rgb->g;
+	if(G_B_K == 0)
+	{
+		rgb->g = GB;
+		rgb->b = 0;
+	}
+	else
+	{
+		rgb->g = GB*G_B_K/(1+G_B_K);
+		rgb->b = GB - rgb->g;
+	}
 	return 0;
 }
 
@@ -405,6 +552,31 @@ int coordinate_to_threeLEDK(COORD A,COORD B,COORD C,COORD coord,float *a,float *
 	*c = CB*C_B_K/(1+C_B_K);
 	*b = CB - *c;
 	return 0;
+}
+
+
+int coordinate_RGBLA(coord_f exp_point,LEDK *ledk)
+{
+	coord_f RA,LG;
+	float ra;
+	float lg;
+	CCT_TAB cct = cct_tab[Sys.Config.cct.pos];
+
+	
+	TowLED_to_coordinate(ledr,leda,cct.ra_k,1,&RA);
+	TowLED_to_coordinate(ledl,ledg,cct.lg_k,1,&LG);
+	//先判断改点在不在BLA中
+	if(InTriangle(exp_point,ledb,LG,RA))
+	{
+		memset(ledk,0,sizeof(LEDK)); 
+		coordinate_to_threeLEDK(ledb,RA,LG,exp_point,&ledk->b,&ra,&lg);
+		ledk->l = lg * cct.lg_k/(1+cct.lg_k);
+		ledk->g  = lg - ledk->l;
+		ledk->r = ra * cct.ra_k/(1+cct.ra_k);
+		ledk->a  = ra - ledk->r;
+		return 0;
+	}
+
 }
 
 //采用WWCW的比例为 1:1，来达到较大的功率
@@ -1205,12 +1377,12 @@ void ColorLightHSIOut(HSI Hsi,unsigned char pixel)
 		return ;
 	}
 	
-	RGBWWCW_to_coordinate(rgbk,&coo);
+	RGBLA_to_coordinate(rgbk,&coo);
 	Debug_printf("\r\n");
 	Debug_printf("HSI(%d,%.2f,%.2f)\r\n",Hsi.h,Hsi.s,Hsi.i);
 	Debug_printf("计算色坐标(%.4f,%.4f)\r\n",coord.x,coord.y);
 	Debug_printf("反馈色坐标(%.4f,%.4f)\r\n",coo.x,coo.y);
-	Debug_printf("RGBWWCW(%.4f,%.4f,%.4f,%.4f,%.4f)\r\n",rgbk.r,rgbk.g,rgbk.b,rgbk.ww,rgbk.cw);
+	Debug_printf("RGBWWCW(%.4f,%.4f,%.4f,%.4f,%.4f)\r\n",rgbk.r,rgbk.g,rgbk.b,rgbk.l,rgbk.a);
 	
 }
 
@@ -1254,11 +1426,6 @@ int CCTToCoordinate(unsigned char pos,int offset,COORD *target)
 	return 0;
 }
 
-
-
-
- 
-
 /*
 INPUT:pos:number;offset,grn;pixel,0,ALL;
 OUTPUT:NO ONE
@@ -1272,15 +1439,17 @@ void LightCCTOut(unsigned char pos,int offset,float dim,unsigned char pixel)
 		return;
 	CoordinateOut(&target,dim,pixel);
 	
-	RGBWWCW_to_coordinate(rgbk,&coo);
+	LEDK_to_coordinate(led_coord,(float*)&rgbk,&coo);
 	Debug_printf("\r\n");
 	Debug_printf("计算色坐标(%.4f,%.4f)\r\n",target.x,target.y);
-	Debug_printf("反馈色坐标(%.4f,%.4f)\r\n",coo.x,coo.y);
-	Debug_printf("RGBWWCW(%.4f,%.4f,%.4f,%.4f,%.4f)\r\n",rgbk.r,rgbk.g,rgbk.b,rgbk.ww,rgbk.cw);
+	Debug_printf("反馈色坐标2(%.4f,%.4f)\r\n",coo.x,coo.y);
+	Debug_printf("LEDK(%.4f,%.4f,%.4f,%.4f,%.4f)\r\n",rgbk.r,rgbk.g,rgbk.b,rgbk.l,rgbk.a);
 }
 
-
 float rgb_w_k = 1;
+
+#ifdef SPOT
+
 int CoordinateOut(COORD *coord,float dim,unsigned char pixel)
 {
 	int res = 1;
@@ -1294,70 +1463,14 @@ int CoordinateOut(COORD *coord,float dim,unsigned char pixel)
 	}
 	dim = DIM_MIN + dim*(1-DIM_MIN);//从百分之一开始
 	dim = pow(dim,1.5);//伽马校正
-	
+		
 	if((Sys.Config.lightmode == CCT_M)||( Sys.Config.lightmode == DMX_M &&( Sys.Config.dmx.mode==DMX_M2 ||Sys.Config.dmx.mode==DMX_M7 ||Sys.Config.dmx.mode==DMX_M12 ) ))
-	{ 
-								//  >4400K                  <3600K 且亮度大于于0.5
-		if( (Sys.Config.cct.pos>19)|| ((Sys.Config.cct.pos<11)&&(dim>0.5) ) )  
-		{
-			/////////////////	
-			res = coordinate_to_RGBWWCW_mode2(*coord,dim,&rgbk);//直接输出
-			if(res)
-			{		
-				if(dim>0.5)
-					mode2_could_dim = dim;
-				else
-					mode2_could_dim = 0.51;
-				while(1)
-				{
-					res = coordinate_to_RGBWWCW_mode2(*coord,mode2_could_dim,&rgbk);//直接输出
-					if(res)
-					{		
-						if(mode2_could_dim>=1)
-						{	
-							Debug_printf(">>coordinate_to_RGBWWCW_mode2\r\n,没有合适的比例\r\n");
-							return 1;
-						}
-						mode2_could_dim += 0.01; //1%　找到能达到的最小亮度，在这个基础上再衰减亮度。
-					}
-					else
-					{
-						dim *= 1/mode2_could_dim;
-						//dim = pow(dim,1.1);//伽马校正
-						break;
-					}
-				}
-			}
-			else
-			{
-				ledk = rgbk;
-				current[0] =  LIMIT(ledk.cw * 655.35,0,65535)*OUT_CW_DB;
-				current[1] =  LIMIT(ledk.r * 655.35,0,65535)*OUT_R_DB; 
-				current[2] =  LIMIT(ledk.g * 655.35,0,65535)*OUT_G_DB;
-				current[3] =  LIMIT(ledk.b * 655.35,0,65535)*OUT_B_DB;
-				current[4] =  LIMIT(ledk.ww * 655.35,0,65535)*OUT_WW_DB;
-				ChanleDataSend(A_BOARD_ADDR);
-				
-				current[0] =  LIMIT(ledk.ww * 655.35,0,65535)*OUT_CW_DB;
-				current[1] =  LIMIT(ledk.b * 655.35,0,65535)*OUT_B_DB; 
-				current[2] =  LIMIT(ledk.g * 655.35,0,65535)*OUT_G_DB;
-				current[3] =  LIMIT(ledk.r * 655.35,0,65535)*OUT_R_DB;
-				current[4] =  LIMIT(ledk.cw * 655.35,0,65535)*OUT_CW_DB;
-				ChanleDataSend(B_BOARD_ADDR);
-				return 0;
-			}
-			////////////////
-		}
-		else
-		{
-			res = coordinate_to_RGBWWCW(*coord,&rgbk);
-		//res = coordinate_to_RGBWWCW_mode1(*coord,rgb_w_k,&rgbk);
-		}
+	{ 	
+		res = coordinate_RGBLA(*coord,&rgbk);
 	}
 	else
 	{
-		res = coordinate_to_RGBWWCW(*coord,&rgbk);
-	//	res = coordinate_to_RGB(*coord,&rgbk);
+		res = coordinate_to_RGB(*coord,&rgbk);
 	}
 	if(res)
 	{
@@ -1366,11 +1479,47 @@ int CoordinateOut(COORD *coord,float dim,unsigned char pixel)
 	ledk = rgbk;
 	if(pixel==0)
 		
-		AllLedPowerOut(&ledk,dim);
+		AllLedPowerOut((float *)&ledk,dim);
 	else
-   LedPowerOut(&ledk,dim,pixel-1);
+   LedPowerOut((float *)&ledk,dim,pixel-1);
 	return 0;
 }
+
+#elif defined PANLE
+
+
+int CoordinateOut(COORD *coord,float dim,unsigned char pixel)
+{
+	int res = 1;
+	RGB ledk;
+	float mode2_could_dim;//CCT mode　混光　能达到的最小亮度，这种显指较好
+	float temp;
+	if(dim<=0.0009)
+	{
+		AllLedPowerOff();
+		return 0;
+	}
+	dim = DIM_MIN + dim*(1-DIM_MIN);//从百分之一开始
+	dim = pow(dim,1.5);//伽马校正
+
+	res = coordinate_to_RGBWWCW(*coord,&rgbk);
+	//	res = coordinate_to_RGB(*coord,&rgbk);
+
+	if(res)
+	{
+		 return res;
+	}
+	ledk = rgbk;
+	if(pixel==0)
+		
+		AllLedPowerOut((float *)&ledk,dim);
+	else
+   LedPowerOut((float *)&ledk,dim,pixel-1);
+	return 0;
+}
+
+#endif
+
 
 void LightRGBOut(unsigned int R,unsigned int G,unsigned int B,unsigned char pixel)
 {
@@ -1386,9 +1535,9 @@ void LightRGBOut(unsigned int R,unsigned int G,unsigned int B,unsigned char pixe
 		return ;
 	}
 	if(pixel>3)
-		AllLedPowerOut(&rgbk,dim);
+		AllLedPowerOut((float *)&rgbk,dim);
 	else
-		LedPowerOut(&rgbk,dim,pixel);
+		LedPowerOut((float *)&rgbk,dim,pixel);
 }
 
 int LightGELOut(GEL *gel,unsigned char pixel)

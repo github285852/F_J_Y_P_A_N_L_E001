@@ -5,7 +5,7 @@ void SceneTimerInit();
 void SceneSetframeTim(unsigned short ms);
 void SceneTimEnable(void);
 void SceneTimDisable(void);
-
+void ClearCNT(void);
 
 
 #endif
